@@ -4,6 +4,9 @@ A Go SDK for the [Bitget](https://www.bitget.com/api-doc/uta/intro) exchange,
 targeting the **Unified Trading Account (UTA)** — the `/api/v3/*` REST API and
 the v3 WebSocket streams.
 
+> Supported Bitget API version: **2026-06-18** (tracks the latest
+> [UTA changelog](https://www.bitget.com/api-doc/uta/changelog)).
+
 - **Faithful to the API.** Every response struct is reconciled against the
   *live* API, not just the docs (the docs are frequently incomplete). Each
   public endpoint and every testable private endpoint is covered by a test that

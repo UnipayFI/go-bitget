@@ -96,7 +96,8 @@ func (s *WithdrawService) SetLastName(lastName string) *WithdrawService {
 }
 
 // SetAccountType sets the account type(s) to deduct from (funding, uta, otc;
-// comma-separated).
+// comma-separated). When multiple are given, deduction follows the order
+// funding → otc → uta.
 func (s *WithdrawService) SetAccountType(accountType string) *WithdrawService {
 	s.body["accountType"] = accountType
 	return s
