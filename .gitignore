@@ -1,0 +1,23 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+/bgraw
+/cmd/bgraw/bgraw
+
+# Test & coverage
+*.test
+*.out
+coverage.*
+
+# Local secrets / env (never commit API credentials)
+.env
+*.env
+env.sh
+.secrets
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
