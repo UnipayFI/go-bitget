@@ -24,7 +24,7 @@ the v3 WebSocket streams.
 ## Install
 
 ```bash
-go get github.com/UnipayFI/go-bitget
+go get github.com/UnipayFI/go-bitget@latest
 ```
 
 Requires Go 1.26+.
