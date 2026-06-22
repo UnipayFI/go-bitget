@@ -31,10 +31,10 @@ type AccountAssets struct {
 	UsdtUnrealisedPnl decimal.Decimal `json:"usdtUnrealisedPnl"`
 	BtcUnrealizedPnl  decimal.Decimal `json:"btcUnrealizedPnl"`
 	EffEquity         decimal.Decimal `json:"effEquity"`
-	Mmr               decimal.Decimal `json:"mmr"`
-	Imr               decimal.Decimal `json:"imr"`
-	MgnRatio          decimal.Decimal `json:"mgnRatio"`
-	PositionMgnRatio  decimal.Decimal `json:"positionMgnRatio"`
+	Mmr               decimal.Decimal `json:"mmr"`              // maintenance margin AMOUNT (quote ccy), not a ratio
+	Imr               decimal.Decimal `json:"imr"`              // initial margin AMOUNT (quote ccy), not a ratio
+	MgnRatio          decimal.Decimal `json:"mgnRatio"`         // margin ratio (≈ mmr/equity)
+	PositionMgnRatio  decimal.Decimal `json:"positionMgnRatio"` // position-only margin ratio
 	Assets            []CoinAsset     `json:"assets"`
 }
 

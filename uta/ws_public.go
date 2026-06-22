@@ -29,25 +29,27 @@ func (s *SubscribeTickerService) Do(ctx context.Context, cb WsHandler[WsTicker])
 }
 
 type WsTicker struct {
-	Symbol        string          `json:"symbol"`
-	LastPrice     decimal.Decimal `json:"lastPrice"`
-	OpenPrice24h  decimal.Decimal `json:"openPrice24h"`
-	HighPrice24h  decimal.Decimal `json:"highPrice24h"`
-	LowPrice24h   decimal.Decimal `json:"lowPrice24h"`
-	Ask1Price     decimal.Decimal `json:"ask1Price"`
-	Bid1Price     decimal.Decimal `json:"bid1Price"`
-	Bid1Size      decimal.Decimal `json:"bid1Size"`
-	Ask1Size      decimal.Decimal `json:"ask1Size"`
-	Price24hPcnt  decimal.Decimal `json:"price24hPcnt"`
-	Volume24h     decimal.Decimal `json:"volume24h"`
-	Turnover24h   decimal.Decimal `json:"turnover24h"`
-	IndexPrice    decimal.Decimal `json:"indexPrice"`
-	MarkPrice     decimal.Decimal `json:"markPrice"`
-	FundingRate   decimal.Decimal `json:"fundingRate"`
-	OpenInterest  decimal.Decimal `json:"openInterest"`
-	DeliveryStart time.Time       `json:"deliveryStartTime"`
-	DeliveryTime  time.Time       `json:"deliveryTime"`
-	Ts            time.Time       `json:"ts"`
+	Symbol          string          `json:"symbol"`
+	LastPrice       decimal.Decimal `json:"lastPrice"`
+	OpenPrice24h    decimal.Decimal `json:"openPrice24h"`
+	HighPrice24h    decimal.Decimal `json:"highPrice24h"`
+	LowPrice24h     decimal.Decimal `json:"lowPrice24h"`
+	Ask1Price       decimal.Decimal `json:"ask1Price"`
+	Bid1Price       decimal.Decimal `json:"bid1Price"`
+	Bid1Size        decimal.Decimal `json:"bid1Size"`
+	Ask1Size        decimal.Decimal `json:"ask1Size"`
+	Price24hPcnt    decimal.Decimal `json:"price24hPcnt"`
+	Volume24h       decimal.Decimal `json:"volume24h"`
+	Turnover24h     decimal.Decimal `json:"turnover24h"`
+	IndexPrice      decimal.Decimal `json:"indexPrice"`
+	MarkPrice       decimal.Decimal `json:"markPrice"`
+	FundingRate     decimal.Decimal `json:"fundingRate"`
+	NextFundingTime time.Time       `json:"nextFundingTime"` // perp: next funding settlement time
+	OpenInterest    decimal.Decimal `json:"openInterest"`
+	DeliveryStart   time.Time       `json:"deliveryStartTime"`
+	DeliveryTime    time.Time       `json:"deliveryTime"`
+	DeliveryStatus  string          `json:"deliveryStatus"`
+	Ts              time.Time       `json:"ts"`
 }
 
 // SubscribeKlineService -- public "kline" candlestick channel.

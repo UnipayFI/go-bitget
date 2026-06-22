@@ -61,6 +61,11 @@ func TestWsPublicTicker(t *testing.T) {
 		if p.Data[0].LastPrice.IsZero() {
 			t.Error("ticker lastPrice is zero")
 		}
+		// USDT-FUTURES perp ticker carries nextFundingTime — guards against
+		// WsTicker.NextFundingTime regressing (the live frame includes it).
+		if p.Data[0].NextFundingTime.IsZero() {
+			t.Error("perp ticker nextFundingTime is zero (WsTicker.NextFundingTime missing?)")
+		}
 	case <-time.After(15 * time.Second):
 		t.Fatal("no ticker message within 15s")
 	}
