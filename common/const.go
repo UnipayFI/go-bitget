@@ -16,6 +16,12 @@ const (
 	DEFAULT_WS_PUBLIC_URL  = "wss://ws.bitget.com/v3/ws/public"
 	DEFAULT_WS_PRIVATE_URL = "wss://ws.bitget.com/v3/ws/private"
 
+	// Classic-account (non-UTA) WebSocket endpoints. The classic streams use the
+	// v2 gateway (instType/channel/instId args, uppercase instType like SPOT /
+	// USDT-FUTURES), distinct from the unified-account v3 gateway above.
+	DEFAULT_WS_V2_PUBLIC_URL  = "wss://ws.bitget.com/v2/ws/public"
+	DEFAULT_WS_V2_PRIVATE_URL = "wss://ws.bitget.com/v2/ws/private"
+
 	// Default ACCESS-* locale header. Bitget accepts "en-US", "zh-CN", etc.
 	DEFAULT_LOCALE = "en-US"
 

@@ -46,8 +46,8 @@ type WsPush[T any] struct {
 }
 
 type wsOp struct {
-	Op   string  `json:"op"`
-	Args []WsArg `json:"args"`
+	Op   string `json:"op"`
+	Args []any  `json:"args"`
 }
 
 type wsLoginOp struct {
@@ -108,7 +108,16 @@ func SubscribeRaw(ctx context.Context, client WsClient, private bool, arg WsArg,
 	return subscribeBytes(ctx, client, private, arg, cb)
 }
 
-func subscribeBytes(ctx context.Context, client WsClient, private bool, arg WsArg, cb func(message []byte, err error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
+// SubscribeRawArg is like SubscribeRaw but accepts an arbitrary subscription arg
+// value (any JSON-serializable shape), not just the v3 WsArg. The classic v2
+// streams use a different arg shape ({instType, channel, instId}), so they pass
+// their own arg type here while reusing the shared connection/login/keepalive
+// machinery.
+func SubscribeRawArg(ctx context.Context, client WsClient, private bool, arg any, cb func(message []byte, err error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
+	return subscribeBytes(ctx, client, private, arg, cb)
+}
+
+func subscribeBytes(ctx context.Context, client WsClient, private bool, arg any, cb func(message []byte, err error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
 	endpoint := client.GetPublicURL()
 	if private {
 		endpoint = client.GetPrivateURL()
@@ -126,7 +135,7 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, arg WsAr
 		}
 	}
 
-	sub := wsOp{Op: "subscribe", Args: []WsArg{arg}}
+	sub := wsOp{Op: "subscribe", Args: []any{arg}}
 	data, _ := common.JSONMarshal(sub)
 	if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
 		conn.Close()
@@ -145,7 +154,7 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, arg WsAr
 		case <-doneC:
 		}
 		// Best-effort unsubscribe before closing.
-		unsub := wsOp{Op: "unsubscribe", Args: []WsArg{arg}}
+		unsub := wsOp{Op: "unsubscribe", Args: []any{arg}}
 		if b, e := common.JSONMarshal(unsub); e == nil {
 			_ = conn.WriteMessage(websocket.TextMessage, b)
 		}
@@ -182,6 +191,23 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, arg WsAr
 		}
 	}()
 	return doneC, stopC, nil
+}
+
+// DialPrivateLoggedIn dials the private WebSocket gateway and completes the
+// login handshake, returning a ready connection. WebSocket order-entry
+// (op:"trade") connections build on this. The caller owns and must Close the
+// returned connection.
+func DialPrivateLoggedIn(ctx context.Context, client WsClient) (*websocket.Conn, error) {
+	conn, _, err := client.GetDialer().DialContext(ctx, client.GetPrivateURL(), nil)
+	if err != nil {
+		return nil, err
+	}
+	conn.SetReadLimit(10 << 20)
+	if err := wsLogin(client, conn); err != nil {
+		conn.Close()
+		return nil, err
+	}
+	return conn, nil
 }
 
 // wsLogin performs the private-stream login handshake and blocks until the
