@@ -25,11 +25,11 @@ func (s *GetAccountAssetsService) Do(ctx context.Context) (*AccountAssets, error
 
 type AccountAssets struct {
 	AccountEquity     decimal.Decimal `json:"accountEquity"`
-	UsdtEquity        decimal.Decimal `json:"usdtEquity"`
+	USDTEquity        decimal.Decimal `json:"usdtEquity"`
 	BtcEquity         decimal.Decimal `json:"btcEquity"`
-	UnrealisedPnl     decimal.Decimal `json:"unrealisedPnl"`
-	UsdtUnrealisedPnl decimal.Decimal `json:"usdtUnrealisedPnl"`
-	BtcUnrealizedPnl  decimal.Decimal `json:"btcUnrealizedPnl"`
+	UnrealizedPnL     decimal.Decimal `json:"unrealisedPnl"`
+	USDTUnrealizedPnL decimal.Decimal `json:"usdtUnrealisedPnl"`
+	BtcUnrealizedPnL  decimal.Decimal `json:"btcUnrealizedPnl"`
 	EffEquity         decimal.Decimal `json:"effEquity"`
 	Mmr               decimal.Decimal `json:"mmr"`              // maintenance margin AMOUNT (quote ccy), not a ratio
 	Imr               decimal.Decimal `json:"imr"`              // initial margin AMOUNT (quote ccy), not a ratio
@@ -41,7 +41,7 @@ type AccountAssets struct {
 type CoinAsset struct {
 	Coin      string          `json:"coin"`
 	Equity    decimal.Decimal `json:"equity"`
-	UsdValue  decimal.Decimal `json:"usdValue"`
+	USDValue  decimal.Decimal `json:"usdValue"`
 	Balance   decimal.Decimal `json:"balance"`
 	Available decimal.Decimal `json:"available"`
 	Debt      decimal.Decimal `json:"debt"`

@@ -30,12 +30,12 @@ func (c *WebSocketClient) NewSubscribeMixTickerService(instType InstType, symbol
 
 func (s *SubscribeMixTickerService) Do(ctx context.Context, cb WsHandler[MixWsTicker]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsTicker](ctx, s.c, false,
-		WsArg{InstType: string(s.instType), Channel: "ticker", InstId: s.symbol}, cb)
+		WsArg{InstType: string(s.instType), Channel: "ticker", InstID: s.symbol}, cb)
 }
 
 // MixWsTicker is one element of the futures "ticker" channel push data array.
 type MixWsTicker struct {
-	InstId          string          `json:"instId"`          // product id, e.g. BTCUSDT
+	InstID          string          `json:"instId"`          // product id, e.g. BTCUSDT
 	LastPr          decimal.Decimal `json:"lastPr"`          // most recent transaction price
 	AskPr           decimal.Decimal `json:"askPr"`           // best ask price
 	BidPr           decimal.Decimal `json:"bidPr"`           // best bid price
@@ -78,7 +78,7 @@ func (c *WebSocketClient) NewSubscribeMixCandleService(instType InstType, symbol
 
 func (s *SubscribeMixCandleService) Do(ctx context.Context, cb WsHandler[MixWsCandle]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsCandle](ctx, s.c, false,
-		WsArg{InstType: string(s.instType), Channel: "candle" + s.interval, InstId: s.symbol}, cb)
+		WsArg{InstType: string(s.instType), Channel: "candle" + s.interval, InstID: s.symbol}, cb)
 }
 
 // MixWsCandle is one candlestick row. Bitget pushes each candle as a
@@ -165,7 +165,7 @@ func (s *SubscribeMixOrderBookService) SetDepth(depth string) *SubscribeMixOrder
 
 func (s *SubscribeMixOrderBookService) Do(ctx context.Context, cb WsHandler[MixWsOrderBook]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsOrderBook](ctx, s.c, false,
-		WsArg{InstType: string(s.instType), Channel: s.depth, InstId: s.symbol}, cb)
+		WsArg{InstType: string(s.instType), Channel: s.depth, InstID: s.symbol}, cb)
 }
 
 // MixWsOrderBook is one element of the futures depth channel push data array.
@@ -193,7 +193,7 @@ func (c *WebSocketClient) NewSubscribeMixTradeService(instType InstType, symbol 
 
 func (s *SubscribeMixTradeService) Do(ctx context.Context, cb WsHandler[MixWsTrade]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsTrade](ctx, s.c, false,
-		WsArg{InstType: string(s.instType), Channel: "trade", InstId: s.symbol}, cb)
+		WsArg{InstType: string(s.instType), Channel: "trade", InstID: s.symbol}, cb)
 }
 
 // MixWsTrade is one element of the futures "trade" channel push data array.
@@ -202,5 +202,5 @@ type MixWsTrade struct {
 	Price   decimal.Decimal `json:"price"`   // filled price
 	Size    decimal.Decimal `json:"size"`    // filled quantity
 	Side    string          `json:"side"`    // trade direction: "buy" or "sell"
-	TradeId string          `json:"tradeId"` // trade identifier
+	TradeID string          `json:"tradeId"` // trade identifier
 }

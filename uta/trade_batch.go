@@ -11,26 +11,26 @@ import (
 // code/msg are populated only when that individual order failed (batch endpoints
 // allow partial success).
 type OrderResult struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	Code      string `json:"code"`
-	Msg       string `json:"msg"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	Code          string `json:"code"`
+	Msg           string `json:"msg"`
 }
 
 // BatchOrderItem is a single order in a batch place request. category, symbol,
 // qty, side and orderType are required; price is required for limit orders and
 // timeInForce is required for limit orders.
 type BatchOrderItem struct {
-	Category    Category        `json:"category"`
-	Symbol      string          `json:"symbol"`
-	Qty         decimal.Decimal `json:"qty"`
-	Price       decimal.Decimal `json:"price,omitempty"`
-	Side        Side            `json:"side"`
-	OrderType   OrderType       `json:"orderType"`
-	TimeInForce TimeInForce     `json:"timeInForce,omitempty"`
-	PosSide     PosSide         `json:"posSide,omitempty"`
-	ClientOid   string          `json:"clientOid,omitempty"`
-	StpMode     string          `json:"stpMode,omitempty"`
+	Category      Category        `json:"category"`
+	Symbol        string          `json:"symbol"`
+	Qty           decimal.Decimal `json:"qty"`
+	Price         decimal.Decimal `json:"price,omitempty"`
+	Side          Side            `json:"side"`
+	OrderType     OrderType       `json:"orderType"`
+	TimeInForce   TimeInForce     `json:"timeInForce,omitempty"`
+	PosSide       PosSide         `json:"posSide,omitempty"`
+	ClientOrderID string          `json:"clientOid,omitempty"`
+	StpMode       string          `json:"stpMode,omitempty"`
 }
 
 // PlaceBatchService -- POST /api/v3/trade/place-batch
@@ -65,13 +65,13 @@ func (s *PlaceBatchService) Do(ctx context.Context) ([]OrderResult, error) {
 // Either OrderID or ClientOid must be set (orderId takes priority if both are
 // supplied).
 type BatchModifyItem struct {
-	OrderID    string          `json:"orderId,omitempty"`
-	ClientOid  string          `json:"clientOid,omitempty"`
-	Qty        decimal.Decimal `json:"qty,omitempty"`
-	Price      decimal.Decimal `json:"price,omitempty"`
-	AutoCancel string          `json:"autoCancel,omitempty"` // yes, no (default)
-	Symbol     string          `json:"symbol,omitempty"`
-	Category   Category        `json:"category,omitempty"`
+	OrderID       string          `json:"orderId,omitempty"`
+	ClientOrderID string          `json:"clientOid,omitempty"`
+	Qty           decimal.Decimal `json:"qty,omitempty"`
+	Price         decimal.Decimal `json:"price,omitempty"`
+	AutoCancel    string          `json:"autoCancel,omitempty"` // yes, no (default)
+	Symbol        string          `json:"symbol,omitempty"`
+	Category      Category        `json:"category,omitempty"`
 }
 
 // BatchModifyOrderService -- POST /api/v3/trade/batch-modify-order
@@ -105,10 +105,10 @@ func (s *BatchModifyOrderService) Do(ctx context.Context) ([]OrderResult, error)
 // BatchCancelItem is a single order in a batch cancel request. category and
 // symbol are required; either OrderID or ClientOid must be set.
 type BatchCancelItem struct {
-	OrderID   string   `json:"orderId,omitempty"`
-	ClientOid string   `json:"clientOid,omitempty"`
-	Category  Category `json:"category"`
-	Symbol    string   `json:"symbol"`
+	OrderID       string   `json:"orderId,omitempty"`
+	ClientOrderID string   `json:"clientOid,omitempty"`
+	Category      Category `json:"category"`
+	Symbol        string   `json:"symbol"`
 }
 
 // CancelBatchService -- POST /api/v3/trade/cancel-batch

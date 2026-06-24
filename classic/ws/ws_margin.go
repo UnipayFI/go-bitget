@@ -31,7 +31,7 @@ func (c *WebSocketClient) NewSubscribeMarginCrossIndexPriceService(instId string
 
 func (s *SubscribeMarginCrossIndexPriceService) Do(ctx context.Context, cb WsHandler[MarginCrossIndexPrice]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MarginCrossIndexPrice](ctx, s.c, false,
-		WsArg{InstType: string(InstTypeMargin), Channel: "index-price", InstId: s.instId}, cb)
+		WsArg{InstType: string(InstTypeMargin), Channel: "index-price", InstID: s.instId}, cb)
 }
 
 // MarginCrossIndexPrice is one element of the "index-price" push data array.
@@ -62,7 +62,7 @@ func (c *WebSocketClient) NewSubscribeMarginCrossOrdersService(instId string) *S
 
 func (s *SubscribeMarginCrossOrdersService) Do(ctx context.Context, cb WsHandler[MarginCrossOrder]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MarginCrossOrder](ctx, s.c, true,
-		WsArg{InstType: string(InstTypeMargin), Channel: "orders-crossed", InstId: s.instId}, cb)
+		WsArg{InstType: string(InstTypeMargin), Channel: "orders-crossed", InstID: s.instId}, cb)
 }
 
 // MarginCrossOrder is one element of the "orders-crossed" push data array.
@@ -70,12 +70,12 @@ type MarginCrossOrder struct {
 	BaseSize         decimal.Decimal  `json:"baseSize"`         // quantity of base coins
 	CTime            time.Time        `json:"cTime"`            // creation time
 	UTime            time.Time        `json:"uTime"`            // update time
-	ClientOid        string           `json:"clientOid"`        // client order id
+	ClientOrderID    string           `json:"clientOid"`        // client order id
 	FillPrice        decimal.Decimal  `json:"fillPrice"`        // execution price
 	BaseVolume       decimal.Decimal  `json:"baseVolume"`       // filled quantity
 	FillTotalAmount  decimal.Decimal  `json:"fillTotalAmount"`  // total value of filled amount
 	LoanType         string           `json:"loanType"`         // normal, autoLoan, autoRepay, autoLoanAndRepay
-	OrderId          string           `json:"orderId"`          // order id
+	OrderID          string           `json:"orderId"`          // order id
 	OrderType        string           `json:"orderType"`        // limit or market
 	Price            decimal.Decimal  `json:"price"`            // order price
 	QuoteSize        decimal.Decimal  `json:"quoteSize"`        // quantity of denominated coins
@@ -126,7 +126,7 @@ type MarginCrossAccount struct {
 	Coin      string          `json:"coin"`      // coin name
 	Frozen    decimal.Decimal `json:"frozen"`    // amount frozen
 	Coupon    decimal.Decimal `json:"coupon"`    // coupon
-	Id        string          `json:"id"`        // id
+	ID        string          `json:"id"`        // id
 	Interest  decimal.Decimal `json:"interest"`  // interest
 	UTime     time.Time       `json:"uTime"`     // updated time
 }
@@ -150,7 +150,7 @@ func (c *WebSocketClient) NewSubscribeMarginIsolatedOrdersService(instId string)
 
 func (s *SubscribeMarginIsolatedOrdersService) Do(ctx context.Context, cb WsHandler[MarginIsolatedOrder]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MarginIsolatedOrder](ctx, s.c, true,
-		WsArg{InstType: string(InstTypeMargin), Channel: "orders-isolated", InstId: s.instId}, cb)
+		WsArg{InstType: string(InstTypeMargin), Channel: "orders-isolated", InstID: s.instId}, cb)
 }
 
 // MarginIsolatedOrder is one element of the "orders-isolated" push data array.
@@ -158,12 +158,12 @@ type MarginIsolatedOrder struct {
 	BaseSize         decimal.Decimal  `json:"baseSize"`         // number of base coins
 	CTime            time.Time        `json:"cTime"`            // creation time
 	UTime            time.Time        `json:"uTime"`            // update time
-	ClientOid        string           `json:"clientOid"`        // client order id
+	ClientOrderID    string           `json:"clientOid"`        // client order id
 	FillPrice        decimal.Decimal  `json:"fillPrice"`        // sale price
 	BaseVolume       decimal.Decimal  `json:"baseVolume"`       // base coin quantity
 	FillTotalAmount  decimal.Decimal  `json:"fillTotalAmount"`  // sum of money sold
 	LoanType         string           `json:"loanType"`         // normal, autoLoan, autoRepay, autoLoanAndRepay
-	OrderId          string           `json:"orderId"`          // order id
+	OrderID          string           `json:"orderId"`          // order id
 	OrderType        string           `json:"orderType"`        // limit or market
 	Price            decimal.Decimal  `json:"price"`            // order price
 	QuoteSize        decimal.Decimal  `json:"quoteSize"`        // number of denominated coins
@@ -201,7 +201,7 @@ func (s *SubscribeMarginIsolatedAccountService) Do(ctx context.Context, cb WsHan
 // MarginIsolatedAccount is one element of the "account-isolated" push data array.
 type MarginIsolatedAccount struct {
 	UTime     time.Time       `json:"uTime"`     // updated time
-	Id        string          `json:"id"`        // id
+	ID        string          `json:"id"`        // id
 	Coin      string          `json:"coin"`      // coin name
 	Symbol    string          `json:"symbol"`    // trading pair
 	Available decimal.Decimal `json:"available"` // available amount

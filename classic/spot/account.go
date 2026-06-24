@@ -28,11 +28,11 @@ func (s *GetAccountInfoService) Do(ctx context.Context) (*AccountInfo, error) {
 
 // AccountInfo is the account identity and permission metadata.
 type AccountInfo struct {
-	UserId      string    `json:"userId"`
-	InviterId   string    `json:"inviterId"`
+	UserID      string    `json:"userId"`
+	InviterID   string    `json:"inviterId"`
 	Ips         []string  `json:"ips"`
 	Authorities []string  `json:"authorities"`
-	ParentId    int64     `json:"parentId"`
+	ParentID    int64     `json:"parentId"`
 	TraderType  string    `json:"traderType"` // trader, not_trader
 	ChannelCode string    `json:"channelCode"`
 	Channel     string    `json:"channel"`
@@ -97,7 +97,7 @@ func (c *SpotClient) NewGetSubaccountAssetsService() *GetSubaccountAssetsService
 }
 
 // SetIdLessThan sets the pagination cursor (the last id returned previously).
-func (s *GetSubaccountAssetsService) SetIdLessThan(id string) *GetSubaccountAssetsService {
+func (s *GetSubaccountAssetsService) SetIDLessThan(id string) *GetSubaccountAssetsService {
 	s.params["idLessThan"] = id
 	return s
 }
@@ -119,8 +119,8 @@ func (s *GetSubaccountAssetsService) Do(ctx context.Context) ([]SubaccountAssets
 
 // SubaccountAssets is one sub-account's spot balances.
 type SubaccountAssets struct {
-	Id         string            `json:"id"`
-	UserId     string            `json:"userId"`
+	ID         string            `json:"id"`
+	UserID     string            `json:"userId"`
 	AssetsList []SubaccountAsset `json:"assetsList"`
 }
 
@@ -187,7 +187,7 @@ func (s *GetAccountBillsService) SetLimit(limit int) *GetAccountBillsService {
 }
 
 // SetIdLessThan sets the pagination cursor (billId for older data).
-func (s *GetAccountBillsService) SetIdLessThan(id string) *GetAccountBillsService {
+func (s *GetAccountBillsService) SetIDLessThan(id string) *GetAccountBillsService {
 	s.params["idLessThan"] = id
 	return s
 }
@@ -210,8 +210,8 @@ type AccountBill struct {
 	Size         decimal.Decimal `json:"size"`
 	Balance      decimal.Decimal `json:"balance"`
 	Fees         decimal.Decimal `json:"fees"`
-	BillId       string          `json:"billId"`
-	BizOrderId   string          `json:"bizOrderId"`
+	BillID       string          `json:"billId"`
+	BizOrderID   string          `json:"bizOrderId"`
 }
 
 // GetTransferCoinInfoService -- GET /api/v2/spot/wallet/transfer-coin-info (private)
@@ -310,7 +310,7 @@ func (s *GetTransferRecordsService) SetEndTime(t time.Time) *GetTransferRecordsS
 }
 
 // SetClientOid filters by user-customized order ID.
-func (s *GetTransferRecordsService) SetClientOid(clientOid string) *GetTransferRecordsService {
+func (s *GetTransferRecordsService) SetClientOrderID(clientOid string) *GetTransferRecordsService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -328,7 +328,7 @@ func (s *GetTransferRecordsService) SetLimit(limit int) *GetTransferRecordsServi
 }
 
 // SetIdLessThan sets the pagination cursor (transferId for older data).
-func (s *GetTransferRecordsService) SetIdLessThan(id string) *GetTransferRecordsService {
+func (s *GetTransferRecordsService) SetIDLessThan(id string) *GetTransferRecordsService {
 	s.params["idLessThan"] = id
 	return s
 }
@@ -345,16 +345,16 @@ func (s *GetTransferRecordsService) Do(ctx context.Context) ([]TransferRecord, e
 // TransferRecord is one internal transfer. fromSymbol/toSymbol are only set when
 // the corresponding side is an isolated_margin account.
 type TransferRecord struct {
-	Coin       string          `json:"coin"`
-	Status     string          `json:"status"` // Successful, Failed, Processing
-	ToType     string          `json:"toType"`
-	ToSymbol   string          `json:"toSymbol"`
-	FromType   string          `json:"fromType"`
-	FromSymbol string          `json:"fromSymbol"`
-	Size       decimal.Decimal `json:"size"`
-	Ts         time.Time       `json:"ts"`
-	ClientOid  string          `json:"clientOid"`
-	TransferId string          `json:"transferId"`
+	Coin          string          `json:"coin"`
+	Status        string          `json:"status"` // Successful, Failed, Processing
+	ToType        string          `json:"toType"`
+	ToSymbol      string          `json:"toSymbol"`
+	FromType      string          `json:"fromType"`
+	FromSymbol    string          `json:"fromSymbol"`
+	Size          decimal.Decimal `json:"size"`
+	Ts            time.Time       `json:"ts"`
+	ClientOrderID string          `json:"clientOid"`
+	TransferID    string          `json:"transferId"`
 }
 
 // GetSubMainTransRecordService -- GET /api/v2/spot/account/sub-main-trans-record (private)
@@ -383,7 +383,7 @@ func (s *GetSubMainTransRecordService) SetRole(role string) *GetSubMainTransReco
 }
 
 // SetSubUid filters to a single sub-account UID (main accounts only).
-func (s *GetSubMainTransRecordService) SetSubUid(subUid string) *GetSubMainTransRecordService {
+func (s *GetSubMainTransRecordService) SetSubUID(subUid string) *GetSubMainTransRecordService {
 	s.params["subUid"] = subUid
 	return s
 }
@@ -401,7 +401,7 @@ func (s *GetSubMainTransRecordService) SetEndTime(t time.Time) *GetSubMainTransR
 }
 
 // SetClientOid filters by user-defined order ID.
-func (s *GetSubMainTransRecordService) SetClientOid(clientOid string) *GetSubMainTransRecordService {
+func (s *GetSubMainTransRecordService) SetClientOrderID(clientOid string) *GetSubMainTransRecordService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -413,7 +413,7 @@ func (s *GetSubMainTransRecordService) SetLimit(limit int) *GetSubMainTransRecor
 }
 
 // SetIdLessThan sets the pagination cursor (transferId for older data).
-func (s *GetSubMainTransRecordService) SetIdLessThan(id string) *GetSubMainTransRecordService {
+func (s *GetSubMainTransRecordService) SetIDLessThan(id string) *GetSubMainTransRecordService {
 	s.params["idLessThan"] = id
 	return s
 }
@@ -435,11 +435,11 @@ type SubMainTransferRecord struct {
 	FromType      string          `json:"fromType"`
 	Size          decimal.Decimal `json:"size"`
 	Ts            time.Time       `json:"ts"`
-	ClientOid     string          `json:"clientOid"`
-	TransferId    string          `json:"transferId"`
-	NewTransferId string          `json:"newTransferId"`
-	FromUserId    string          `json:"fromUserId"`
-	ToUserId      string          `json:"toUserId"`
+	ClientOrderID string          `json:"clientOid"`
+	TransferID    string          `json:"transferId"`
+	NewTransferID string          `json:"newTransferId"`
+	FromUserID    string          `json:"fromUserId"`
+	ToUserID      string          `json:"toUserId"`
 }
 
 // UpgradeAccountService -- POST /api/v2/spot/account/upgrade (private, state-changing)
@@ -477,7 +477,7 @@ func (c *SpotClient) NewGetUpgradeStatusService() *GetUpgradeStatusService {
 }
 
 // SetSubUid queries the upgrade status of a specific sub-account.
-func (s *GetUpgradeStatusService) SetSubUid(subUid string) *GetUpgradeStatusService {
+func (s *GetUpgradeStatusService) SetSubUID(subUid string) *GetUpgradeStatusService {
 	s.params["subUid"] = subUid
 	return s
 }

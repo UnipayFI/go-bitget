@@ -105,7 +105,7 @@ type EliteAsset struct {
 	ProductID         string              `json:"productId"`
 	ProductCoin       string              `json:"productCoin"`
 	HoldingAmount     decimal.Decimal     `json:"holdingAmount"`
-	UsdtHoldingAmount decimal.Decimal     `json:"usdtHoldingAmount"`
+	USDTHoldingAmount decimal.Decimal     `json:"usdtHoldingAmount"`
 	ExchangeRate      decimal.Decimal     `json:"exchangeRate"`
 	Apr               decimal.Decimal     `json:"apr"`    // only applicable to BGSOL / BGBTC
 	MinApy            decimal.Decimal     `json:"minApy"` // only applicable to BGUSD

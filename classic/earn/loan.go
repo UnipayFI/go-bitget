@@ -88,8 +88,8 @@ type LoanCoinInfo struct {
 	Rate7D      decimal.Decimal `json:"rate7D"`      // annualized rate for 7-day fixed term
 	HourRate30D decimal.Decimal `json:"hourRate30D"` // hourly rate for 30-day fixed term
 	Rate30D     decimal.Decimal `json:"rate30D"`     // annualized rate for 30-day fixed term
-	MinUsdt     decimal.Decimal `json:"minUsdt"`     // minimum borrowable amount in USDT
-	MaxUsdt     decimal.Decimal `json:"maxUsdt"`     // maximum borrowable amount in USDT
+	MinUSDT     decimal.Decimal `json:"minUsdt"`     // minimum borrowable amount in USDT
+	MaxUSDT     decimal.Decimal `json:"maxUsdt"`     // maximum borrowable amount in USDT
 	Min         decimal.Decimal `json:"min"`         // minimum borrowing limit
 	Max         decimal.Decimal `json:"max"`         // maximum borrowing limit
 }
@@ -100,8 +100,8 @@ type PledgeCoinInfo struct {
 	InitRate  decimal.Decimal `json:"initRate"`  // initial collateral rate
 	SupRate   decimal.Decimal `json:"supRate"`   // supplementary collateral rate
 	ForceRate decimal.Decimal `json:"forceRate"` // forced-liquidation collateral rate
-	MinUsdt   decimal.Decimal `json:"minUsdt"`   // minimum collateral limit in USDT
-	MaxUsdt   decimal.Decimal `json:"maxUsdt"`   // maximum collateral limit in USDT
+	MinUSDT   decimal.Decimal `json:"minUsdt"`   // minimum collateral limit in USDT
+	MaxUSDT   decimal.Decimal `json:"maxUsdt"`   // maximum collateral limit in USDT
 }
 
 // GetLoanHourInterestService -- GET /api/v2/earn/loan/public/hour-interest (public)
@@ -541,7 +541,7 @@ type LoanDebts struct {
 type LoanDebtItem struct {
 	Coin       string          `json:"coin"`       // coin symbol
 	Amount     decimal.Decimal `json:"amount"`     // amount
-	AmountUsdt decimal.Decimal `json:"amountUsdt"` // USDT-equivalent amount
+	AmountUSDT decimal.Decimal `json:"amountUsdt"` // USDT-equivalent amount
 }
 
 // GetLoanReducesService -- GET /api/v2/earn/loan/reduces (earn read)

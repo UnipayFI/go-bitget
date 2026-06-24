@@ -45,7 +45,7 @@ type VIPFeeRate struct {
 	TakerFeeRate       decimal.Decimal `json:"takerFeeRate"`
 	MakerFeeRate       decimal.Decimal `json:"makerFeeRate"`
 	BtcWithdrawAmount  decimal.Decimal `json:"btcWithdrawAmount"`
-	UsdtWithdrawAmount decimal.Decimal `json:"usdtWithdrawAmount"`
+	USDTWithdrawAmount decimal.Decimal `json:"usdtWithdrawAmount"`
 }
 
 // GetInterestRateHistoryService -- GET /api/v2/mix/market/union-interest-rate-history (public)

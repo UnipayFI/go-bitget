@@ -71,7 +71,7 @@ func (c *MarginClient) NewGetCrossBorrowHistoryService(startTime time.Time) *Get
 	}}
 }
 
-func (s *GetCrossBorrowHistoryService) SetLoanId(loanId string) *GetCrossBorrowHistoryService {
+func (s *GetCrossBorrowHistoryService) SetLoanID(loanId string) *GetCrossBorrowHistoryService {
 	s.params["loanId"] = loanId
 	return s
 }
@@ -91,7 +91,7 @@ func (s *GetCrossBorrowHistoryService) SetLimit(limit int) *GetCrossBorrowHistor
 	return s
 }
 
-func (s *GetCrossBorrowHistoryService) SetIdLessThan(idLessThan string) *GetCrossBorrowHistoryService {
+func (s *GetCrossBorrowHistoryService) SetIDLessThan(idLessThan string) *GetCrossBorrowHistoryService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -104,13 +104,13 @@ func (s *GetCrossBorrowHistoryService) Do(ctx context.Context) (*CrossBorrowHist
 // CrossBorrowHistoryResponse is the paginated cross-margin borrow history page.
 type CrossBorrowHistoryResponse struct {
 	ResultList []CrossBorrowRecord `json:"resultList"`
-	MaxId      string              `json:"maxId"`
-	MinId      string              `json:"minId"`
+	MaxID      string              `json:"maxId"`
+	MinID      string              `json:"minId"`
 }
 
 // CrossBorrowRecord is a single cross-margin loan record.
 type CrossBorrowRecord struct {
-	LoanId       string          `json:"loanId"`
+	LoanID       string          `json:"loanId"`
 	Coin         string          `json:"coin"`
 	BorrowAmount decimal.Decimal `json:"borrowAmount"`
 	BorrowType   CrossBorrowType `json:"borrowType"`
@@ -132,7 +132,7 @@ func (c *MarginClient) NewGetCrossRepayHistoryService(startTime time.Time) *GetC
 	}}
 }
 
-func (s *GetCrossRepayHistoryService) SetRepayId(repayId string) *GetCrossRepayHistoryService {
+func (s *GetCrossRepayHistoryService) SetRepayID(repayId string) *GetCrossRepayHistoryService {
 	s.params["repayId"] = repayId
 	return s
 }
@@ -152,7 +152,7 @@ func (s *GetCrossRepayHistoryService) SetLimit(limit int) *GetCrossRepayHistoryS
 	return s
 }
 
-func (s *GetCrossRepayHistoryService) SetIdLessThan(idLessThan string) *GetCrossRepayHistoryService {
+func (s *GetCrossRepayHistoryService) SetIDLessThan(idLessThan string) *GetCrossRepayHistoryService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -165,13 +165,13 @@ func (s *GetCrossRepayHistoryService) Do(ctx context.Context) (*CrossRepayHistor
 // CrossRepayHistoryResponse is the paginated cross-margin repay history page.
 type CrossRepayHistoryResponse struct {
 	ResultList []CrossRepayRecord `json:"resultList"`
-	MaxId      string             `json:"maxId"`
-	MinId      string             `json:"minId"`
+	MaxID      string             `json:"maxId"`
+	MinID      string             `json:"minId"`
 }
 
 // CrossRepayRecord is a single cross-margin repayment record.
 type CrossRepayRecord struct {
-	RepayId        string          `json:"repayId"`
+	RepayID        string          `json:"repayId"`
 	Coin           string          `json:"coin"`
 	RepayPrincipal decimal.Decimal `json:"repayPrincipal"`
 	RepayAmount    decimal.Decimal `json:"repayAmount"`
@@ -210,7 +210,7 @@ func (s *GetCrossInterestHistoryService) SetLimit(limit int) *GetCrossInterestHi
 	return s
 }
 
-func (s *GetCrossInterestHistoryService) SetIdLessThan(idLessThan string) *GetCrossInterestHistoryService {
+func (s *GetCrossInterestHistoryService) SetIDLessThan(idLessThan string) *GetCrossInterestHistoryService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -223,13 +223,13 @@ func (s *GetCrossInterestHistoryService) Do(ctx context.Context) (*CrossInterest
 // CrossInterestHistoryResponse is the paginated cross-margin interest history page.
 type CrossInterestHistoryResponse struct {
 	ResultList []CrossInterestRecord `json:"resultList"`
-	MaxId      string                `json:"maxId"`
-	MinId      string                `json:"minId"`
+	MaxID      string                `json:"maxId"`
+	MinID      string                `json:"minId"`
 }
 
 // CrossInterestRecord is a single cross-margin interest accrual record.
 type CrossInterestRecord struct {
-	InterestId        string            `json:"interestId"`
+	InterestID        string            `json:"interestId"`
 	LoanCoin          string            `json:"loanCoin"`
 	InterestCoin      string            `json:"interestCoin"`
 	DailyInterestRate decimal.Decimal   `json:"dailyInterestRate"`
@@ -263,7 +263,7 @@ func (s *GetCrossLiquidationHistoryService) SetLimit(limit int) *GetCrossLiquida
 	return s
 }
 
-func (s *GetCrossLiquidationHistoryService) SetIdLessThan(idLessThan string) *GetCrossLiquidationHistoryService {
+func (s *GetCrossLiquidationHistoryService) SetIDLessThan(idLessThan string) *GetCrossLiquidationHistoryService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -276,14 +276,14 @@ func (s *GetCrossLiquidationHistoryService) Do(ctx context.Context) (*CrossLiqui
 // CrossLiquidationHistoryResponse is the paginated cross-margin liquidation history page.
 type CrossLiquidationHistoryResponse struct {
 	ResultList []CrossLiquidationRecord `json:"resultList"`
-	MaxId      string                   `json:"maxId"`
-	MinId      string                   `json:"minId"`
+	MaxID      string                   `json:"maxId"`
+	MinID      string                   `json:"minId"`
 }
 
 // CrossLiquidationRecord is a single cross-margin liquidation record. Total
 // assets/debt are denominated in USDT.
 type CrossLiquidationRecord struct {
-	LiqId        string          `json:"liqId"`
+	LiqID        string          `json:"liqId"`
 	LiqStartTime time.Time       `json:"liqStartTime"`
 	LiqEndTime   time.Time       `json:"liqEndTime"`
 	LiqRiskRatio decimal.Decimal `json:"liqRiskRatio"`
@@ -328,7 +328,7 @@ func (s *GetCrossFinancialRecordsService) SetLimit(limit int) *GetCrossFinancial
 	return s
 }
 
-func (s *GetCrossFinancialRecordsService) SetIdLessThan(idLessThan string) *GetCrossFinancialRecordsService {
+func (s *GetCrossFinancialRecordsService) SetIDLessThan(idLessThan string) *GetCrossFinancialRecordsService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -341,13 +341,13 @@ func (s *GetCrossFinancialRecordsService) Do(ctx context.Context) (*CrossFinanci
 // CrossFinancialRecordsResponse is the paginated cross-margin financial-flow page.
 type CrossFinancialRecordsResponse struct {
 	ResultList []CrossFinancialRecord `json:"resultList"`
-	MaxId      string                 `json:"maxId"`
-	MinId      string                 `json:"minId"`
+	MaxID      string                 `json:"maxId"`
+	MinID      string                 `json:"minId"`
 }
 
 // CrossFinancialRecord is a single cross-margin capital-flow record.
 type CrossFinancialRecord struct {
-	MarginId   string              `json:"marginId"`
+	MarginID   string              `json:"marginId"`
 	Amount     decimal.Decimal     `json:"amount"`
 	Coin       string              `json:"coin"`
 	Balance    decimal.Decimal     `json:"balance"`

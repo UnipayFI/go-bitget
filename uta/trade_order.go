@@ -46,7 +46,7 @@ func (s *PlaceOrderService) SetPosSide(posSide PosSide) *PlaceOrderService {
 }
 
 // SetClientOid sets the client-generated order identifier (1-32 chars).
-func (s *PlaceOrderService) SetClientOid(clientOid string) *PlaceOrderService {
+func (s *PlaceOrderService) SetClientOrderID(clientOid string) *PlaceOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -126,8 +126,8 @@ func (s *PlaceOrderService) Do(ctx context.Context) (*OrderRef, error) {
 // OrderRef identifies a single order by its exchange and client identifiers. It
 // is the reply shape for place/modify/cancel single-order operations.
 type OrderRef struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // ModifyOrderService -- POST /api/v3/trade/modify-order (UTA trade read & write)
@@ -145,13 +145,13 @@ func (c *UTAClient) NewModifyOrderService() *ModifyOrderService {
 }
 
 // SetOrderId sets the order identifier (orderId or clientOid is required).
-func (s *ModifyOrderService) SetOrderId(orderId string) *ModifyOrderService {
+func (s *ModifyOrderService) SetOrderID(orderId string) *ModifyOrderService {
 	s.body["orderId"] = orderId
 	return s
 }
 
 // SetClientOid sets the client order identifier (orderId or clientOid is required).
-func (s *ModifyOrderService) SetClientOid(clientOid string) *ModifyOrderService {
+func (s *ModifyOrderService) SetClientOrderID(clientOid string) *ModifyOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -206,13 +206,13 @@ func (c *UTAClient) NewCancelOrderService() *CancelOrderService {
 }
 
 // SetOrderId sets the order identifier (orderId or clientOid is required).
-func (s *CancelOrderService) SetOrderId(orderId string) *CancelOrderService {
+func (s *CancelOrderService) SetOrderID(orderId string) *CancelOrderService {
 	s.body["orderId"] = orderId
 	return s
 }
 
 // SetClientOid sets the client order identifier (orderId or clientOid is required).
-func (s *CancelOrderService) SetClientOid(clientOid string) *CancelOrderService {
+func (s *CancelOrderService) SetClientOrderID(clientOid string) *CancelOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -262,10 +262,10 @@ type CancelSymbolOrderResult struct {
 
 // CancelResult is the outcome of cancelling a single order in a batch.
 type CancelResult struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	Code      string `json:"code"`
-	Msg       string `json:"msg"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	Code          string `json:"code"`
+	Msg           string `json:"msg"`
 }
 
 // CountDownCancelAllService -- POST /api/v3/trade/countdown-cancel-all (UTA trade read & write)

@@ -23,7 +23,7 @@ func (c *UTAClient) NewGetInsLoanTransferedService(coin string) *GetInsLoanTrans
 }
 
 // SetUserId sets the user ID (master account or sub-account).
-func (s *GetInsLoanTransferedService) SetUserId(userId string) *GetInsLoanTransferedService {
+func (s *GetInsLoanTransferedService) SetUserID(userId string) *GetInsLoanTransferedService {
 	s.params["userId"] = userId
 	return s
 }
@@ -36,7 +36,7 @@ func (s *GetInsLoanTransferedService) Do(ctx context.Context) (*InsLoanTransfere
 type InsLoanTransfered struct {
 	Coin       string          `json:"coin"`
 	Transfered decimal.Decimal `json:"transfered"`
-	UserId     string          `json:"userId"`
+	UserID     string          `json:"userId"`
 }
 
 // GetInsLoanSymbolsService -- GET /api/v3/ins-loan/symbols (UTA mgt. read)
@@ -58,15 +58,15 @@ func (s *GetInsLoanSymbolsService) Do(ctx context.Context) (*InsLoanSymbols, err
 }
 
 type InsLoanSymbols struct {
-	ProductId            string                `json:"productId"`
+	ProductID            string                `json:"productId"`
 	SpotSymbols          []string              `json:"spotSymbols"`
 	MarginLeverage       string                `json:"marginLeverage"`
-	UsdtContractLeverage string                `json:"usdtContractLeverage"`
+	USDTContractLeverage string                `json:"usdtContractLeverage"`
 	CoinContractLeverage string                `json:"coinContractLeverage"`
-	UsdcContractLeverage string                `json:"usdcContractLeverage"`
-	UsdtContractSymbols  []InsLoanContractPair `json:"usdtContractSymbols"`
+	USDCContractLeverage string                `json:"usdcContractLeverage"`
+	USDTContractSymbols  []InsLoanContractPair `json:"usdtContractSymbols"`
 	CoinContractSymbols  []InsLoanContractPair `json:"coinContractSymbols"`
-	UsdcContractSymbols  []InsLoanContractPair `json:"usdcContractSymbols"`
+	USDCContractSymbols  []InsLoanContractPair `json:"usdcContractSymbols"`
 }
 
 type InsLoanContractPair struct {
@@ -92,7 +92,7 @@ func (s *GetInsLoanRiskUnitService) Do(ctx context.Context) (*InsLoanRiskUnit, e
 }
 
 type InsLoanRiskUnit struct {
-	RiskUnitId []string `json:"riskUnitId"`
+	RiskUnitID []string `json:"riskUnitId"`
 }
 
 // GetInsLoanRepaidHistoryService -- GET /api/v3/ins-loan/repaid-history (UTA mgt. read)
@@ -134,7 +134,7 @@ func (s *GetInsLoanRepaidHistoryService) Do(ctx context.Context) ([]InsLoanRepai
 }
 
 type InsLoanRepaidOrder struct {
-	RepayOrderId  string          `json:"repayOrderId"`
+	RepayOrderID  string          `json:"repayOrderId"`
 	BusinessType  string          `json:"businessType"` // normal, liquidation
 	RepayType     string          `json:"repayType"`    // all, part
 	RepaidTime    time.Time       `json:"repaidTime"`
@@ -163,16 +163,16 @@ func (s *GetInsLoanProductInfosService) Do(ctx context.Context) (*InsLoanProduct
 }
 
 type InsLoanProductInfo struct {
-	ProductId            string          `json:"productId"`
+	ProductID            string          `json:"productId"`
 	Leverage             string          `json:"leverage"`            // e.g. 2x/4x
-	SupportUsdtContract  string          `json:"supportUsdtContract"` // YES, NO
+	SupportUSDTContract  string          `json:"supportUsdtContract"` // YES, NO
 	SupportCoinContract  string          `json:"supportCoinContract"` // YES, NO
-	SupportUsdcContract  string          `json:"supportUsdcContract"` // YES, NO
+	SupportUSDCContract  string          `json:"supportUsdcContract"` // YES, NO
 	TransferLine         decimal.Decimal `json:"transferLine"`
 	SpotBuyLine          decimal.Decimal `json:"spotBuyLine"`
-	UsdtContractOpenLine decimal.Decimal `json:"usdtContractOpenLine"`
+	USDTContractOpenLine decimal.Decimal `json:"usdtContractOpenLine"`
 	CoinContractOpenLine decimal.Decimal `json:"coinContractOpenLine"`
-	UsdcContractOpenLine decimal.Decimal `json:"usdcContractOpenLine"`
+	USDCContractOpenLine decimal.Decimal `json:"usdcContractOpenLine"`
 	LiquidationLine      decimal.Decimal `json:"liquidationLine"`
 	StopLiquidationLine  decimal.Decimal `json:"stopLiquidationLine"`
 }
@@ -190,7 +190,7 @@ func (c *UTAClient) NewGetInsLoanOrderService() *GetInsLoanOrderService {
 	return &GetInsLoanOrderService{c: c, params: map[string]string{}}
 }
 
-func (s *GetInsLoanOrderService) SetOrderId(orderId string) *GetInsLoanOrderService {
+func (s *GetInsLoanOrderService) SetOrderID(orderId string) *GetInsLoanOrderService {
 	s.params["orderId"] = orderId
 	return s
 }
@@ -215,9 +215,9 @@ func (s *GetInsLoanOrderService) Do(ctx context.Context) ([]InsLoanOrder, error)
 }
 
 type InsLoanOrder struct {
-	OrderId        string          `json:"orderId"`
-	OrderProductId string          `json:"orderProductId"`
-	Uid            string          `json:"uid"`
+	OrderID        string          `json:"orderId"`
+	OrderProductID string          `json:"orderProductId"`
+	UID            string          `json:"uid"`
 	LoanTime       time.Time       `json:"loanTime"`
 	LoanCoin       string          `json:"loanCoin"`
 	LoanAmount     decimal.Decimal `json:"loanAmount"`
@@ -243,7 +243,7 @@ func (c *UTAClient) NewGetInsLoanLTVConvertService() *GetInsLoanLTVConvertServic
 }
 
 // SetRiskUnitId sets the risk unit ID (required for parent account calls).
-func (s *GetInsLoanLTVConvertService) SetRiskUnitId(riskUnitId string) *GetInsLoanLTVConvertService {
+func (s *GetInsLoanLTVConvertService) SetRiskUnitID(riskUnitId string) *GetInsLoanLTVConvertService {
 	s.params["riskUnitId"] = riskUnitId
 	return s
 }
@@ -256,8 +256,8 @@ func (s *GetInsLoanLTVConvertService) Do(ctx context.Context) (*InsLoanLTVConver
 type InsLoanLTVConvert struct {
 	Ltv              decimal.Decimal      `json:"ltv"`
 	SubAccountUids   []string             `json:"subAccountUids"`
-	UsdtBalance      decimal.Decimal      `json:"usdtBalance"`
-	UnpaidUsdtAmount decimal.Decimal      `json:"unpaidUsdtAmount"`
+	USDTBalance      decimal.Decimal      `json:"usdtBalance"`
+	UnpaidUSDTAmount decimal.Decimal      `json:"unpaidUsdtAmount"`
 	UnpaidInfo       []InsLoanUnpaidInfo  `json:"unpaidInfo"`
 	BalanceInfo      []InsLoanBalanceInfo `json:"balanceInfo"`
 }
@@ -272,7 +272,7 @@ type InsLoanBalanceInfo struct {
 	Coin                string          `json:"coin"`
 	Price               decimal.Decimal `json:"price"`
 	Amount              decimal.Decimal `json:"amount"`
-	ConvertedUsdtAmount decimal.Decimal `json:"convertedUsdtAmount"`
+	ConvertedUSDTAmount decimal.Decimal `json:"convertedUsdtAmount"`
 }
 
 // GetInsLoanEnsureCoinsConvertService -- GET /api/v3/ins-loan/ensure-coins-convert (UTA mgt. read)
@@ -294,7 +294,7 @@ func (s *GetInsLoanEnsureCoinsConvertService) Do(ctx context.Context) (*InsLoanE
 }
 
 type InsLoanEnsureCoins struct {
-	ProductId string                  `json:"productId"`
+	ProductID string                  `json:"productId"`
 	CoinInfo  []InsLoanEnsureCoinInfo `json:"coinInfo"`
 }
 
@@ -314,31 +314,31 @@ type InsLoanConvertRatioLadder struct {
 //
 // Binds or unbinds a sub-account UID to a risk unit (operate is "bind" or
 // "unbind"). Advanced account mode is required; max 50 UIDs per risk unit.
-type BindInsLoanUidService struct {
+type BindInsLoanUIDService struct {
 	c    *UTAClient
 	body map[string]any
 }
 
-func (c *UTAClient) NewBindInsLoanUidService(uid, operate string) *BindInsLoanUidService {
-	return &BindInsLoanUidService{c: c, body: map[string]any{
+func (c *UTAClient) NewBindInsLoanUIDService(uid, operate string) *BindInsLoanUIDService {
+	return &BindInsLoanUIDService{c: c, body: map[string]any{
 		"uid":     uid,
 		"operate": operate,
 	}}
 }
 
 // SetRiskUnitId sets the risk unit ID (required for parent account calls only).
-func (s *BindInsLoanUidService) SetRiskUnitId(riskUnitId string) *BindInsLoanUidService {
+func (s *BindInsLoanUIDService) SetRiskUnitID(riskUnitId string) *BindInsLoanUIDService {
 	s.body["riskUnitId"] = riskUnitId
 	return s
 }
 
-func (s *BindInsLoanUidService) Do(ctx context.Context) (*InsLoanBindResult, error) {
+func (s *BindInsLoanUIDService) Do(ctx context.Context) (*InsLoanBindResult, error) {
 	req := request.Post(ctx, s.c, "/api/v3/ins-loan/bind-uid", s.body).WithSign()
 	return request.Do[InsLoanBindResult](req)
 }
 
 type InsLoanBindResult struct {
-	RiskUnitId string `json:"riskUnitId"`
-	Uid        string `json:"uid"`
+	RiskUnitID string `json:"riskUnitId"`
+	UID        string `json:"uid"`
 	Operate    string `json:"operate"` // bind, unbind
 }

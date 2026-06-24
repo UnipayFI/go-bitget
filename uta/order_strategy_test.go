@@ -32,7 +32,7 @@ func TestStrategyOrder(t *testing.T) {
 	if err != nil {
 		t.Fatalf("place-strategy-order: %v", err)
 	}
-	t.Logf("placed strategy orderId=%s clientOid=%s", ref.OrderID, ref.ClientOid)
+	t.Logf("placed strategy orderId=%s clientOid=%s", ref.OrderID, ref.ClientOrderID)
 
 	// Confirm it appears in the unfilled strategy list.
 	open, err := c.NewGetUnfilledStrategyOrdersService(CategoryUSDTFutures).Do(cx)
@@ -42,7 +42,7 @@ func TestStrategyOrder(t *testing.T) {
 	t.Logf("unfilled strategy orders: %d", len(open))
 
 	// Cancel it.
-	if _, err := c.NewCancelStrategyOrderService().SetOrderId(ref.OrderID).Do(cx); err != nil {
+	if _, err := c.NewCancelStrategyOrderService().SetOrderID(ref.OrderID).Do(cx); err != nil {
 		t.Fatalf("cancel-strategy-order: %v", err)
 	}
 	t.Logf("cancelled strategy order %s", ref.OrderID)

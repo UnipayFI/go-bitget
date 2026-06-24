@@ -24,7 +24,7 @@ func TestInsLoan(t *testing.T) {
 			t.Fatalf("risk unit: %v", err)
 		}
 	} else {
-		t.Logf("risk units: %d", len(ru.RiskUnitId))
+		t.Logf("risk units: %d", len(ru.RiskUnitID))
 		raw := apitest.FetchRawGet(t, c, cx, "/api/v2/spot/ins-loan/risk-unit", nil, true)
 		apitest.AssertCovers(t, "ins-loan/risk-unit", raw, ru)
 	}

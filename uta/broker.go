@@ -34,7 +34,7 @@ func (s *CreateBrokerSubService) Do(ctx context.Context) (*BrokerSubAccount, err
 // "freeze"; permList entries are "withdraw", "transfer", "spot_trade",
 // "contract_trade", "margin_trade", "deposit".
 type BrokerSubAccount struct {
-	SubUid          string    `json:"subUid"`
+	SubUID          string    `json:"subUid"`
 	SubaccountName  string    `json:"subaccountName"`
 	SubaccountEmail string    `json:"subaccountEmail"`
 	Status          string    `json:"status"`
@@ -148,7 +148,7 @@ func (s *BrokerSubWithdrawalService) SetTag(tag string) *BrokerSubWithdrawalServ
 	return s
 }
 
-func (s *BrokerSubWithdrawalService) SetClientOid(clientOid string) *BrokerSubWithdrawalService {
+func (s *BrokerSubWithdrawalService) SetClientOrderID(clientOid string) *BrokerSubWithdrawalService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -159,8 +159,8 @@ func (s *BrokerSubWithdrawalService) Do(ctx context.Context) (*BrokerSubWithdraw
 }
 
 type BrokerSubWithdrawal struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // BrokerSubDepositAddressService -- POST /api/v3/broker/sub-deposit-address (ND Broker master)
@@ -190,12 +190,12 @@ func (s *BrokerSubDepositAddressService) Do(ctx context.Context) (*BrokerSubDepo
 }
 
 type BrokerSubDepositAddress struct {
-	SubUid  string    `json:"subUid"`
+	SubUID  string    `json:"subUid"`
 	Coin    string    `json:"coin"`
 	Address string    `json:"address"`
 	Chain   string    `json:"chain"`
 	Tag     string    `json:"tag"`
-	Url     string    `json:"url"`
+	URL     string    `json:"url"`
 	CTime   time.Time `json:"cTime"`
 }
 
@@ -248,15 +248,15 @@ func (s *GetAllBrokerSubDepositWithdrawalService) Do(ctx context.Context) (*Brok
 
 type BrokerSubDepositWithdrawals struct {
 	List  []BrokerSubDepositWithdrawal `json:"list"`
-	EndId string                       `json:"endId"`
+	EndID string                       `json:"endId"`
 }
 
 // BrokerSubDepositWithdrawal is a single deposit or withdrawal record. The type
 // is "deposit" or "withdrawal"; subType is "onchain", "internal", or "fast";
 // status is "pending", "fail", or "success".
 type BrokerSubDepositWithdrawal struct {
-	Uid     string          `json:"uid"`
-	TxId    string          `json:"txId"`
+	UID     string          `json:"uid"`
+	TxID    string          `json:"txId"`
 	Type    string          `json:"type"`
 	SubType string          `json:"subType"`
 	Coin    string          `json:"coin"`
@@ -324,7 +324,7 @@ func (s *GetBrokerCommissionService) Do(ctx context.Context) ([]BrokerCommission
 }
 
 type BrokerCommission struct {
-	Uid             string          `json:"uid"`
+	UID             string          `json:"uid"`
 	Coin            string          `json:"coin"`
 	Symbol          string          `json:"symbol"`
 	DealtAmount     decimal.Decimal `json:"dealtAmount"`
@@ -340,13 +340,13 @@ type BrokerCommission struct {
 // Creates an API key for a broker sub-account. permType is "read_write" or
 // "read_only"; permList entries are "uta_trade", "uta_mgt", "withdraw"
 // ("withdraw" requires read_write).
-type CreateBrokerSubApikeyService struct {
+type CreateBrokerSubAPIKeyService struct {
 	c    *UTAClient
 	body map[string]any
 }
 
-func (c *UTAClient) NewCreateBrokerSubApikeyService(subUid, passphrase, label string, ipList []string, permType string, permList []string) *CreateBrokerSubApikeyService {
-	return &CreateBrokerSubApikeyService{c: c, body: map[string]any{
+func (c *UTAClient) NewCreateBrokerSubAPIKeyService(subUid, passphrase, label string, ipList []string, permType string, permList []string) *CreateBrokerSubAPIKeyService {
+	return &CreateBrokerSubAPIKeyService{c: c, body: map[string]any{
 		"subUid":     subUid,
 		"passphrase": passphrase,
 		"label":      label,
@@ -356,86 +356,86 @@ func (c *UTAClient) NewCreateBrokerSubApikeyService(subUid, passphrase, label st
 	}}
 }
 
-func (s *CreateBrokerSubApikeyService) Do(ctx context.Context) (*BrokerSubApikey, error) {
+func (s *CreateBrokerSubAPIKeyService) Do(ctx context.Context) (*BrokerSubAPIKey, error) {
 	req := request.Post(ctx, s.c, "/api/v3/broker/create-sub-apikey", s.body).WithSign()
-	return request.Do[BrokerSubApikey](req)
+	return request.Do[BrokerSubAPIKey](req)
 }
 
 // BrokerSubApikey describes a broker sub-account API key. secretKey is only
 // returned on creation. permType is "read_write" or "read_only"; permList
 // entries are "uta_trade", "uta_mgt", "withdraw".
-type BrokerSubApikey struct {
-	SubUid    string   `json:"subUid"`
+type BrokerSubAPIKey struct {
+	SubUID    string   `json:"subUid"`
 	Label     string   `json:"label"`
-	ApiKey    string   `json:"apiKey"`
+	APIKey    string   `json:"apiKey"`
 	SecretKey string   `json:"secretKey"`
 	PermType  string   `json:"permType"`
 	PermList  []string `json:"permList"`
-	IpList    []string `json:"ipList"`
+	IPList    []string `json:"ipList"`
 }
 
 // ModifyBrokerSubApikeyService -- POST /api/v3/broker/modify-sub-apikey (ND Broker master)
 //
 // Updates a broker sub-account's API key (label, IP whitelist, permission type
 // and permission list).
-type ModifyBrokerSubApikeyService struct {
+type ModifyBrokerSubAPIKeyService struct {
 	c    *UTAClient
 	body map[string]any
 }
 
-func (c *UTAClient) NewModifyBrokerSubApikeyService(subUid, passphrase, apiKey string) *ModifyBrokerSubApikeyService {
-	return &ModifyBrokerSubApikeyService{c: c, body: map[string]any{
+func (c *UTAClient) NewModifyBrokerSubAPIKeyService(subUid, passphrase, apiKey string) *ModifyBrokerSubAPIKeyService {
+	return &ModifyBrokerSubAPIKeyService{c: c, body: map[string]any{
 		"subUid":     subUid,
 		"passphrase": passphrase,
 		"apiKey":     apiKey,
 	}}
 }
 
-func (s *ModifyBrokerSubApikeyService) SetLabel(label string) *ModifyBrokerSubApikeyService {
+func (s *ModifyBrokerSubAPIKeyService) SetLabel(label string) *ModifyBrokerSubAPIKeyService {
 	s.body["label"] = label
 	return s
 }
 
 // SetIpList sets the IP whitelist (max 30 entries).
-func (s *ModifyBrokerSubApikeyService) SetIpList(ipList []string) *ModifyBrokerSubApikeyService {
+func (s *ModifyBrokerSubAPIKeyService) SetIPList(ipList []string) *ModifyBrokerSubAPIKeyService {
 	s.body["ipList"] = ipList
 	return s
 }
 
 // SetPermType sets the permission type ("read_write" or "read_only").
-func (s *ModifyBrokerSubApikeyService) SetPermType(permType string) *ModifyBrokerSubApikeyService {
+func (s *ModifyBrokerSubAPIKeyService) SetPermType(permType string) *ModifyBrokerSubAPIKeyService {
 	s.body["permType"] = permType
 	return s
 }
 
 // SetPermList sets the permission list ("uta_trade", "uta_mgt", "withdraw";
 // "withdraw" requires read_write permType).
-func (s *ModifyBrokerSubApikeyService) SetPermList(permList []string) *ModifyBrokerSubApikeyService {
+func (s *ModifyBrokerSubAPIKeyService) SetPermList(permList []string) *ModifyBrokerSubAPIKeyService {
 	s.body["permList"] = permList
 	return s
 }
 
-func (s *ModifyBrokerSubApikeyService) Do(ctx context.Context) (*BrokerSubApikey, error) {
+func (s *ModifyBrokerSubAPIKeyService) Do(ctx context.Context) (*BrokerSubAPIKey, error) {
 	req := request.Post(ctx, s.c, "/api/v3/broker/modify-sub-apikey", s.body).WithSign()
-	return request.Do[BrokerSubApikey](req)
+	return request.Do[BrokerSubAPIKey](req)
 }
 
 // DeleteBrokerSubApikeyService -- POST /api/v3/broker/delete-sub-apikey (ND Broker master)
 //
 // Deletes an API key of a broker sub-account. The reply data is null on success.
-type DeleteBrokerSubApikeyService struct {
+type DeleteBrokerSubAPIKeyService struct {
 	c    *UTAClient
 	body map[string]any
 }
 
-func (c *UTAClient) NewDeleteBrokerSubApikeyService(subUid, apiKey string) *DeleteBrokerSubApikeyService {
-	return &DeleteBrokerSubApikeyService{c: c, body: map[string]any{
+func (c *UTAClient) NewDeleteBrokerSubAPIKeyService(subUid, apiKey string) *DeleteBrokerSubAPIKeyService {
+	return &DeleteBrokerSubAPIKeyService{c: c, body: map[string]any{
 		"subUid": subUid,
 		"apiKey": apiKey,
 	}}
 }
 
-func (s *DeleteBrokerSubApikeyService) Do(ctx context.Context) (*any, error) {
+func (s *DeleteBrokerSubAPIKeyService) Do(ctx context.Context) (*any, error) {
 	req := request.Post(ctx, s.c, "/api/v3/broker/delete-sub-apikey", s.body).WithSign()
 	return request.Do[any](req)
 }
@@ -443,16 +443,16 @@ func (s *DeleteBrokerSubApikeyService) Do(ctx context.Context) (*any, error) {
 // GetBrokerSubApikeyService -- GET /api/v3/broker/query-sub-apikey (ND Broker master)
 //
 // Returns the API key of a broker sub-account.
-type GetBrokerSubApikeyService struct {
+type GetBrokerSubAPIKeyService struct {
 	c      *UTAClient
 	params map[string]string
 }
 
-func (c *UTAClient) NewGetBrokerSubApikeyService(subUid string) *GetBrokerSubApikeyService {
-	return &GetBrokerSubApikeyService{c: c, params: map[string]string{"subUid": subUid}}
+func (c *UTAClient) NewGetBrokerSubAPIKeyService(subUid string) *GetBrokerSubAPIKeyService {
+	return &GetBrokerSubAPIKeyService{c: c, params: map[string]string{"subUid": subUid}}
 }
 
-func (s *GetBrokerSubApikeyService) Do(ctx context.Context) (*BrokerSubApikey, error) {
+func (s *GetBrokerSubAPIKeyService) Do(ctx context.Context) (*BrokerSubAPIKey, error) {
 	req := request.Get(ctx, s.c, "/api/v3/broker/query-sub-apikey", s.params).WithSign()
-	return request.Do[BrokerSubApikey](req)
+	return request.Do[BrokerSubAPIKey](req)
 }

@@ -39,7 +39,7 @@ func TestAffiliateCustomer(t *testing.T) {
 
 	// customer-kyc-result (GET)
 	{
-		resp, err := c.NewGetCustomerKycResultService().
+		resp, err := c.NewGetCustomerKYCResultService().
 			SetStartTime(start).SetEndTime(end).SetLimit(100).Do(cx)
 		if err != nil {
 			if !apitest.Tolerable(t, "customer-kyc-result", err, okCodes...) {

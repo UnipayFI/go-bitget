@@ -58,12 +58,12 @@ type Position struct {
 	Frozen           decimal.Decimal `json:"frozen"`
 	Total            decimal.Decimal `json:"total"`
 	Leverage         decimal.Decimal `json:"leverage"`
-	CurRealisedPnl   decimal.Decimal `json:"curRealisedPnl"`
+	CurRealisedPnL   decimal.Decimal `json:"curRealisedPnl"`
 	AvgPrice         decimal.Decimal `json:"avgPrice"`
 	MarginMode       MarginMode      `json:"marginMode"`
 	PositionStatus   string          `json:"positionStatus"` // normal
 	HoldMode         HoldMode        `json:"holdMode"`
-	UnrealisedPnl    decimal.Decimal `json:"unrealisedPnl"`
+	UnrealizedPnL    decimal.Decimal `json:"unrealisedPnl"`
 	LiquidationPrice decimal.Decimal `json:"liquidationPrice"`
 	Mmr              decimal.Decimal `json:"mmr"`
 	ProfitRate       decimal.Decimal `json:"profitRate"`
@@ -128,7 +128,7 @@ type PositionHistory struct {
 
 // HistoryPosition is a single closed/historical futures position.
 type HistoryPosition struct {
-	PositionId     string          `json:"positionId"`
+	PositionID     string          `json:"positionId"`
 	Category       Category        `json:"category"`
 	Symbol         string          `json:"symbol"`
 	MarginCoin     string          `json:"marginCoin"`
@@ -139,7 +139,7 @@ type HistoryPosition struct {
 	ClosePriceAvg  decimal.Decimal `json:"closePriceAvg"`
 	OpenTotalPos   decimal.Decimal `json:"openTotalPos"`
 	CloseTotalPos  decimal.Decimal `json:"closeTotalPos"`
-	CumRealisedPnl decimal.Decimal `json:"cumRealisedPnl"`
+	CumRealisedPnL decimal.Decimal `json:"cumRealisedPnl"`
 	NetProfit      decimal.Decimal `json:"netProfit"`
 	TotalFunding   decimal.Decimal `json:"totalFunding"`
 	OpenFeeTotal   decimal.Decimal `json:"openFeeTotal"`
@@ -201,11 +201,11 @@ type MovePositionHistory struct {
 // MovePosition is a single position-move (transfer) record.
 type MovePosition struct {
 	Category    Category        `json:"category"`
-	FromUid     string          `json:"fromUid"`
-	ToUid       string          `json:"toUid"`
-	OrderId     string          `json:"orderId"`
-	OpenExecId  string          `json:"openExecId"`
-	CloseExecId string          `json:"closeExecId"`
+	FromUID     string          `json:"fromUid"`
+	ToUID       string          `json:"toUid"`
+	OrderID     string          `json:"orderId"`
+	OpenExecID  string          `json:"openExecId"`
+	CloseExecID string          `json:"closeExecId"`
 	Symbol      string          `json:"symbol"`
 	PosSide     PosSide         `json:"posSide"`
 	Qty         decimal.Decimal `json:"qty"`
@@ -240,7 +240,7 @@ func (s *GetPositionADLRankService) Do(ctx context.Context) ([]PositionADLRank, 
 type PositionADLRank struct {
 	Symbol     string          `json:"symbol"`
 	MarginCoin string          `json:"marginCoin"`
-	AdlRank    decimal.Decimal `json:"adlRank"`
+	ADLRank    decimal.Decimal `json:"adlRank"`
 	HoldSide   PosSide         `json:"holdSide"`
 }
 

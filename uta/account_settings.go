@@ -127,7 +127,7 @@ func (c *UTAClient) NewAdjustAccountModeService(mode string) *AdjustAccountModeS
 
 // SetTargetUid sets the target account UID for sub-account operations (defaults
 // to the current account when omitted).
-func (s *AdjustAccountModeService) SetTargetUid(targetUid string) *AdjustAccountModeService {
+func (s *AdjustAccountModeService) SetTargetUID(targetUid string) *AdjustAccountModeService {
 	s.body["targetUid"] = targetUid
 	return s
 }

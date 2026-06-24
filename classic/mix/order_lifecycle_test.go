@@ -54,7 +54,7 @@ func TestMixOrderLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatalf("place limit: %v", err)
 	}
-	orderID := placed.OrderId
+	orderID := placed.OrderID
 	t.Logf("placed resting limit %s", orderID)
 
 	// 3. orders-pending now contains it.
@@ -72,7 +72,7 @@ func TestMixOrderLifecycle(t *testing.T) {
 
 	// 4. order detail by orderId.
 	{
-		resp, err := c.NewGetOrderDetailService(symbol, productType).SetOrderId(orderID).Do(cx)
+		resp, err := c.NewGetOrderDetailService(symbol, productType).SetOrderID(orderID).Do(cx)
 		if err != nil {
 			t.Fatalf("order detail: %v", err)
 		}
@@ -81,7 +81,7 @@ func TestMixOrderLifecycle(t *testing.T) {
 	}
 
 	// 5. cancel it.
-	if _, err := c.NewCancelOrderService(symbol, productType).SetOrderId(orderID).Do(cx); err != nil {
+	if _, err := c.NewCancelOrderService(symbol, productType).SetOrderID(orderID).Do(cx); err != nil {
 		t.Fatalf("cancel-order: %v", err)
 	}
 	t.Logf("cancelled resting limit %s", orderID)

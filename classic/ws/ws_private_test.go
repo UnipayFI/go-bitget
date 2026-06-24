@@ -72,7 +72,7 @@ func TestWsPrivateSpotOrders(t *testing.T) {
 	select {
 	case p := <-pushes:
 		t.Logf("orders channel pushed %d order(s); first status=%s instId=%s — login + private subscribe + decode OK",
-			len(p.Data), p.Data[0].Status, p.Data[0].InstId)
+			len(p.Data), p.Data[0].Status, p.Data[0].InstID)
 	case <-ctx.Done():
 		t.Fatalf("timed out waiting for an orders-channel push")
 	}

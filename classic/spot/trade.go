@@ -35,7 +35,7 @@ func (s *PlaceOrderService) SetPrice(price decimal.Decimal) *PlaceOrderService {
 }
 
 // SetClientOid sets a custom order id.
-func (s *PlaceOrderService) SetClientOid(clientOid string) *PlaceOrderService {
+func (s *PlaceOrderService) SetClientOrderID(clientOid string) *PlaceOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -47,7 +47,7 @@ func (s *PlaceOrderService) SetTriggerPrice(triggerPrice decimal.Decimal) *Place
 }
 
 // SetTpslType selects a normal order or a SPOT TP/SL order (default normal).
-func (s *PlaceOrderService) SetTpslType(tpslType TpslType) *PlaceOrderService {
+func (s *PlaceOrderService) SetTPSLType(tpslType TPSLType) *PlaceOrderService {
 	s.body["tpslType"] = string(tpslType)
 	return s
 }
@@ -101,8 +101,8 @@ func (s *PlaceOrderService) Do(ctx context.Context) (*PlaceOrderResponse, error)
 
 // PlaceOrderResponse is the result of placing a single order.
 type PlaceOrderResponse struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // CancelReplaceOrderService -- POST /api/v2/spot/trade/cancel-replace-order (private, state-changing)
@@ -128,13 +128,13 @@ func (s *CancelReplaceOrderService) SetOrderID(orderID string) *CancelReplaceOrd
 }
 
 // SetClientOid identifies the order to cancel (either orderId or clientOid).
-func (s *CancelReplaceOrderService) SetClientOid(clientOid string) *CancelReplaceOrderService {
+func (s *CancelReplaceOrderService) SetClientOrderID(clientOid string) *CancelReplaceOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
 
 // SetNewClientOid sets a custom id for the replacement order.
-func (s *CancelReplaceOrderService) SetNewClientOid(newClientOid string) *CancelReplaceOrderService {
+func (s *CancelReplaceOrderService) SetNewClientOrderID(newClientOid string) *CancelReplaceOrderService {
 	s.body["newClientOid"] = newClientOid
 	return s
 }
@@ -170,10 +170,10 @@ func (s *CancelReplaceOrderService) Do(ctx context.Context) (*CancelReplaceOrder
 
 // CancelReplaceOrderResponse is the result of a cancel-replace operation.
 type CancelReplaceOrderResponse struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	Success   string `json:"success"` // success, failure
-	Msg       string `json:"msg"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	Success       string `json:"success"` // success, failure
+	Msg           string `json:"msg"`
 }
 
 // CancelReplaceOrderItem is one cancel-replace instruction in a batch request.
@@ -182,8 +182,8 @@ type CancelReplaceOrderItem struct {
 	Price                  string `json:"price"`
 	Size                   string `json:"size"`
 	OrderID                string `json:"orderId,omitempty"`
-	ClientOid              string `json:"clientOid,omitempty"`
-	NewClientOid           string `json:"newClientOid,omitempty"`
+	ClientOrderID          string `json:"clientOid,omitempty"`
+	NewClientOrderID       string `json:"newClientOid,omitempty"`
 	PresetTakeProfitPrice  string `json:"presetTakeProfitPrice,omitempty"`
 	ExecuteTakeProfitPrice string `json:"executeTakeProfitPrice,omitempty"`
 	PresetStopLossPrice    string `json:"presetStopLossPrice,omitempty"`
@@ -221,7 +221,7 @@ type BatchOrderItem struct {
 	Force                  Force     `json:"force"`
 	Price                  string    `json:"price,omitempty"`
 	Size                   string    `json:"size"`
-	ClientOid              string    `json:"clientOid,omitempty"`
+	ClientOrderID          string    `json:"clientOid,omitempty"`
 	StpMode                string    `json:"stpMode,omitempty"`
 	PresetTakeProfitPrice  string    `json:"presetTakeProfitPrice,omitempty"`
 	ExecuteTakeProfitPrice string    `json:"executeTakeProfitPrice,omitempty"`
@@ -270,16 +270,16 @@ type BatchOrdersResponse struct {
 
 // BatchOrderSuccess is one successfully processed order in a batch response.
 type BatchOrderSuccess struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // BatchOrderFailure is one failed order in a batch response.
 type BatchOrderFailure struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	ErrorMsg  string `json:"errorMsg"`
-	ErrorCode string `json:"errorCode"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	ErrorMsg      string `json:"errorMsg"`
+	ErrorCode     string `json:"errorCode"`
 }
 
 // CancelOrderService -- POST /api/v2/spot/trade/cancel-order (private, state-changing)
@@ -301,13 +301,13 @@ func (s *CancelOrderService) SetOrderID(orderID string) *CancelOrderService {
 }
 
 // SetClientOid identifies the order to cancel (either orderId or clientOid).
-func (s *CancelOrderService) SetClientOid(clientOid string) *CancelOrderService {
+func (s *CancelOrderService) SetClientOrderID(clientOid string) *CancelOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
 
 // SetTpslType selects a normal order or a SPOT TP/SL order (default normal).
-func (s *CancelOrderService) SetTpslType(tpslType TpslType) *CancelOrderService {
+func (s *CancelOrderService) SetTPSLType(tpslType TPSLType) *CancelOrderService {
 	s.body["tpslType"] = string(tpslType)
 	return s
 }
@@ -319,15 +319,15 @@ func (s *CancelOrderService) Do(ctx context.Context) (*CancelOrderResponse, erro
 
 // CancelOrderResponse is the result of cancelling a single order.
 type CancelOrderResponse struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // BatchCancelOrderItem is one cancel instruction in a batch cancel request.
 type BatchCancelOrderItem struct {
-	OrderID   string `json:"orderId,omitempty"`
-	ClientOid string `json:"clientOid,omitempty"`
-	Symbol    string `json:"symbol,omitempty"`
+	OrderID       string `json:"orderId,omitempty"`
+	ClientOrderID string `json:"clientOid,omitempty"`
+	Symbol        string `json:"symbol,omitempty"`
 }
 
 // BatchCancelOrderService -- POST /api/v2/spot/trade/batch-cancel-order (private, state-changing)
@@ -404,7 +404,7 @@ func (s *GetOrderInfoService) SetOrderID(orderID string) *GetOrderInfoService {
 }
 
 // SetClientOid identifies the order to fetch (either orderId or clientOid).
-func (s *GetOrderInfoService) SetClientOid(clientOid string) *GetOrderInfoService {
+func (s *GetOrderInfoService) SetClientOrderID(clientOid string) *GetOrderInfoService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -436,7 +436,7 @@ type OrderInfo struct {
 	UserID           string          `json:"userId"`
 	Symbol           string          `json:"symbol"`
 	OrderID          string          `json:"orderId"`
-	ClientOid        string          `json:"clientOid"`
+	ClientOrderID    string          `json:"clientOid"`
 	Price            decimal.Decimal `json:"price"`
 	Size             decimal.Decimal `json:"size"`
 	OrderType        OrderType       `json:"orderType"`
@@ -450,7 +450,7 @@ type OrderInfo struct {
 	EnterPointSource string          `json:"enterPointSource"`
 	FeeDetail        string          `json:"feeDetail"` // JSON-encoded fee breakdown string
 	OrderSource      string          `json:"orderSource"`
-	TpslType         TpslType        `json:"tpslType"`
+	TPSLType         TPSLType        `json:"tpslType"`
 	TriggerPrice     decimal.Decimal `json:"triggerPrice"`
 	CancelReason     string          `json:"cancelReason"` // normal_cancel, stp_cancel
 	CTime            time.Time       `json:"cTime"`
@@ -506,7 +506,7 @@ func (s *GetUnfilledOrdersService) SetOrderID(orderID string) *GetUnfilledOrders
 }
 
 // SetTpslType selects normal orders or SPOT TP/SL orders (default normal).
-func (s *GetUnfilledOrdersService) SetTpslType(tpslType TpslType) *GetUnfilledOrdersService {
+func (s *GetUnfilledOrdersService) SetTPSLType(tpslType TPSLType) *GetUnfilledOrdersService {
 	s.params["tpslType"] = string(tpslType)
 	return s
 }
@@ -537,7 +537,7 @@ type UnfilledOrder struct {
 	UserID                 string          `json:"userId"`
 	Symbol                 string          `json:"symbol"`
 	OrderID                string          `json:"orderId"`
-	ClientOid              string          `json:"clientOid"`
+	ClientOrderID          string          `json:"clientOid"`
 	PriceAvg               decimal.Decimal `json:"priceAvg"`
 	Size                   decimal.Decimal `json:"size"`
 	OrderType              OrderType       `json:"orderType"`
@@ -554,7 +554,7 @@ type UnfilledOrder struct {
 	PresetStopLossPrice    decimal.Decimal `json:"presetStopLossPrice"`
 	ExecuteStopLossPrice   decimal.Decimal `json:"executeStopLossPrice"`
 	TriggerPrice           decimal.Decimal `json:"triggerPrice"`
-	TpslType               TpslType        `json:"tpslType"`
+	TPSLType               TPSLType        `json:"tpslType"`
 	CTime                  time.Time       `json:"cTime"`
 	UTime                  time.Time       `json:"uTime"`
 }
@@ -608,7 +608,7 @@ func (s *GetHistoryOrdersService) SetOrderID(orderID string) *GetHistoryOrdersSe
 }
 
 // SetTpslType selects normal orders or SPOT TP/SL orders (default normal).
-func (s *GetHistoryOrdersService) SetTpslType(tpslType TpslType) *GetHistoryOrdersService {
+func (s *GetHistoryOrdersService) SetTPSLType(tpslType TPSLType) *GetHistoryOrdersService {
 	s.params["tpslType"] = string(tpslType)
 	return s
 }
@@ -640,7 +640,7 @@ type HistoryOrder struct {
 	UserID           string          `json:"userId"`
 	Symbol           string          `json:"symbol"`
 	OrderID          string          `json:"orderId"`
-	ClientOid        string          `json:"clientOid"`
+	ClientOrderID    string          `json:"clientOid"`
 	Price            decimal.Decimal `json:"price"`
 	Size             decimal.Decimal `json:"size"`
 	OrderType        OrderType       `json:"orderType"`
@@ -654,7 +654,7 @@ type HistoryOrder struct {
 	EnterPointSource string          `json:"enterPointSource"`
 	OrderSource      string          `json:"orderSource"`
 	FeeDetail        string          `json:"feeDetail"` // JSON-encoded fee breakdown string
-	TpslType         TpslType        `json:"tpslType"`
+	TPSLType         TPSLType        `json:"tpslType"`
 	TriggerPrice     decimal.Decimal `json:"triggerPrice"`
 	CancelReason     string          `json:"cancelReason"` // normal_cancel, stp_cancel, ""
 	CTime            time.Time       `json:"cTime"`

@@ -49,14 +49,14 @@ func (c *WebSocketClient) NewSubscribeSpotOrdersService(symbol string) *Subscrib
 
 func (s *SubscribeSpotOrdersService) Do(ctx context.Context, cb WsHandler[SpotWsOrder]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]SpotWsOrder](ctx, s.c, true,
-		WsArg{InstType: string(InstTypeSpot), Channel: "orders", InstId: s.symbol}, cb)
+		WsArg{InstType: string(InstTypeSpot), Channel: "orders", InstID: s.symbol}, cb)
 }
 
 // SpotWsOrder is one order update pushed on the spot "orders" channel.
 type SpotWsOrder struct {
-	InstId           string           `json:"instId"`           // product id, e.g. BTCUSDT
-	OrderId          string           `json:"orderId"`          // order id
-	ClientOid        string           `json:"clientOid"`        // user-specified order id
+	InstID           string           `json:"instId"`           // product id, e.g. BTCUSDT
+	OrderID          string           `json:"orderId"`          // order id
+	ClientOrderID    string           `json:"clientOid"`        // user-specified order id
 	Price            decimal.Decimal  `json:"price"`            // order price
 	Size             decimal.Decimal  `json:"size"`             // order quantity (quote for buy, base for sell)
 	NewSize          decimal.Decimal  `json:"newSize"`          // normalized quantity per order-type rules
@@ -65,7 +65,7 @@ type SpotWsOrder struct {
 	Force            string           `json:"force"`            // GTC, post_only, FOK, IOC
 	Side             string           `json:"side"`             // buy / sell
 	FillPrice        decimal.Decimal  `json:"fillPrice"`        // most recent execution price
-	TradeId          string           `json:"tradeId"`          // most recent trade id
+	TradeID          string           `json:"tradeId"`          // most recent trade id
 	BaseVolume       decimal.Decimal  `json:"baseVolume"`       // quantity from latest execution
 	FillTime         time.Time        `json:"fillTime"`         // latest transaction time (ms)
 	FillFee          decimal.Decimal  `json:"fillFee"`          // latest transaction fee (negative)
@@ -102,13 +102,13 @@ func (c *WebSocketClient) NewSubscribeSpotFillService(symbol string) *SubscribeS
 
 func (s *SubscribeSpotFillService) Do(ctx context.Context, cb WsHandler[SpotWsFill]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]SpotWsFill](ctx, s.c, true,
-		WsArg{InstType: string(InstTypeSpot), Channel: "fill", InstId: s.symbol}, cb)
+		WsArg{InstType: string(InstTypeSpot), Channel: "fill", InstID: s.symbol}, cb)
 }
 
 // SpotWsFill is one execution pushed on the spot "fill" channel.
 type SpotWsFill struct {
-	OrderId    string          `json:"orderId"`    // order id
-	TradeId    string          `json:"tradeId"`    // trade id
+	OrderID    string          `json:"orderId"`    // order id
+	TradeID    string          `json:"tradeId"`    // trade id
 	Symbol     string          `json:"symbol"`     // trading pair symbol
 	OrderType  string          `json:"orderType"`  // limit / market
 	Side       string          `json:"side"`       // buy / sell
@@ -145,15 +145,15 @@ func (c *WebSocketClient) NewSubscribeSpotOrdersAlgoService(symbol string) *Subs
 
 func (s *SubscribeSpotOrdersAlgoService) Do(ctx context.Context, cb WsHandler[SpotWsOrderAlgo]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]SpotWsOrderAlgo](ctx, s.c, true,
-		WsArg{InstType: string(InstTypeSpot), Channel: "orders-algo", InstId: s.symbol}, cb)
+		WsArg{InstType: string(InstTypeSpot), Channel: "orders-algo", InstID: s.symbol}, cb)
 }
 
 // SpotWsOrderAlgo is one plan/trigger order update pushed on the spot
 // "orders-algo" channel.
 type SpotWsOrderAlgo struct {
-	InstId           string          `json:"instId"`           // product id
-	OrderId          string          `json:"orderId"`          // plan order id
-	ClientOid        string          `json:"clientOid"`        // customized plan order id
+	InstID           string          `json:"instId"`           // product id
+	OrderID          string          `json:"orderId"`          // plan order id
+	ClientOrderID    string          `json:"clientOid"`        // customized plan order id
 	TriggerPrice     decimal.Decimal `json:"triggerPrice"`     // trigger price
 	TriggerType      string          `json:"triggerType"`      // fill_price / mark_price
 	PlanType         string          `json:"planType"`         // amount / total

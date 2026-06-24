@@ -69,7 +69,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("orderId:", ref.OrderId)
+	fmt.Println("orderId:", ref.OrderID)
 }
 ```
 

@@ -86,7 +86,7 @@ func (s *GetMaxWithdrawalService) Do(ctx context.Context) (*MaxWithdrawal, error
 
 type MaxWithdrawal struct {
 	Coin               string          `json:"coin"`
-	OtcMaxWithdrawal   decimal.Decimal `json:"otcMaxWithdrawal"`
+	OTCMaxWithdrawal   decimal.Decimal `json:"otcMaxWithdrawal"`
 	SpotMaxWithdrawal  decimal.Decimal `json:"spotMaxWithdrawal"`
 	UtaMaxWithdrawal   decimal.Decimal `json:"utaMaxWithdrawal"`
 	TotalMaxWithdrawal decimal.Decimal `json:"totalMaxWithdrawal"`

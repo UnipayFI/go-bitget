@@ -28,7 +28,7 @@ func TestWsSpotTickerSmoke(t *testing.T) {
 	defer cancel()
 
 	got := make(chan []byte, 1)
-	done, _, err := c.SubscribeRaw(ctx, false, WsArg{InstType: string(InstTypeSpot), Channel: "ticker", InstId: "BTCUSDT"}, func(msg []byte, e error) {
+	done, _, err := c.SubscribeRaw(ctx, false, WsArg{InstType: string(InstTypeSpot), Channel: "ticker", InstID: "BTCUSDT"}, func(msg []byte, e error) {
 		if e != nil {
 			return
 		}

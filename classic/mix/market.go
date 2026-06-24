@@ -115,7 +115,7 @@ type Ticker struct {
 	Change24h         decimal.Decimal `json:"change24h"`
 	BaseVolume        decimal.Decimal `json:"baseVolume"`
 	QuoteVolume       decimal.Decimal `json:"quoteVolume"`
-	UsdtVolume        decimal.Decimal `json:"usdtVolume"`
+	USDTVolume        decimal.Decimal `json:"usdtVolume"`
 	OpenUtc           decimal.Decimal `json:"openUtc"`
 	ChangeUtc24h      decimal.Decimal `json:"changeUtc24h"`
 	IndexPrice        decimal.Decimal `json:"indexPrice"`

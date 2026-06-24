@@ -27,14 +27,14 @@ func TestOrderBatch(t *testing.T) {
 	base := time.Now().UnixNano()
 	item := func(price string, i int) BatchOrderItem {
 		return BatchOrderItem{
-			Category:    CategorySpot,
-			Symbol:      symbol,
-			Qty:         decimal.RequireFromString("0.00004"),
-			Price:       decimal.RequireFromString(price),
-			Side:        SideBuy,
-			OrderType:   OrderTypeLimit,
-			TimeInForce: TimeInForcePostOnly,
-			ClientOid:   "gobitget-b" + strconv.FormatInt(base+int64(i), 10),
+			Category:      CategorySpot,
+			Symbol:        symbol,
+			Qty:           decimal.RequireFromString("0.00004"),
+			Price:         decimal.RequireFromString(price),
+			Side:          SideBuy,
+			OrderType:     OrderTypeLimit,
+			TimeInForce:   TimeInForcePostOnly,
+			ClientOrderID: "gobitget-b" + strconv.FormatInt(base+int64(i), 10),
 		}
 	}
 
@@ -75,14 +75,14 @@ func TestOrderBatch(t *testing.T) {
 	if err != nil {
 		t.Fatalf("place for cancel-symbol: %v", err)
 	}
-	t.Logf("placed %s for cancel-symbol-order", ref.OrderId)
+	t.Logf("placed %s for cancel-symbol-order", ref.OrderID)
 	res, err := c.NewCancelSymbolOrderService(CategorySpot).SetSymbol(symbol).Do(cx)
 	if err != nil {
 		t.Fatalf("cancel-symbol-order: %v", err)
 	}
 	t.Logf("cancel-symbol-order cancelled %d order(s)", len(res.List))
 	for _, r := range res.List {
-		t.Logf("  cancelled orderId=%s code=%s", r.OrderId, r.Code)
+		t.Logf("  cancelled orderId=%s code=%s", r.OrderID, r.Code)
 	}
 
 	// 4) countdown-cancel-all("0"): disable the dead-man switch (no-op, safe).

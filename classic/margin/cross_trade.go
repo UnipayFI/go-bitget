@@ -51,7 +51,7 @@ func (s *PlaceCrossOrderService) SetQuoteSize(size decimal.Decimal) *PlaceCrossO
 }
 
 // SetClientOid sets a custom order ID (6-hour idempotency window).
-func (s *PlaceCrossOrderService) SetClientOid(clientOid string) *PlaceCrossOrderService {
+func (s *PlaceCrossOrderService) SetClientOrderID(clientOid string) *PlaceCrossOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -70,21 +70,21 @@ func (s *PlaceCrossOrderService) Do(ctx context.Context) (*CrossPlaceOrderResult
 // CrossPlaceOrderResult is the acknowledgement returned by a cross-margin order
 // placement.
 type CrossPlaceOrderResult struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // CrossBatchOrderItem is one order in a cross-margin batch placement request.
 type CrossBatchOrderItem struct {
-	Side      Side                    `json:"side"`
-	OrderType OrderType               `json:"orderType"`
-	Force     Force                   `json:"force,omitempty"`
-	Price     decimal.Decimal         `json:"price,omitzero"`
-	BaseSize  decimal.Decimal         `json:"baseSize,omitzero"`
-	QuoteSize decimal.Decimal         `json:"quoteSize,omitzero"`
-	LoanType  LoanType                `json:"loanType"`
-	ClientOid string                  `json:"clientOid,omitempty"`
-	StpMode   SelfTradePreventionMode `json:"stpMode,omitempty"`
+	Side          Side                    `json:"side"`
+	OrderType     OrderType               `json:"orderType"`
+	Force         Force                   `json:"force,omitempty"`
+	Price         decimal.Decimal         `json:"price,omitzero"`
+	BaseSize      decimal.Decimal         `json:"baseSize,omitzero"`
+	QuoteSize     decimal.Decimal         `json:"quoteSize,omitzero"`
+	LoanType      LoanType                `json:"loanType"`
+	ClientOrderID string                  `json:"clientOid,omitempty"`
+	StpMode       SelfTradePreventionMode `json:"stpMode,omitempty"`
 }
 
 // PlaceCrossBatchOrderService -- POST /api/v2/margin/crossed/batch-place-order (cross-margin trade)
@@ -118,10 +118,10 @@ type CrossBatchOrderResult struct {
 
 // CrossBatchOrderFailure describes one order that could not be placed.
 type CrossBatchOrderFailure struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	ErrorMsg  string `json:"errorMsg"`
-	ErrorCode string `json:"errorCode"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	ErrorMsg      string `json:"errorMsg"`
+	ErrorCode     string `json:"errorCode"`
 }
 
 // CancelCrossOrderService -- POST /api/v2/margin/crossed/cancel-order (cross-margin trade)
@@ -143,7 +143,7 @@ func (s *CancelCrossOrderService) SetOrderID(orderID string) *CancelCrossOrderSe
 }
 
 // SetClientOid identifies the order to cancel by client order ID.
-func (s *CancelCrossOrderService) SetClientOid(clientOid string) *CancelCrossOrderService {
+func (s *CancelCrossOrderService) SetClientOrderID(clientOid string) *CancelCrossOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -156,15 +156,15 @@ func (s *CancelCrossOrderService) Do(ctx context.Context) (*CrossCancelOrderResu
 // CrossCancelOrderResult is the acknowledgement returned by a cross-margin
 // cancellation.
 type CrossCancelOrderResult struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // CrossBatchCancelItem identifies one order to cancel in a batch request, by
 // orderId and/or clientOid.
 type CrossBatchCancelItem struct {
-	OrderID   string `json:"orderId,omitempty"`
-	ClientOid string `json:"clientOid,omitempty"`
+	OrderID       string `json:"orderId,omitempty"`
+	ClientOrderID string `json:"clientOid,omitempty"`
 }
 
 // CancelCrossBatchOrderService -- POST /api/v2/margin/crossed/batch-cancel-order (cross-margin trade)
@@ -198,10 +198,10 @@ type CrossBatchCancelResult struct {
 
 // CrossBatchCancelFailure describes one order that could not be cancelled.
 type CrossBatchCancelFailure struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	ErrorMsg  string `json:"errorMsg"`
-	ErrorCode string `json:"errorCode"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	ErrorMsg      string `json:"errorMsg"`
+	ErrorCode     string `json:"errorCode"`
 }
 
 // GetCrossOpenOrdersService -- GET /api/v2/margin/crossed/open-orders (cross-margin trade)
@@ -223,7 +223,7 @@ func (s *GetCrossOpenOrdersService) SetOrderID(orderID string) *GetCrossOpenOrde
 }
 
 // SetClientOid filters to a single order by client order ID.
-func (s *GetCrossOpenOrdersService) SetClientOid(clientOid string) *GetCrossOpenOrdersService {
+func (s *GetCrossOpenOrdersService) SetClientOrderID(clientOid string) *GetCrossOpenOrdersService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -271,7 +271,7 @@ type CrossOrder struct {
 	Symbol           string           `json:"symbol"`
 	OrderType        OrderType        `json:"orderType"`
 	EnterPointSource EnterPointSource `json:"enterPointSource"`
-	ClientOid        string           `json:"clientOid"`
+	ClientOrderID    string           `json:"clientOid"`
 	LoanType         LoanType         `json:"loanType"`
 	Price            decimal.Decimal  `json:"price"`
 	Side             Side             `json:"side"`
@@ -311,7 +311,7 @@ func (s *GetCrossHistoryOrdersService) SetEnterPointSource(src EnterPointSource)
 }
 
 // SetClientOid filters to a single order by client order ID.
-func (s *GetCrossHistoryOrdersService) SetClientOid(clientOid string) *GetCrossHistoryOrdersService {
+func (s *GetCrossHistoryOrdersService) SetClientOrderID(clientOid string) *GetCrossHistoryOrdersService {
 	s.params["clientOid"] = clientOid
 	return s
 }

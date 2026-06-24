@@ -115,11 +115,11 @@ func (s *GetSavingsAccountService) Do(ctx context.Context) (*SavingsAccount, err
 // SavingsAccount is the aggregate savings-account valuation.
 type SavingsAccount struct {
 	BtcAmount        decimal.Decimal `json:"btcAmount"`
-	UsdtAmount       decimal.Decimal `json:"usdtAmount"`
+	USDTAmount       decimal.Decimal `json:"usdtAmount"`
 	Btc24hEarning    decimal.Decimal `json:"btc24hEarning"`
-	Usdt24hEarning   decimal.Decimal `json:"usdt24hEarning"`
+	USDT24hEarning   decimal.Decimal `json:"usdt24hEarning"`
 	BtcTotalEarning  decimal.Decimal `json:"btcTotalEarning"`
-	UsdtTotalEarning decimal.Decimal `json:"usdtTotalEarning"`
+	USDTTotalEarning decimal.Decimal `json:"usdtTotalEarning"`
 }
 
 // GetSavingsAssetsService -- GET /api/v2/earn/savings/assets (signed)

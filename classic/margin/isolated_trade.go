@@ -42,7 +42,7 @@ func (s *PlaceIsolatedOrderService) SetQuoteSize(quoteSize decimal.Decimal) *Pla
 	return s
 }
 
-func (s *PlaceIsolatedOrderService) SetClientOid(clientOid string) *PlaceIsolatedOrderService {
+func (s *PlaceIsolatedOrderService) SetClientOrderID(clientOid string) *PlaceIsolatedOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -59,8 +59,8 @@ func (s *PlaceIsolatedOrderService) Do(ctx context.Context) (*IsolatedPlaceOrder
 
 // IsolatedPlaceOrderResult is the result of placing a single isolated order.
 type IsolatedPlaceOrderResult struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // BatchPlaceIsolatedOrderService -- POST /api/v2/margin/isolated/batch-place-order (margin trade)
@@ -87,15 +87,15 @@ func (s *BatchPlaceIsolatedOrderService) Do(ctx context.Context) (*IsolatedBatch
 // decimal fields use ,omitzero so a zero value is dropped (a serialized "0"
 // would break, e.g., market orders that omit price).
 type IsolatedBatchOrderItem struct {
-	Side      Side                    `json:"side"`
-	OrderType OrderType               `json:"orderType"`
-	Force     Force                   `json:"force"`
-	LoanType  LoanType                `json:"loanType"`
-	Price     decimal.Decimal         `json:"price,omitzero"`
-	BaseSize  decimal.Decimal         `json:"baseSize,omitzero"`
-	QuoteSize decimal.Decimal         `json:"quoteSize,omitzero"`
-	ClientOid string                  `json:"clientOid,omitempty"`
-	StpMode   SelfTradePreventionMode `json:"stpMode,omitempty"`
+	Side          Side                    `json:"side"`
+	OrderType     OrderType               `json:"orderType"`
+	Force         Force                   `json:"force"`
+	LoanType      LoanType                `json:"loanType"`
+	Price         decimal.Decimal         `json:"price,omitzero"`
+	BaseSize      decimal.Decimal         `json:"baseSize,omitzero"`
+	QuoteSize     decimal.Decimal         `json:"quoteSize,omitzero"`
+	ClientOrderID string                  `json:"clientOid,omitempty"`
+	StpMode       SelfTradePreventionMode `json:"stpMode,omitempty"`
 }
 
 // IsolatedBatchOrderResult is the per-order outcome of a batch-place request.
@@ -106,15 +106,15 @@ type IsolatedBatchOrderResult struct {
 
 // IsolatedBatchOrderSuccess is one successfully accepted order from a batch.
 type IsolatedBatchOrderSuccess struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // IsolatedBatchOrderFailure is one rejected order from a batch.
 type IsolatedBatchOrderFailure struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	ErrorMsg  string `json:"errorMsg"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	ErrorMsg      string `json:"errorMsg"`
 }
 
 // CancelIsolatedOrderService -- POST /api/v2/margin/isolated/cancel-order (margin trade)
@@ -131,12 +131,12 @@ func (c *MarginClient) NewCancelIsolatedOrderService(symbol string) *CancelIsola
 	}}
 }
 
-func (s *CancelIsolatedOrderService) SetOrderId(orderId string) *CancelIsolatedOrderService {
+func (s *CancelIsolatedOrderService) SetOrderID(orderId string) *CancelIsolatedOrderService {
 	s.body["orderId"] = orderId
 	return s
 }
 
-func (s *CancelIsolatedOrderService) SetClientOid(clientOid string) *CancelIsolatedOrderService {
+func (s *CancelIsolatedOrderService) SetClientOrderID(clientOid string) *CancelIsolatedOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -148,8 +148,8 @@ func (s *CancelIsolatedOrderService) Do(ctx context.Context) (*IsolatedCancelOrd
 
 // IsolatedCancelOrderResult is the result of cancelling a single isolated order.
 type IsolatedCancelOrderResult struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // BatchCancelIsolatedOrderService -- POST /api/v2/margin/isolated/batch-cancel-order (margin trade)
@@ -168,7 +168,7 @@ func (c *MarginClient) NewBatchCancelIsolatedOrderService(symbol string) *BatchC
 
 // SetOrderIdList sets the list of orders to cancel; each item is identified by
 // orderId or clientOid.
-func (s *BatchCancelIsolatedOrderService) SetOrderIdList(orderIdList []IsolatedCancelOrderItem) *BatchCancelIsolatedOrderService {
+func (s *BatchCancelIsolatedOrderService) SetOrderIDList(orderIdList []IsolatedCancelOrderItem) *BatchCancelIsolatedOrderService {
 	s.body["orderIdList"] = orderIdList
 	return s
 }
@@ -180,8 +180,8 @@ func (s *BatchCancelIsolatedOrderService) Do(ctx context.Context) (*IsolatedBatc
 
 // IsolatedCancelOrderItem identifies one order to cancel within a batch request.
 type IsolatedCancelOrderItem struct {
-	OrderId   string `json:"orderId,omitempty"`
-	ClientOid string `json:"clientOid,omitempty"`
+	OrderID       string `json:"orderId,omitempty"`
+	ClientOrderID string `json:"clientOid,omitempty"`
 }
 
 // IsolatedBatchCancelResult is the per-order outcome of a batch-cancel request.
@@ -192,15 +192,15 @@ type IsolatedBatchCancelResult struct {
 
 // IsolatedBatchCancelSuccess is one successfully cancelled order from a batch.
 type IsolatedBatchCancelSuccess struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // IsolatedBatchCancelFailure is one order that failed to cancel in a batch.
 type IsolatedBatchCancelFailure struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	ErrorMsg  string `json:"errorMsg"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	ErrorMsg      string `json:"errorMsg"`
 }
 
 // GetIsolatedOpenOrdersService -- GET /api/v2/margin/isolated/open-orders (margin read)
@@ -219,12 +219,12 @@ func (c *MarginClient) NewGetIsolatedOpenOrdersService(symbol string, startTime 
 	}}
 }
 
-func (s *GetIsolatedOpenOrdersService) SetOrderId(orderId string) *GetIsolatedOpenOrdersService {
+func (s *GetIsolatedOpenOrdersService) SetOrderID(orderId string) *GetIsolatedOpenOrdersService {
 	s.params["orderId"] = orderId
 	return s
 }
 
-func (s *GetIsolatedOpenOrdersService) SetClientOid(clientOid string) *GetIsolatedOpenOrdersService {
+func (s *GetIsolatedOpenOrdersService) SetClientOrderID(clientOid string) *GetIsolatedOpenOrdersService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -247,16 +247,16 @@ func (s *GetIsolatedOpenOrdersService) Do(ctx context.Context) (*IsolatedOpenOrd
 // IsolatedOpenOrders is the paged list of open isolated-margin orders.
 type IsolatedOpenOrders struct {
 	OrderList []IsolatedOrder `json:"orderList"`
-	MaxId     string          `json:"maxId"`
-	MinId     string          `json:"minId"`
+	MaxID     string          `json:"maxId"`
+	MinID     string          `json:"minId"`
 }
 
 // IsolatedOrder is a single isolated-margin order as returned by the open-orders
 // and history-orders endpoints.
 type IsolatedOrder struct {
 	Symbol           string           `json:"symbol"`
-	OrderId          string           `json:"orderId"`
-	ClientOid        string           `json:"clientOid"`
+	OrderID          string           `json:"orderId"`
+	ClientOrderID    string           `json:"clientOid"`
 	OrderType        OrderType        `json:"orderType"`
 	Side             Side             `json:"side"`
 	Price            decimal.Decimal  `json:"price"`
@@ -289,12 +289,12 @@ func (c *MarginClient) NewGetIsolatedHistoryOrdersService(symbol string, startTi
 	}}
 }
 
-func (s *GetIsolatedHistoryOrdersService) SetOrderId(orderId string) *GetIsolatedHistoryOrdersService {
+func (s *GetIsolatedHistoryOrdersService) SetOrderID(orderId string) *GetIsolatedHistoryOrdersService {
 	s.params["orderId"] = orderId
 	return s
 }
 
-func (s *GetIsolatedHistoryOrdersService) SetClientOid(clientOid string) *GetIsolatedHistoryOrdersService {
+func (s *GetIsolatedHistoryOrdersService) SetClientOrderID(clientOid string) *GetIsolatedHistoryOrdersService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -314,7 +314,7 @@ func (s *GetIsolatedHistoryOrdersService) SetLimit(limit int) *GetIsolatedHistor
 	return s
 }
 
-func (s *GetIsolatedHistoryOrdersService) SetIdLessThan(idLessThan string) *GetIsolatedHistoryOrdersService {
+func (s *GetIsolatedHistoryOrdersService) SetIDLessThan(idLessThan string) *GetIsolatedHistoryOrdersService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -327,8 +327,8 @@ func (s *GetIsolatedHistoryOrdersService) Do(ctx context.Context) (*IsolatedHist
 // IsolatedHistoryOrders is the paged list of historical isolated-margin orders.
 type IsolatedHistoryOrders struct {
 	OrderList []IsolatedOrder `json:"orderList"`
-	MaxId     string          `json:"maxId"`
-	MinId     string          `json:"minId"`
+	MaxID     string          `json:"maxId"`
+	MinID     string          `json:"minId"`
 }
 
 // GetIsolatedFillsService -- GET /api/v2/margin/isolated/fills (margin read)
@@ -347,7 +347,7 @@ func (c *MarginClient) NewGetIsolatedFillsService(symbol string, startTime time.
 	}}
 }
 
-func (s *GetIsolatedFillsService) SetOrderId(orderId string) *GetIsolatedFillsService {
+func (s *GetIsolatedFillsService) SetOrderID(orderId string) *GetIsolatedFillsService {
 	s.params["orderId"] = orderId
 	return s
 }
@@ -362,7 +362,7 @@ func (s *GetIsolatedFillsService) SetLimit(limit int) *GetIsolatedFillsService {
 	return s
 }
 
-func (s *GetIsolatedFillsService) SetIdLessThan(idLessThan string) *GetIsolatedFillsService {
+func (s *GetIsolatedFillsService) SetIDLessThan(idLessThan string) *GetIsolatedFillsService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -375,14 +375,14 @@ func (s *GetIsolatedFillsService) Do(ctx context.Context) (*IsolatedFills, error
 // IsolatedFills is the paged list of isolated-margin fills.
 type IsolatedFills struct {
 	Fills []IsolatedFill `json:"fills"`
-	MaxId string         `json:"maxId"`
-	MinId string         `json:"minId"`
+	MaxID string         `json:"maxId"`
+	MinID string         `json:"minId"`
 }
 
 // IsolatedFill is a single isolated-margin fill (trade execution).
 type IsolatedFill struct {
-	OrderId    string                `json:"orderId"`
-	TradeId    string                `json:"tradeId"`
+	OrderID    string                `json:"orderId"`
+	TradeID    string                `json:"tradeId"`
 	Symbol     string                `json:"symbol"`
 	OrderType  OrderType             `json:"orderType"`
 	Side       Side                  `json:"side"`
@@ -451,7 +451,7 @@ func (s *GetIsolatedLiquidationOrdersService) SetLimit(limit int) *GetIsolatedLi
 	return s
 }
 
-func (s *GetIsolatedLiquidationOrdersService) SetIdLessThan(idLessThan string) *GetIsolatedLiquidationOrdersService {
+func (s *GetIsolatedLiquidationOrdersService) SetIDLessThan(idLessThan string) *GetIsolatedLiquidationOrdersService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -464,9 +464,9 @@ func (s *GetIsolatedLiquidationOrdersService) Do(ctx context.Context) (*Isolated
 // IsolatedLiquidationOrders is the paged list of isolated-margin liquidation orders.
 type IsolatedLiquidationOrders struct {
 	ResultList []IsolatedLiquidationOrder `json:"resultList"`
-	IdLessThan string                     `json:"idLessThan"`
-	MaxId      string                     `json:"maxId"`
-	MinId      string                     `json:"minId"`
+	IDLessThan string                     `json:"idLessThan"`
+	MaxID      string                     `json:"maxId"`
+	MinID      string                     `json:"minId"`
 }
 
 // IsolatedLiquidationOrder is a single isolated-margin forced-liquidation order.
@@ -474,7 +474,7 @@ type IsolatedLiquidationOrders struct {
 // liquidation_buy (underscore form), so it is kept as a plain string rather than
 // the buy/sell Side enum.
 type IsolatedLiquidationOrder struct {
-	OrderId   string          `json:"orderId"`
+	OrderID   string          `json:"orderId"`
 	Symbol    string          `json:"symbol"`
 	OrderType OrderType       `json:"orderType"`
 	Side      string          `json:"side"` // liquidation_sell, liquidation_buy

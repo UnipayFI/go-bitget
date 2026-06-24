@@ -70,7 +70,7 @@ func (s *TransferService) SetAllowBorrow(allowBorrow string) *TransferService {
 }
 
 // SetClientOid sets the client-defined transaction identifier.
-func (s *TransferService) SetClientOid(clientOid string) *TransferService {
+func (s *TransferService) SetClientOrderID(clientOid string) *TransferService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -81,8 +81,8 @@ func (s *TransferService) Do(ctx context.Context) (*TransferResult, error) {
 }
 
 type TransferResult struct {
-	TransferId string `json:"transferId"`
-	ClientOid  string `json:"clientOid"`
+	TransferID    string `json:"transferId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // SubTransferService -- POST /api/v3/account/sub-transfer (UTA mgt. read & write)
@@ -133,7 +133,7 @@ func (c *UTAClient) NewGetSubTransferRecordsService() *GetSubTransferRecordsServ
 }
 
 // SetSubUid filters to a sub-account UID; omit to retrieve main account records.
-func (s *GetSubTransferRecordsService) SetSubUid(subUid string) *GetSubTransferRecordsService {
+func (s *GetSubTransferRecordsService) SetSubUID(subUid string) *GetSubTransferRecordsService {
 	s.params["subUid"] = subUid
 	return s
 }
@@ -162,7 +162,7 @@ func (s *GetSubTransferRecordsService) SetEndTime(t time.Time) *GetSubTransferRe
 	return s
 }
 
-func (s *GetSubTransferRecordsService) SetClientOid(clientOid string) *GetSubTransferRecordsService {
+func (s *GetSubTransferRecordsService) SetClientOrderID(clientOid string) *GetSubTransferRecordsService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -188,18 +188,18 @@ type SubTransferRecords struct {
 }
 
 type SubTransferRecord struct {
-	TransferId    string          `json:"transferId"`
+	TransferID    string          `json:"transferId"`
 	FromType      string          `json:"fromType"`
 	ToType        string          `json:"toType"`
 	Amount        decimal.Decimal `json:"amount"`
 	Coin          string          `json:"coin"`
-	FromUserId    string          `json:"fromUserId"`
-	ToUserId      string          `json:"toUserId"`
+	FromUserID    string          `json:"fromUserId"`
+	ToUserID      string          `json:"toUserId"`
 	Status        string          `json:"status"`
-	ClientOid     string          `json:"clientOid"`
+	ClientOrderID string          `json:"clientOid"`
 	CreatedTime   time.Time       `json:"createdTime"`
 	UpdatedTime   time.Time       `json:"updatedTime"`
-	OldTransferId string          `json:"oldTransferId"`
+	OldTransferID string          `json:"oldTransferId"`
 }
 
 // SubMasterTransferService -- POST /api/v3/account/sub-master-transfer (UTA mgt. read & write)
@@ -222,7 +222,7 @@ func (c *UTAClient) NewSubMasterTransferService(fromType, toType, coin string, a
 }
 
 // SetClientOid sets the client order ID (max 64 characters).
-func (s *SubMasterTransferService) SetClientOid(clientOid string) *SubMasterTransferService {
+func (s *SubMasterTransferService) SetClientOrderID(clientOid string) *SubMasterTransferService {
 	s.body["clientOid"] = clientOid
 	return s
 }

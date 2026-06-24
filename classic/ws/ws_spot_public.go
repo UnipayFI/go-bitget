@@ -23,12 +23,12 @@ func (c *WebSocketClient) NewSubscribeSpotTickerService(symbol string) *Subscrib
 
 func (s *SubscribeSpotTickerService) Do(ctx context.Context, cb WsHandler[SpotWsTicker]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]SpotWsTicker](ctx, s.c, false,
-		WsArg{InstType: string(InstTypeSpot), Channel: "ticker", InstId: s.symbol}, cb)
+		WsArg{InstType: string(InstTypeSpot), Channel: "ticker", InstID: s.symbol}, cb)
 }
 
 // SpotWsTicker is one element of the spot "ticker" channel push data array.
 type SpotWsTicker struct {
-	InstId       string          `json:"instId"`       // product id
+	InstID       string          `json:"instId"`       // product id
 	LastPr       decimal.Decimal `json:"lastPr"`       // current market price
 	AskPr        decimal.Decimal `json:"askPr"`        // best ask price
 	BidPr        decimal.Decimal `json:"bidPr"`        // best bid price
@@ -62,7 +62,7 @@ func (c *WebSocketClient) NewSubscribeSpotCandleService(symbol, interval string)
 
 func (s *SubscribeSpotCandleService) Do(ctx context.Context, cb WsHandler[SpotWsCandle]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]SpotWsCandle](ctx, s.c, false,
-		WsArg{InstType: string(InstTypeSpot), Channel: "candle" + s.interval, InstId: s.symbol}, cb)
+		WsArg{InstType: string(InstTypeSpot), Channel: "candle" + s.interval, InstID: s.symbol}, cb)
 }
 
 // SpotWsCandle is one candlestick row. Bitget pushes each candle as a
@@ -77,7 +77,7 @@ type SpotWsCandle struct {
 	Close       decimal.Decimal `json:"close"`       // array[4]
 	BaseVolume  decimal.Decimal `json:"baseVolume"`  // array[5] -- volume in base coin
 	QuoteVolume decimal.Decimal `json:"quoteVolume"` // array[6] -- volume in quote coin
-	UsdtVolume  decimal.Decimal `json:"usdtVolume"`  // array[7] -- volume in USDT
+	USDTVolume  decimal.Decimal `json:"usdtVolume"`  // array[7] -- volume in USDT
 }
 
 // UnmarshalJSON decodes the 8-element positional array into named fields.
@@ -94,7 +94,7 @@ func (k *SpotWsCandle) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("ws: spot candle timestamp %q: %w", row[0], err)
 	}
 	k.Ts = time.UnixMilli(ms)
-	for i, dst := range []*decimal.Decimal{&k.Open, &k.High, &k.Low, &k.Close, &k.BaseVolume, &k.QuoteVolume, &k.UsdtVolume} {
+	for i, dst := range []*decimal.Decimal{&k.Open, &k.High, &k.Low, &k.Close, &k.BaseVolume, &k.QuoteVolume, &k.USDTVolume} {
 		d, err := decimal.NewFromString(row[i+1])
 		if err != nil {
 			return fmt.Errorf("ws: spot candle column %d %q: %w", i+1, row[i+1], err)
@@ -114,7 +114,7 @@ func (k SpotWsCandle) MarshalJSON() ([]byte, error) {
 		k.Close.String(),
 		k.BaseVolume.String(),
 		k.QuoteVolume.String(),
-		k.UsdtVolume.String(),
+		k.USDTVolume.String(),
 	}
 	return common.JSONMarshal(row)
 }
@@ -132,13 +132,13 @@ func (c *WebSocketClient) NewSubscribeSpotTradeService(symbol string) *Subscribe
 
 func (s *SubscribeSpotTradeService) Do(ctx context.Context, cb WsHandler[SpotWsTrade]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]SpotWsTrade](ctx, s.c, false,
-		WsArg{InstType: string(InstTypeSpot), Channel: "trade", InstId: s.symbol}, cb)
+		WsArg{InstType: string(InstTypeSpot), Channel: "trade", InstID: s.symbol}, cb)
 }
 
 // SpotWsTrade is one element of the spot "trade" channel push data array.
 type SpotWsTrade struct {
 	Ts      time.Time       `json:"ts"`      // transaction time (ms)
-	TradeId string          `json:"tradeId"` // transaction id
+	TradeID string          `json:"tradeId"` // transaction id
 	Price   decimal.Decimal `json:"price"`   // transaction price
 	Size    decimal.Decimal `json:"size"`    // transaction quantity
 	Side    string          `json:"side"`    // "buy" or "sell"
@@ -165,7 +165,7 @@ func (s *SubscribeSpotOrderBookService) SetDepth(depth string) *SubscribeSpotOrd
 
 func (s *SubscribeSpotOrderBookService) Do(ctx context.Context, cb WsHandler[SpotWsOrderBook]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]SpotWsOrderBook](ctx, s.c, false,
-		WsArg{InstType: string(InstTypeSpot), Channel: s.depth, InstId: s.symbol}, cb)
+		WsArg{InstType: string(InstTypeSpot), Channel: s.depth, InstID: s.symbol}, cb)
 }
 
 // SpotWsOrderBook is one element of the spot depth channel push data array.
@@ -191,7 +191,7 @@ func (c *WebSocketClient) NewSubscribeSpotAuctionService(symbol string) *Subscri
 
 func (s *SubscribeSpotAuctionService) Do(ctx context.Context, cb WsHandler[SpotWsAuction]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]SpotWsAuction](ctx, s.c, false,
-		WsArg{InstType: string(InstTypeSpot), Channel: "auction", InstId: s.symbol}, cb)
+		WsArg{InstType: string(InstTypeSpot), Channel: "auction", InstID: s.symbol}, cb)
 }
 
 // SpotWsAuction is one element of the spot "auction" channel push data array.

@@ -18,40 +18,40 @@ type FeeDetail struct {
 // Order is the union of the order-info, unfilled-orders and history-orders
 // shapes; fields not present for a given endpoint or category arrive empty.
 type Order struct {
-	OrderID      string          `json:"orderId"`
-	ClientOid    string          `json:"clientOid"`
-	Category     Category        `json:"category"`
-	Symbol       string          `json:"symbol"`
-	OrderType    OrderType       `json:"orderType"`
-	Side         Side            `json:"side"`
-	Price        decimal.Decimal `json:"price"`
-	Qty          decimal.Decimal `json:"qty"`
-	Amount       decimal.Decimal `json:"amount"`
-	CumExecQty   decimal.Decimal `json:"cumExecQty"`
-	CumExecValue decimal.Decimal `json:"cumExecValue"`
-	AvgPrice     decimal.Decimal `json:"avgPrice"`
-	TimeInForce  TimeInForce     `json:"timeInForce"`
-	OrderStatus  OrderStatus     `json:"orderStatus"`
-	PosSide      PosSide         `json:"posSide"`
-	HoldMode     HoldMode        `json:"holdMode"`
-	TradeSide    string          `json:"tradeSide"`
-	DelegateType string          `json:"delegateType"`
-	ReduceOnly   string          `json:"reduceOnly"`
-	MarginMode   MarginMode      `json:"marginMode"`
-	StpMode      string          `json:"stpMode"`
-	TakeProfit   decimal.Decimal `json:"takeProfit"`
-	StopLoss     decimal.Decimal `json:"stopLoss"`
-	TpTriggerBy  string          `json:"tpTriggerBy"`
-	SlTriggerBy  string          `json:"slTriggerBy"`
-	TpOrderType  OrderType       `json:"tpOrderType"`
-	SlOrderType  OrderType       `json:"slOrderType"`
-	TpLimitPrice decimal.Decimal `json:"tpLimitPrice"`
-	SlLimitPrice decimal.Decimal `json:"slLimitPrice"`
-	FeeDetail    []FeeDetail     `json:"feeDetail"`
-	CancelReason string          `json:"cancelReason"`
-	ExecType     ExecType        `json:"execType"`
-	CreatedTime  time.Time       `json:"createdTime"`
-	UpdatedTime  time.Time       `json:"updatedTime"`
+	OrderID       string          `json:"orderId"`
+	ClientOrderID string          `json:"clientOid"`
+	Category      Category        `json:"category"`
+	Symbol        string          `json:"symbol"`
+	OrderType     OrderType       `json:"orderType"`
+	Side          Side            `json:"side"`
+	Price         decimal.Decimal `json:"price"`
+	Qty           decimal.Decimal `json:"qty"`
+	Amount        decimal.Decimal `json:"amount"`
+	CumExecQty    decimal.Decimal `json:"cumExecQty"`
+	CumExecValue  decimal.Decimal `json:"cumExecValue"`
+	AvgPrice      decimal.Decimal `json:"avgPrice"`
+	TimeInForce   TimeInForce     `json:"timeInForce"`
+	OrderStatus   OrderStatus     `json:"orderStatus"`
+	PosSide       PosSide         `json:"posSide"`
+	HoldMode      HoldMode        `json:"holdMode"`
+	TradeSide     string          `json:"tradeSide"`
+	DelegateType  string          `json:"delegateType"`
+	ReduceOnly    string          `json:"reduceOnly"`
+	MarginMode    MarginMode      `json:"marginMode"`
+	StpMode       string          `json:"stpMode"`
+	TakeProfit    decimal.Decimal `json:"takeProfit"`
+	StopLoss      decimal.Decimal `json:"stopLoss"`
+	TpTriggerBy   string          `json:"tpTriggerBy"`
+	SlTriggerBy   string          `json:"slTriggerBy"`
+	TpOrderType   OrderType       `json:"tpOrderType"`
+	SlOrderType   OrderType       `json:"slOrderType"`
+	TpLimitPrice  decimal.Decimal `json:"tpLimitPrice"`
+	SlLimitPrice  decimal.Decimal `json:"slLimitPrice"`
+	FeeDetail     []FeeDetail     `json:"feeDetail"`
+	CancelReason  string          `json:"cancelReason"`
+	ExecType      ExecType        `json:"execType"`
+	CreatedTime   time.Time       `json:"createdTime"`
+	UpdatedTime   time.Time       `json:"updatedTime"`
 }
 
 // GetOrderInfoService -- GET /api/v3/trade/order-info (UTA trade read)
@@ -72,7 +72,7 @@ func (s *GetOrderInfoService) SetOrderID(orderID string) *GetOrderInfoService {
 	return s
 }
 
-func (s *GetOrderInfoService) SetClientOid(clientOid string) *GetOrderInfoService {
+func (s *GetOrderInfoService) SetClientOrderID(clientOid string) *GetOrderInfoService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -243,23 +243,23 @@ type FillList struct {
 
 // Fill is a single trade execution.
 type Fill struct {
-	ExecID      string          `json:"execId"`
-	ExecLinkID  string          `json:"execLinkId"`
-	OrderID     string          `json:"orderId"`
-	ClientOid   string          `json:"clientOid"`
-	Category    Category        `json:"category"`
-	Symbol      string          `json:"symbol"`
-	OrderType   OrderType       `json:"orderType"`
-	Side        Side            `json:"side"`
-	PosSide     PosSide         `json:"posSide"`
-	ExecPrice   decimal.Decimal `json:"execPrice"`
-	ExecQty     decimal.Decimal `json:"execQty"`
-	ExecValue   decimal.Decimal `json:"execValue"`
-	TradeScope  TradeScope      `json:"tradeScope"`
-	TradeSide   string          `json:"tradeSide"`
-	FeeDetail   []FeeDetail     `json:"feeDetail"`
-	CreatedTime time.Time       `json:"createdTime"`
-	UpdatedTime time.Time       `json:"updatedTime"`
-	ExecPnl     decimal.Decimal `json:"execPnl"`
-	IsRPI       string          `json:"isRPI"`
+	ExecID        string          `json:"execId"`
+	ExecLinkID    string          `json:"execLinkId"`
+	OrderID       string          `json:"orderId"`
+	ClientOrderID string          `json:"clientOid"`
+	Category      Category        `json:"category"`
+	Symbol        string          `json:"symbol"`
+	OrderType     OrderType       `json:"orderType"`
+	Side          Side            `json:"side"`
+	PosSide       PosSide         `json:"posSide"`
+	ExecPrice     decimal.Decimal `json:"execPrice"`
+	ExecQty       decimal.Decimal `json:"execQty"`
+	ExecValue     decimal.Decimal `json:"execValue"`
+	TradeScope    TradeScope      `json:"tradeScope"`
+	TradeSide     string          `json:"tradeSide"`
+	FeeDetail     []FeeDetail     `json:"feeDetail"`
+	CreatedTime   time.Time       `json:"createdTime"`
+	UpdatedTime   time.Time       `json:"updatedTime"`
+	ExecPnL       decimal.Decimal `json:"execPnl"`
+	IsRPI         string          `json:"isRPI"`
 }

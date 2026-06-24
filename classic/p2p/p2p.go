@@ -145,7 +145,7 @@ type MerchantInfo struct {
 	Sell30d             string          `json:"sell30d"`
 	Buy30d              string          `json:"buy30d"`
 	CompletionRate30d   decimal.Decimal `json:"completionRate30d"`
-	KycStatus           bool            `json:"kycStatus"`
+	KYCStatus           bool            `json:"kycStatus"`
 	EmailBindStatus     bool            `json:"emailBindStatus"`
 	MobileBindStatus    bool            `json:"mobileBindStatus"`
 	Email               string          `json:"email"`
@@ -306,7 +306,7 @@ type P2PAdvPaymentInfoItem struct {
 
 // P2PMerchantCertified is a single merchant certification badge.
 type P2PMerchantCertified struct {
-	ImageUrl string `json:"imageUrl"`
+	ImageURL string `json:"imageUrl"`
 	Desc     string `json:"desc"`
 }
 

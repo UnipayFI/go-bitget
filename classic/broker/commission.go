@@ -25,9 +25,9 @@ type CommissionSubBizType string
 const (
 	CommissionSubBizTypeSpotTrade   CommissionSubBizType = "spot_trade"
 	CommissionSubBizTypeSpotMargin  CommissionSubBizType = "spot_margin"
-	CommissionSubBizTypeUsdtFutures CommissionSubBizType = "usdt_futures"
+	CommissionSubBizTypeUSDTFutures CommissionSubBizType = "usdt_futures"
 	CommissionSubBizTypeCoinFutures CommissionSubBizType = "coin_futures"
-	CommissionSubBizTypeUsdcFutures CommissionSubBizType = "usdc_futures"
+	CommissionSubBizTypeUSDCFutures CommissionSubBizType = "usdc_futures"
 )
 
 // RebateAffiliationType is the broker/client rebate relationship type
@@ -163,17 +163,17 @@ type OrderCommission struct {
 
 // OrderCommissionItem is a single fill's broker commission record.
 type OrderCommissionItem struct {
-	FillID       string               `json:"fillId"`
-	OrderID      string               `json:"orderId"`
-	Ts           time.Time            `json:"ts"`
-	ClientOid    string               `json:"clientOid"`
-	BizType      CommissionBizType    `json:"bizType"`
-	SubBizType   CommissionSubBizType `json:"subBizType"`
-	Symbol       string               `json:"symbol"`
-	Volume       decimal.Decimal      `json:"volume"`
-	Fee          decimal.Decimal      `json:"fee"`
-	PureFee      decimal.Decimal      `json:"pureFee"`
-	RebateAmount decimal.Decimal      `json:"rebateAmount"`
+	FillID        string               `json:"fillId"`
+	OrderID       string               `json:"orderId"`
+	Ts            time.Time            `json:"ts"`
+	ClientOrderID string               `json:"clientOid"`
+	BizType       CommissionBizType    `json:"bizType"`
+	SubBizType    CommissionSubBizType `json:"subBizType"`
+	Symbol        string               `json:"symbol"`
+	Volume        decimal.Decimal      `json:"volume"`
+	Fee           decimal.Decimal      `json:"fee"`
+	PureFee       decimal.Decimal      `json:"pureFee"`
+	RebateAmount  decimal.Decimal      `json:"rebateAmount"`
 }
 
 // GetRebateInfoService -- GET /api/v2/broker/rebate-info (private; broker-gated)

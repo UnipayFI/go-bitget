@@ -30,18 +30,18 @@ func TestWsTradeLifecycle(t *testing.T) {
 	price := decimal.RequireFromString("30000")
 	clientOid := "gobitget-ws" + strconv.FormatInt(time.Now().UnixNano(), 10)
 	ack, err := tc.PlaceOrder(ctx, CategorySpot, WsNewOrder{
-		Symbol:      "BTCUSDT",
-		Side:        SideBuy,
-		OrderType:   OrderTypeLimit,
-		Qty:         decimal.RequireFromString("0.00004"),
-		Price:       &price,
-		TimeInForce: TimeInForcePostOnly,
-		ClientOid:   clientOid,
+		Symbol:        "BTCUSDT",
+		Side:          SideBuy,
+		OrderType:     OrderTypeLimit,
+		Qty:           decimal.RequireFromString("0.00004"),
+		Price:         &price,
+		TimeInForce:   TimeInForcePostOnly,
+		ClientOrderID: clientOid,
 	})
 	if err != nil {
 		t.Fatalf("ws place-order: %v", err)
 	}
-	t.Logf("ws placed orderId=%s clientOid=%s cTime=%s", ack.OrderID, ack.ClientOid, ack.CTime)
+	t.Logf("ws placed orderId=%s clientOid=%s cTime=%s", ack.OrderID, ack.ClientOrderID, ack.CTime)
 	if ack.OrderID == "" {
 		t.Fatal("ws place-order returned empty orderId")
 	}

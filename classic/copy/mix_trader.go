@@ -247,7 +247,7 @@ func (s *GetMixTraderOrderTotalDetailService) Do(ctx context.Context) (*MixTrade
 
 // MixTraderOrderTotalDetail is the trader's aggregate performance summary.
 type MixTraderOrderTotalDetail struct {
-	Roi                       decimal.Decimal        `json:"roi"`
+	ROI                       decimal.Decimal        `json:"roi"`
 	TradingOrderNum           string                 `json:"tradingOrderNum"`
 	TotalFollowerNum          string                 `json:"totalFollowerNum"`
 	CurrentFollowerNum        string                 `json:"currentFollowerNum"`
@@ -257,14 +257,14 @@ type MixTraderOrderTotalDetail struct {
 	WinRate                   decimal.Decimal        `json:"winRate"`
 	TotalEquity               decimal.Decimal        `json:"totalEquity"`
 	TradingPairsAvailableList []string               `json:"tradingPairsAvailableList"`
-	LastWeekRoiList           []MixTraderRoiPoint    `json:"lastWeekRoiList"`
+	LastWeekROIList           []MixTraderROIPoint    `json:"lastWeekRoiList"`
 	LastWeekProfitList        []MixTraderProfitPoint `json:"lastWeekProfitList"`
-	LastMonthRoiList          []MixTraderRoiPoint    `json:"lastMonthRoiList"`
+	LastMonthROIList          []MixTraderROIPoint    `json:"lastMonthRoiList"`
 	LastMonthProfitList       []MixTraderProfitPoint `json:"lastMonthProfitList"`
 }
 
 // MixTraderRoiPoint is one point on a rolling ROI series.
-type MixTraderRoiPoint struct {
+type MixTraderROIPoint struct {
 	Rate  decimal.Decimal `json:"rate"`
 	Ctime time.Time       `json:"ctime"`
 }
@@ -585,7 +585,7 @@ func (s *SetMixTraderConfigBaseService) SetShowTotalEquity(show string) *SetMixT
 	return s
 }
 
-func (s *SetMixTraderConfigBaseService) SetShowTpsl(show string) *SetMixTraderConfigBaseService {
+func (s *SetMixTraderConfigBaseService) SetShowTPSL(show string) *SetMixTraderConfigBaseService {
 	s.body["showTpsl"] = show
 	return s
 }

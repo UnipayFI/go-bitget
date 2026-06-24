@@ -230,7 +230,7 @@ func (s *UnionConvertService) Do(ctx context.Context) (*UnionConvertResult, erro
 
 // UnionConvertResult reports the USDT received from a union-convert.
 type UnionConvertResult struct {
-	UsdtAmount decimal.Decimal `json:"usdtAmount"`
+	USDTAmount decimal.Decimal `json:"usdtAmount"`
 }
 
 // SetPositionModeService -- POST /api/v2/mix/account/set-position-mode (signed)

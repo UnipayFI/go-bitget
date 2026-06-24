@@ -54,7 +54,7 @@ func (c *WebSocketClient) DialTrade(ctx context.Context) (*TradeConn, error) {
 type tradeArg struct {
 	ID       string         `json:"id"`
 	InstType string         `json:"instType"`
-	InstId   string         `json:"instId"`
+	InstID   string         `json:"instId"`
 	Channel  string         `json:"channel"`
 	Params   map[string]any `json:"params"`
 }
@@ -79,14 +79,14 @@ type TradeResponseArg struct {
 	ID       string           `json:"id"`
 	InstType string           `json:"instType"`
 	Channel  string           `json:"channel"`
-	InstId   string           `json:"instId"`
+	InstID   string           `json:"instId"`
 	Params   TradeResultParam `json:"params"`
 }
 
 // TradeResultParam is the order ack payload.
 type TradeResultParam struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 func (t *TradeConn) readLoop() {
@@ -157,7 +157,7 @@ func (t *TradeConn) Trade(ctx context.Context, instType InstType, instId, channe
 	frame := tradeFrame{Op: "trade", Args: []tradeArg{{
 		ID:       id,
 		InstType: string(instType),
-		InstId:   instId,
+		InstID:   instId,
 		Channel:  channel,
 		Params:   params,
 	}}}

@@ -43,7 +43,7 @@ func (s *CreateSubAccountService) Do(ctx context.Context) (*SubAccount, error) {
 
 type SubAccount struct {
 	Username    string    `json:"username"`
-	SubUid      string    `json:"subUid"`
+	SubUID      string    `json:"subUid"`
 	Status      string    `json:"status"` // normal
 	Note        string    `json:"note"`
 	CreatedTime time.Time `json:"createdTime"`
@@ -85,7 +85,7 @@ func (c *UTAClient) NewGetSubAccountUnifiedAssetsService() *GetSubAccountUnified
 }
 
 // SetSubUid filters to a single sub-account (all sub-accounts when omitted).
-func (s *GetSubAccountUnifiedAssetsService) SetSubUid(subUid string) *GetSubAccountUnifiedAssetsService {
+func (s *GetSubAccountUnifiedAssetsService) SetSubUID(subUid string) *GetSubAccountUnifiedAssetsService {
 	s.params["subUid"] = subUid
 	return s
 }
@@ -111,7 +111,7 @@ func (s *GetSubAccountUnifiedAssetsService) Do(ctx context.Context) ([]SubAccoun
 }
 
 type SubAccountUnifiedAssets struct {
-	SubUid string            `json:"subUid"`
+	SubUID string            `json:"subUid"`
 	Cursor string            `json:"cursor"`
 	Assets []SubAccountAsset `json:"assets"`
 }
@@ -119,7 +119,7 @@ type SubAccountUnifiedAssets struct {
 type SubAccountAsset struct {
 	Coin      string          `json:"coin"`
 	Equity    decimal.Decimal `json:"equity"`
-	UsdValue  decimal.Decimal `json:"usdValue"`
+	USDValue  decimal.Decimal `json:"usdValue"`
 	Balance   decimal.Decimal `json:"balance"`
 	Debt      decimal.Decimal `json:"debt"`
 	Available decimal.Decimal `json:"available"`
@@ -162,7 +162,7 @@ type SubAccountList struct {
 }
 
 type SubAccountInfo struct {
-	SubUid      string    `json:"subUid"`
+	SubUID      string    `json:"subUid"`
 	Username    string    `json:"username"`
 	Status      string    `json:"status"`      // normal, freeze
 	AccountMode string    `json:"accountMode"` // CLASSIC, UNIFIED
@@ -200,7 +200,7 @@ func (s *CreateSubAccountAPIKeyService) Do(ctx context.Context) (*SubAccountAPIK
 
 type SubAccountAPIKey struct {
 	Note        string   `json:"note"`
-	ApiKey      string   `json:"apiKey"`
+	APIKey      string   `json:"apiKey"`
 	Secret      string   `json:"secret"`
 	Type        string   `json:"type"` // read_write, read_only
 	Permissions []string `json:"permissions"`
@@ -304,7 +304,7 @@ type SubAccountAPIKeys struct {
 }
 
 type SubAccountAPIKeyRow struct {
-	ApiKey      string    `json:"apiKey"`
+	APIKey      string    `json:"apiKey"`
 	Type        string    `json:"type"` // read_write, read_only
 	Note        string    `json:"note"`
 	Permissions []string  `json:"permissions"`
@@ -342,8 +342,8 @@ func (s *CreateAgentSubAccountService) Do(ctx context.Context) (*AgentSubAccount
 
 type AgentSubAccount struct {
 	Username    string    `json:"username"`
-	SubUid      string    `json:"subUid"`
-	ApiKey      string    `json:"apiKey"`
+	SubUID      string    `json:"subUid"`
+	APIKey      string    `json:"apiKey"`
 	Secret      string    `json:"secret"`
 	Note        string    `json:"note"`
 	CreatedTime time.Time `json:"createdTime"`

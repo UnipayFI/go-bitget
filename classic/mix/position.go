@@ -197,7 +197,7 @@ type HistoryPosition struct {
 	MarginMode    MarginMode      `json:"marginMode"`
 	OpenTotalPos  decimal.Decimal `json:"openTotalPos"`
 	CloseTotalPos decimal.Decimal `json:"closeTotalPos"`
-	Pnl           decimal.Decimal `json:"pnl"`
+	PnL           decimal.Decimal `json:"pnl"`
 	NetProfit     decimal.Decimal `json:"netProfit"`
 	TotalFunding  decimal.Decimal `json:"totalFunding"`
 	OpenFee       decimal.Decimal `json:"openFee"`

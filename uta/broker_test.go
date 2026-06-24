@@ -26,7 +26,7 @@ func TestBroker(t *testing.T) {
 	if err != nil {
 		t.Fatalf("broker all-sub-deposit-withdrawal: %v", err)
 	}
-	t.Logf("broker all-sub-deposit-withdrawal: %d endId=%s", len(dw.List), dw.EndId)
+	t.Logf("broker all-sub-deposit-withdrawal: %d endId=%s", len(dw.List), dw.EndID)
 	raw = fetchRawGet(t, c, cx, "/api/v3/broker/all-sub-deposit-withdrawal", nil, true)
 	assertCovers(t, "broker/all-sub-deposit-withdrawal", raw, dw)
 

@@ -26,7 +26,7 @@ func (s *GetAccountSettingsService) Do(ctx context.Context) (*AccountSettings, e
 }
 
 type AccountSettings struct {
-	Uid              string                 `json:"uid"`
+	UID              string                 `json:"uid"`
 	AccountMode      string                 `json:"accountMode"`  // unified, hybrid, upgrading, switching
 	AssetMode        string                 `json:"assetMode"`    // multi_assets
 	AccountLevel     string                 `json:"accountLevel"` // basic, advanced, isolated, delta
@@ -65,9 +65,9 @@ func (s *GetAccountInfoService) Do(ctx context.Context) (*AccountInfo, error) {
 }
 
 type AccountInfo struct {
-	UserId      string    `json:"userId"`
-	InviterId   string    `json:"inviterId"`
-	ParentId    string    `json:"parentId"`
+	UserID      string    `json:"userId"`
+	InviterID   string    `json:"inviterId"`
+	ParentID    string    `json:"parentId"`
 	ChannelCode string    `json:"channelCode"`
 	Channel     string    `json:"channel"`
 	Ips         string    `json:"ips"`

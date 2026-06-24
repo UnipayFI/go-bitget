@@ -42,7 +42,7 @@ func (c *UTAClient) NewPlaceStrategyOrderService(category Category, symbol strin
 }
 
 // SetClientOid sets the client order ID (6-hour idempotent validity).
-func (s *PlaceStrategyOrderService) SetClientOid(clientOid string) *PlaceStrategyOrderService {
+func (s *PlaceStrategyOrderService) SetClientOrderID(clientOid string) *PlaceStrategyOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -55,7 +55,7 @@ func (s *PlaceStrategyOrderService) SetType(strategyType StrategyType) *PlaceStr
 
 // SetTpslMode sets the TPSL scope (e.g. "full" for all positions or "partial";
 // defaults to full).
-func (s *PlaceStrategyOrderService) SetTpslMode(tpslMode string) *PlaceStrategyOrderService {
+func (s *PlaceStrategyOrderService) SetTPSLMode(tpslMode string) *PlaceStrategyOrderService {
 	s.body["tpslMode"] = tpslMode
 	return s
 }
@@ -165,8 +165,8 @@ func (s *PlaceStrategyOrderService) Do(ctx context.Context) (*StrategyOrderResul
 // StrategyOrderResult is the identifier pair returned by the place/modify
 // strategy-order endpoints.
 type StrategyOrderResult struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // ModifyStrategyOrderService -- POST /api/v3/trade/modify-strategy-order (UTA trade read & write)
@@ -189,13 +189,13 @@ func (c *UTAClient) NewModifyStrategyOrderService(qty decimal.Decimal) *ModifySt
 
 // SetOrderId sets the order ID (either orderId or clientOid is required; orderId
 // takes priority).
-func (s *ModifyStrategyOrderService) SetOrderId(orderId string) *ModifyStrategyOrderService {
+func (s *ModifyStrategyOrderService) SetOrderID(orderId string) *ModifyStrategyOrderService {
 	s.body["orderId"] = orderId
 	return s
 }
 
 // SetClientOid sets the client order ID (either orderId or clientOid is required).
-func (s *ModifyStrategyOrderService) SetClientOid(clientOid string) *ModifyStrategyOrderService {
+func (s *ModifyStrategyOrderService) SetClientOrderID(clientOid string) *ModifyStrategyOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -292,13 +292,13 @@ func (c *UTAClient) NewCancelStrategyOrderService() *CancelStrategyOrderService 
 
 // SetOrderId sets the order ID (either orderId or clientOid is required; orderId
 // takes priority).
-func (s *CancelStrategyOrderService) SetOrderId(orderId string) *CancelStrategyOrderService {
+func (s *CancelStrategyOrderService) SetOrderID(orderId string) *CancelStrategyOrderService {
 	s.body["orderId"] = orderId
 	return s
 }
 
 // SetClientOid sets the client order ID (either orderId or clientOid is required).
-func (s *CancelStrategyOrderService) SetClientOid(clientOid string) *CancelStrategyOrderService {
+func (s *CancelStrategyOrderService) SetClientOrderID(clientOid string) *CancelStrategyOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -340,7 +340,7 @@ func (s *GetUnfilledStrategyOrdersService) Do(ctx context.Context) ([]StrategyOr
 // history listings.
 type StrategyOrder struct {
 	OrderID           string          `json:"orderId"`
-	ClientOid         string          `json:"clientOid"`
+	ClientOrderID     string          `json:"clientOid"`
 	Category          Category        `json:"category"`
 	Symbol            string          `json:"symbol"`
 	Qty               decimal.Decimal `json:"qty"`

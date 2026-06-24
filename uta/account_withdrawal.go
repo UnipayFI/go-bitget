@@ -60,7 +60,7 @@ func (s *WithdrawService) SetRemark(remark string) *WithdrawService {
 	return s
 }
 
-func (s *WithdrawService) SetClientOid(clientOid string) *WithdrawService {
+func (s *WithdrawService) SetClientOrderID(clientOid string) *WithdrawService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -109,8 +109,8 @@ func (s *WithdrawService) Do(ctx context.Context) (*WithdrawResult, error) {
 }
 
 type WithdrawResult struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // GetWithdrawalRecordsService -- GET /api/v3/account/withdrawal-records (UTA mgt. read)
@@ -139,7 +139,7 @@ func (s *GetWithdrawalRecordsService) SetOrderID(orderId string) *GetWithdrawalR
 	return s
 }
 
-func (s *GetWithdrawalRecordsService) SetClientOid(clientOid string) *GetWithdrawalRecordsService {
+func (s *GetWithdrawalRecordsService) SetClientOrderID(clientOid string) *GetWithdrawalRecordsService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -164,22 +164,22 @@ func (s *GetWithdrawalRecordsService) Do(ctx context.Context) ([]WithdrawalRecor
 }
 
 type WithdrawalRecord struct {
-	OrderID     string          `json:"orderId"`
-	ClientOid   string          `json:"clientOid"`
-	RecordID    string          `json:"recordId"`
-	Coin        string          `json:"coin"`
-	Type        string          `json:"type"`
-	Dest        string          `json:"dest"`
-	Size        decimal.Decimal `json:"size"`
-	Status      string          `json:"status"`
-	FromAddress string          `json:"fromAddress"`
-	ToAddress   string          `json:"toAddress"`
-	Chain       string          `json:"chain"`
-	Fee         decimal.Decimal `json:"fee"`
-	Confirm     string          `json:"confirm"`
-	Tag         string          `json:"tag"`
-	CreatedTime time.Time       `json:"createdTime"`
-	UpdatedTime time.Time       `json:"updatedTime"`
+	OrderID       string          `json:"orderId"`
+	ClientOrderID string          `json:"clientOid"`
+	RecordID      string          `json:"recordId"`
+	Coin          string          `json:"coin"`
+	Type          string          `json:"type"`
+	Dest          string          `json:"dest"`
+	Size          decimal.Decimal `json:"size"`
+	Status        string          `json:"status"`
+	FromAddress   string          `json:"fromAddress"`
+	ToAddress     string          `json:"toAddress"`
+	Chain         string          `json:"chain"`
+	Fee           decimal.Decimal `json:"fee"`
+	Confirm       string          `json:"confirm"`
+	Tag           string          `json:"tag"`
+	CreatedTime   time.Time       `json:"createdTime"`
+	UpdatedTime   time.Time       `json:"updatedTime"`
 }
 
 // GetWithdrawAddressService -- GET /api/v3/account/withdraw-address (UTA mgt. read)
@@ -257,7 +257,7 @@ func (s *CancelWithdrawalService) SetOrderID(orderId string) *CancelWithdrawalSe
 	return s
 }
 
-func (s *CancelWithdrawalService) SetClientOid(clientOid string) *CancelWithdrawalService {
+func (s *CancelWithdrawalService) SetClientOrderID(clientOid string) *CancelWithdrawalService {
 	s.body["clientOid"] = clientOid
 	return s
 }

@@ -57,13 +57,13 @@ const (
 // PlaceTpslOrderService -- POST /api/v2/mix/order/place-tpsl-order (mix trade)
 //
 // Places a stop-profit/stop-loss plan order against a futures position.
-type PlaceTpslOrderService struct {
+type PlaceTPSLOrderService struct {
 	c    *MixClient
 	body map[string]any
 }
 
-func (c *MixClient) NewPlaceTpslOrderService(productType ProductType, symbol, marginCoin string, planType PlanType, triggerPrice decimal.Decimal, holdSide HoldSide) *PlaceTpslOrderService {
-	return &PlaceTpslOrderService{c: c, body: map[string]any{
+func (c *MixClient) NewPlaceTPSLOrderService(productType ProductType, symbol, marginCoin string, planType PlanType, triggerPrice decimal.Decimal, holdSide HoldSide) *PlaceTPSLOrderService {
+	return &PlaceTPSLOrderService{c: c, body: map[string]any{
 		"productType":  string(productType),
 		"symbol":       symbol,
 		"marginCoin":   marginCoin,
@@ -75,65 +75,65 @@ func (c *MixClient) NewPlaceTpslOrderService(productType ProductType, symbol, ma
 
 // SetTriggerType selects the price series the trigger is measured against
 // (default fill_price).
-func (s *PlaceTpslOrderService) SetTriggerType(triggerType TriggerType) *PlaceTpslOrderService {
+func (s *PlaceTPSLOrderService) SetTriggerType(triggerType TriggerType) *PlaceTPSLOrderService {
 	s.body["triggerType"] = string(triggerType)
 	return s
 }
 
 // SetExecutePrice sets the execution price (0 or empty = market, >0 = limit;
 // omit for moving_plan).
-func (s *PlaceTpslOrderService) SetExecutePrice(executePrice decimal.Decimal) *PlaceTpslOrderService {
+func (s *PlaceTPSLOrderService) SetExecutePrice(executePrice decimal.Decimal) *PlaceTPSLOrderService {
 	s.body["executePrice"] = executePrice.String()
 	return s
 }
 
 // SetSize sets the order quantity in base coin (required for
 // profit/loss/moving plans, omit for whole-position plans).
-func (s *PlaceTpslOrderService) SetSize(size decimal.Decimal) *PlaceTpslOrderService {
+func (s *PlaceTPSLOrderService) SetSize(size decimal.Decimal) *PlaceTPSLOrderService {
 	s.body["size"] = size.String()
 	return s
 }
 
 // SetRangeRate sets the callback range (required only for moving_plan).
-func (s *PlaceTpslOrderService) SetRangeRate(rangeRate decimal.Decimal) *PlaceTpslOrderService {
+func (s *PlaceTPSLOrderService) SetRangeRate(rangeRate decimal.Decimal) *PlaceTPSLOrderService {
 	s.body["rangeRate"] = rangeRate.String()
 	return s
 }
 
 // SetClientOid sets a user-defined order identifier.
-func (s *PlaceTpslOrderService) SetClientOid(clientOid string) *PlaceTpslOrderService {
+func (s *PlaceTPSLOrderService) SetClientOrderID(clientOid string) *PlaceTPSLOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
 
 // SetStpMode sets the self-trade prevention mode (default none).
-func (s *PlaceTpslOrderService) SetStpMode(mode SelfTradePreventionMode) *PlaceTpslOrderService {
+func (s *PlaceTPSLOrderService) SetStpMode(mode SelfTradePreventionMode) *PlaceTPSLOrderService {
 	s.body["stpMode"] = string(mode)
 	return s
 }
 
-func (s *PlaceTpslOrderService) Do(ctx context.Context) (*PlaceTpslOrderResponse, error) {
+func (s *PlaceTPSLOrderService) Do(ctx context.Context) (*PlaceTPSLOrderResponse, error) {
 	req := request.Post(ctx, s.c, "/api/v2/mix/order/place-tpsl-order", s.body).WithSign()
-	return request.Do[PlaceTpslOrderResponse](req)
+	return request.Do[PlaceTPSLOrderResponse](req)
 }
 
 // PlaceTpslOrderResponse is the result of placing a TP/SL plan order.
-type PlaceTpslOrderResponse struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+type PlaceTPSLOrderResponse struct {
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // PlacePosTpslService -- POST /api/v2/mix/order/place-pos-tpsl (mix trade)
 //
 // Places take-profit and stop-loss plan orders for a position in one request.
 // Set at least one of the take-profit / stop-loss trigger prices.
-type PlacePosTpslService struct {
+type PlacePosTPSLService struct {
 	c    *MixClient
 	body map[string]any
 }
 
-func (c *MixClient) NewPlacePosTpslService(productType ProductType, symbol, marginCoin string, holdSide HoldSide) *PlacePosTpslService {
-	return &PlacePosTpslService{c: c, body: map[string]any{
+func (c *MixClient) NewPlacePosTPSLService(productType ProductType, symbol, marginCoin string, holdSide HoldSide) *PlacePosTPSLService {
+	return &PlacePosTPSLService{c: c, body: map[string]any{
 		"productType": string(productType),
 		"symbol":      symbol,
 		"marginCoin":  marginCoin,
@@ -142,80 +142,80 @@ func (c *MixClient) NewPlacePosTpslService(productType ProductType, symbol, marg
 }
 
 // SetStopSurplusTriggerPrice sets the take-profit trigger price.
-func (s *PlacePosTpslService) SetStopSurplusTriggerPrice(price decimal.Decimal) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopSurplusTriggerPrice(price decimal.Decimal) *PlacePosTPSLService {
 	s.body["stopSurplusTriggerPrice"] = price.String()
 	return s
 }
 
 // SetStopSurplusSize sets the take-profit quantity in base coin (filled =>
 // profit_plan, empty => pos_profit).
-func (s *PlacePosTpslService) SetStopSurplusSize(size decimal.Decimal) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopSurplusSize(size decimal.Decimal) *PlacePosTPSLService {
 	s.body["stopSurplusSize"] = size.String()
 	return s
 }
 
 // SetStopSurplusTriggerType selects the take-profit trigger price series
 // (default fill_price).
-func (s *PlacePosTpslService) SetStopSurplusTriggerType(triggerType TriggerType) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopSurplusTriggerType(triggerType TriggerType) *PlacePosTPSLService {
 	s.body["stopSurplusTriggerType"] = string(triggerType)
 	return s
 }
 
 // SetStopSurplusExecutePrice sets the take-profit execution price (0 or empty =
 // market, >0 = limit).
-func (s *PlacePosTpslService) SetStopSurplusExecutePrice(price decimal.Decimal) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopSurplusExecutePrice(price decimal.Decimal) *PlacePosTPSLService {
 	s.body["stopSurplusExecutePrice"] = price.String()
 	return s
 }
 
 // SetStopLossTriggerPrice sets the stop-loss trigger price.
-func (s *PlacePosTpslService) SetStopLossTriggerPrice(price decimal.Decimal) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopLossTriggerPrice(price decimal.Decimal) *PlacePosTPSLService {
 	s.body["stopLossTriggerPrice"] = price.String()
 	return s
 }
 
 // SetStopLossSize sets the stop-loss quantity in base coin (filled => loss_plan,
 // empty => pos_loss).
-func (s *PlacePosTpslService) SetStopLossSize(size decimal.Decimal) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopLossSize(size decimal.Decimal) *PlacePosTPSLService {
 	s.body["stopLossSize"] = size.String()
 	return s
 }
 
 // SetStopLossTriggerType selects the stop-loss trigger price series (default
 // fill_price).
-func (s *PlacePosTpslService) SetStopLossTriggerType(triggerType TriggerType) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopLossTriggerType(triggerType TriggerType) *PlacePosTPSLService {
 	s.body["stopLossTriggerType"] = string(triggerType)
 	return s
 }
 
 // SetStopLossExecutePrice sets the stop-loss execution price (0 or empty =
 // market, >0 = limit).
-func (s *PlacePosTpslService) SetStopLossExecutePrice(price decimal.Decimal) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopLossExecutePrice(price decimal.Decimal) *PlacePosTPSLService {
 	s.body["stopLossExecutePrice"] = price.String()
 	return s
 }
 
 // SetStpMode sets the self-trade prevention mode (default none).
-func (s *PlacePosTpslService) SetStpMode(mode SelfTradePreventionMode) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStpMode(mode SelfTradePreventionMode) *PlacePosTPSLService {
 	s.body["stpMode"] = string(mode)
 	return s
 }
 
 // SetStopSurplusClientOid sets a user-defined identifier for the take-profit order.
-func (s *PlacePosTpslService) SetStopSurplusClientOid(clientOid string) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopSurplusClientOrderID(clientOid string) *PlacePosTPSLService {
 	s.body["stopSurplusClientOid"] = clientOid
 	return s
 }
 
 // SetStopLossClientOid sets a user-defined identifier for the stop-loss order.
-func (s *PlacePosTpslService) SetStopLossClientOid(clientOid string) *PlacePosTpslService {
+func (s *PlacePosTPSLService) SetStopLossClientOrderID(clientOid string) *PlacePosTPSLService {
 	s.body["stopLossClientOid"] = clientOid
 	return s
 }
 
-func (s *PlacePosTpslService) Do(ctx context.Context) ([]PlacePosTpslResponse, error) {
+func (s *PlacePosTPSLService) Do(ctx context.Context) ([]PlacePosTPSLResponse, error) {
 	req := request.Post(ctx, s.c, "/api/v2/mix/order/place-pos-tpsl", s.body).WithSign()
-	resp, err := request.Do[[]PlacePosTpslResponse](req)
+	resp, err := request.Do[[]PlacePosTPSLResponse](req)
 	if err != nil {
 		return nil, err
 	}
@@ -224,10 +224,10 @@ func (s *PlacePosTpslService) Do(ctx context.Context) ([]PlacePosTpslResponse, e
 
 // PlacePosTpslResponse is one of the trigger orders created by a position
 // TP/SL request.
-type PlacePosTpslResponse struct {
-	OrderID              string `json:"orderId"`
-	StopSurplusClientOid string `json:"stopSurplusClientOid"`
-	StopLossClientOid    string `json:"stopLossClientOid"`
+type PlacePosTPSLResponse struct {
+	OrderID                  string `json:"orderId"`
+	StopSurplusClientOrderID string `json:"stopSurplusClientOid"`
+	StopLossClientOrderID    string `json:"stopLossClientOid"`
 }
 
 // PlacePlanOrderService -- POST /api/v2/mix/order/place-plan-order (mix trade)
@@ -274,7 +274,7 @@ func (s *PlacePlanOrderService) SetTradeSide(tradeSide TradeSide) *PlacePlanOrde
 }
 
 // SetClientOid sets a user-defined order identifier.
-func (s *PlacePlanOrderService) SetClientOid(clientOid string) *PlacePlanOrderService {
+func (s *PlacePlanOrderService) SetClientOrderID(clientOid string) *PlacePlanOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -339,21 +339,21 @@ func (s *PlacePlanOrderService) Do(ctx context.Context) (*PlacePlanOrderResponse
 
 // PlacePlanOrderResponse is the result of placing a trigger (plan) order.
 type PlacePlanOrderResponse struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // ModifyTpslOrderService -- POST /api/v2/mix/order/modify-tpsl-order (mix trade)
 //
 // Modifies an existing TP/SL plan order. Identify the order by orderId or
 // clientOid (set at least one).
-type ModifyTpslOrderService struct {
+type ModifyTPSLOrderService struct {
 	c    *MixClient
 	body map[string]any
 }
 
-func (c *MixClient) NewModifyTpslOrderService(productType ProductType, symbol, marginCoin string, triggerPrice decimal.Decimal, size decimal.Decimal) *ModifyTpslOrderService {
-	return &ModifyTpslOrderService{c: c, body: map[string]any{
+func (c *MixClient) NewModifyTPSLOrderService(productType ProductType, symbol, marginCoin string, triggerPrice decimal.Decimal, size decimal.Decimal) *ModifyTPSLOrderService {
+	return &ModifyTPSLOrderService{c: c, body: map[string]any{
 		"productType":  string(productType),
 		"symbol":       symbol,
 		"marginCoin":   marginCoin,
@@ -363,44 +363,44 @@ func (c *MixClient) NewModifyTpslOrderService(productType ProductType, symbol, m
 }
 
 // SetOrderID identifies the TP/SL order to modify by order id.
-func (s *ModifyTpslOrderService) SetOrderID(orderID string) *ModifyTpslOrderService {
+func (s *ModifyTPSLOrderService) SetOrderID(orderID string) *ModifyTPSLOrderService {
 	s.body["orderId"] = orderID
 	return s
 }
 
 // SetClientOid identifies the TP/SL order to modify by client order id.
-func (s *ModifyTpslOrderService) SetClientOid(clientOid string) *ModifyTpslOrderService {
+func (s *ModifyTPSLOrderService) SetClientOrderID(clientOid string) *ModifyTPSLOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
 
 // SetTriggerType selects the price series the trigger is measured against.
-func (s *ModifyTpslOrderService) SetTriggerType(triggerType TriggerType) *ModifyTpslOrderService {
+func (s *ModifyTPSLOrderService) SetTriggerType(triggerType TriggerType) *ModifyTPSLOrderService {
 	s.body["triggerType"] = string(triggerType)
 	return s
 }
 
 // SetExecutePrice sets the execution price (0 or empty = market, >0 = limit).
-func (s *ModifyTpslOrderService) SetExecutePrice(executePrice decimal.Decimal) *ModifyTpslOrderService {
+func (s *ModifyTPSLOrderService) SetExecutePrice(executePrice decimal.Decimal) *ModifyTPSLOrderService {
 	s.body["executePrice"] = executePrice.String()
 	return s
 }
 
 // SetRangeRate sets the callback range percentage.
-func (s *ModifyTpslOrderService) SetRangeRate(rangeRate decimal.Decimal) *ModifyTpslOrderService {
+func (s *ModifyTPSLOrderService) SetRangeRate(rangeRate decimal.Decimal) *ModifyTPSLOrderService {
 	s.body["rangeRate"] = rangeRate.String()
 	return s
 }
 
-func (s *ModifyTpslOrderService) Do(ctx context.Context) (*ModifyTpslOrderResponse, error) {
+func (s *ModifyTPSLOrderService) Do(ctx context.Context) (*ModifyTPSLOrderResponse, error) {
 	req := request.Post(ctx, s.c, "/api/v2/mix/order/modify-tpsl-order", s.body).WithSign()
-	return request.Do[ModifyTpslOrderResponse](req)
+	return request.Do[ModifyTPSLOrderResponse](req)
 }
 
 // ModifyTpslOrderResponse is the result of modifying a TP/SL plan order.
-type ModifyTpslOrderResponse struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+type ModifyTPSLOrderResponse struct {
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // ModifyPlanOrderService -- POST /api/v2/mix/order/modify-plan-order (mix trade)
@@ -425,7 +425,7 @@ func (s *ModifyPlanOrderService) SetOrderID(orderID string) *ModifyPlanOrderServ
 }
 
 // SetClientOid identifies the trigger order to modify by client order id.
-func (s *ModifyPlanOrderService) SetClientOid(clientOid string) *ModifyPlanOrderService {
+func (s *ModifyPlanOrderService) SetClientOrderID(clientOid string) *ModifyPlanOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -505,8 +505,8 @@ func (s *ModifyPlanOrderService) Do(ctx context.Context) (*ModifyPlanOrderRespon
 
 // ModifyPlanOrderResponse is the result of modifying a trigger (plan) order.
 type ModifyPlanOrderResponse struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // CancelPlanOrderService -- POST /api/v2/mix/order/cancel-plan-order (mix trade)
@@ -526,8 +526,8 @@ type CancelPlanOrderService struct {
 // CancelPlanOrderID identifies a single trigger order to cancel by order id or
 // client order id (set at least one).
 type CancelPlanOrderID struct {
-	OrderID   string `json:"orderId,omitempty"`
-	ClientOid string `json:"clientOid,omitempty"`
+	OrderID       string `json:"orderId,omitempty"`
+	ClientOrderID string `json:"clientOid,omitempty"`
 }
 
 func (c *MixClient) NewCancelPlanOrderService(productType ProductType) *CancelPlanOrderService {
@@ -585,15 +585,15 @@ type CancelPlanOrderResponse struct {
 
 // CancelPlanOrderSuccess is a successfully cancelled trigger order.
 type CancelPlanOrderSuccess struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // CancelPlanOrderFailure is a trigger order that failed to cancel.
 type CancelPlanOrderFailure struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	ErrorMsg  string `json:"errorMsg"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	ErrorMsg      string `json:"errorMsg"`
 }
 
 // GetOrdersPlanPendingService -- GET /api/v2/mix/order/orders-plan-pending (mix trade)
@@ -619,7 +619,7 @@ func (s *GetOrdersPlanPendingService) SetOrderID(orderID string) *GetOrdersPlanP
 }
 
 // SetClientOid filters to a single trigger order by client order id.
-func (s *GetOrdersPlanPendingService) SetClientOid(clientOid string) *GetOrdersPlanPendingService {
+func (s *GetOrdersPlanPendingService) SetClientOrderID(clientOid string) *GetOrdersPlanPendingService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -682,7 +682,7 @@ func (s *GetOrdersPlanHistoryService) SetOrderID(orderID string) *GetOrdersPlanH
 }
 
 // SetClientOid filters to a single trigger order by client order id.
-func (s *GetOrdersPlanHistoryService) SetClientOid(clientOid string) *GetOrdersPlanHistoryService {
+func (s *GetOrdersPlanHistoryService) SetClientOrderID(clientOid string) *GetOrdersPlanHistoryService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -745,7 +745,7 @@ type PlanOrder struct {
 	Size                    decimal.Decimal `json:"size"`
 	OrderID                 string          `json:"orderId"`
 	ExecuteOrderID          string          `json:"executeOrderId"`
-	ClientOid               string          `json:"clientOid"`
+	ClientOrderID           string          `json:"clientOid"`
 	PlanStatus              PlanOrderStatus `json:"planStatus"`
 	Price                   decimal.Decimal `json:"price"`
 	ExecutePrice            decimal.Decimal `json:"executePrice"`

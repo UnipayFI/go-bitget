@@ -17,7 +17,7 @@ const (
 	AnnouncementTypeCoinListings             AnnouncementType = "coin_listings"
 	AnnouncementTypeProductUpdates           AnnouncementType = "product_updates"
 	AnnouncementTypeSecurity                 AnnouncementType = "security"
-	AnnouncementTypeApiTrading               AnnouncementType = "api_trading"
+	AnnouncementTypeAPITrading               AnnouncementType = "api_trading"
 	AnnouncementTypeMaintenanceSystemUpdates AnnouncementType = "maintenance_system_updates"
 	AnnouncementTypeSymbolDelisting          AnnouncementType = "symbol_delisting"
 )

@@ -76,9 +76,9 @@ type CopyPositionSummary struct {
 	MarginMode    string          `json:"marginMode"` // isolated, cross
 	Margin        decimal.Decimal `json:"margin"`
 	PositionValue decimal.Decimal `json:"positionValue"`
-	UnrealizedPnl decimal.Decimal `json:"unrealizedPnl"`
-	RealizedPnl   decimal.Decimal `json:"realizedPnl"`
-	Roi           decimal.Decimal `json:"roi"`
+	UnrealizedPnL decimal.Decimal `json:"unrealizedPnl"`
+	RealizedPnL   decimal.Decimal `json:"realizedPnl"`
+	ROI           decimal.Decimal `json:"roi"`
 }
 
 // GetCopyMaxTransferableService -- GET /api/v3/copy/futures/max-transferable (Elite trading read)
@@ -127,7 +127,7 @@ func (s *CopyTransferService) Do(ctx context.Context) (*CopyTransferResult, erro
 }
 
 type CopyTransferResult struct {
-	TransferId string `json:"transferId"`
+	TransferID string `json:"transferId"`
 }
 
 // GetCopyTransferRecordService -- GET /api/v3/copy/futures/transfer-record (Elite trading read)
@@ -175,7 +175,7 @@ type CopyTransferRecords struct {
 }
 
 type CopyTransferRecord struct {
-	TransferId  string          `json:"transferId"`
+	TransferID  string          `json:"transferId"`
 	FromType    string          `json:"fromType"` // spot, uta, lead
 	ToType      string          `json:"toType"`   // spot, uta, lead
 	Coin        string          `json:"coin"`

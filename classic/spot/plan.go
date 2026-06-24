@@ -78,7 +78,7 @@ func (s *PlacePlanOrderService) SetPlanType(planType PlanType) *PlacePlanOrderSe
 }
 
 // SetClientOid sets a user-defined order identifier.
-func (s *PlacePlanOrderService) SetClientOid(clientOid string) *PlacePlanOrderService {
+func (s *PlacePlanOrderService) SetClientOrderID(clientOid string) *PlacePlanOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -96,8 +96,8 @@ func (s *PlacePlanOrderService) Do(ctx context.Context) (*PlacePlanOrderResponse
 
 // PlacePlanOrderResponse is the result of placing a plan order.
 type PlacePlanOrderResponse struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // ModifyPlanOrderService -- POST /api/v2/spot/trade/modify-plan-order (spot trade)
@@ -124,7 +124,7 @@ func (s *ModifyPlanOrderService) SetOrderID(orderID string) *ModifyPlanOrderServ
 }
 
 // SetClientOid identifies the plan order to modify by client order id.
-func (s *ModifyPlanOrderService) SetClientOid(clientOid string) *ModifyPlanOrderService {
+func (s *ModifyPlanOrderService) SetClientOrderID(clientOid string) *ModifyPlanOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -142,8 +142,8 @@ func (s *ModifyPlanOrderService) Do(ctx context.Context) (*ModifyPlanOrderRespon
 
 // ModifyPlanOrderResponse is the result of modifying a plan order.
 type ModifyPlanOrderResponse struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // CancelPlanOrderService -- POST /api/v2/spot/trade/cancel-plan-order (spot trade)
@@ -166,7 +166,7 @@ func (s *CancelPlanOrderService) SetOrderID(orderID string) *CancelPlanOrderServ
 }
 
 // SetClientOid identifies the plan order to cancel by client order id.
-func (s *CancelPlanOrderService) SetClientOid(clientOid string) *CancelPlanOrderService {
+func (s *CancelPlanOrderService) SetClientOrderID(clientOid string) *CancelPlanOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -217,15 +217,15 @@ type BatchCancelPlanOrderResponse struct {
 
 // BatchCancelPlanOrderSuccess is a successfully cancelled plan order.
 type BatchCancelPlanOrderSuccess struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // BatchCancelPlanOrderFailure is a plan order that failed to cancel.
 type BatchCancelPlanOrderFailure struct {
-	OrderID   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	ErrorMsg  string `json:"errorMsg"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	ErrorMsg      string `json:"errorMsg"`
 }
 
 // GetCurrentPlanOrderService -- GET /api/v2/spot/trade/current-plan-order (spot trade)
@@ -285,7 +285,7 @@ type PlanOrderList struct {
 // PlanOrder is a single spot plan (trigger) order.
 type PlanOrder struct {
 	OrderID          string          `json:"orderId"`
-	ClientOid        string          `json:"clientOid"`
+	ClientOrderID    string          `json:"clientOid"`
 	Symbol           string          `json:"symbol"`
 	TriggerPrice     decimal.Decimal `json:"triggerPrice"`
 	OrderType        OrderType       `json:"orderType"`

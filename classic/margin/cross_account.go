@@ -208,11 +208,11 @@ type CrossInterestRateAndLimit struct {
 	DailyInterestRate   decimal.Decimal    `json:"dailyInterestRate"`   // non-VIP daily rate
 	AnnualInterestRate  decimal.Decimal    `json:"annualInterestRate"`  // non-VIP annual rate
 	MaxBorrowableAmount decimal.Decimal    `json:"maxBorrowableAmount"` // maximum borrowable quantity
-	VipList             []CrossVipRateItem `json:"vipList"`             // per-VIP-tier rate table
+	VIPList             []CrossVIPRateItem `json:"vipList"`             // per-VIP-tier rate table
 }
 
 // CrossVipRateItem is one VIP tier's cross-margin interest rate and limit.
-type CrossVipRateItem struct {
+type CrossVIPRateItem struct {
 	Level              string          `json:"level"`              // VIP tier level
 	Limit              decimal.Decimal `json:"limit"`              // VIP borrowing limit
 	DailyInterestRate  decimal.Decimal `json:"dailyInterestRate"`  // VIP daily interest rate

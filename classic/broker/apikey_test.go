@@ -6,7 +6,7 @@ import (
 	"github.com/UnipayFI/go-bitget/classic/internal/apitest"
 )
 
-func TestBrokerApikey(t *testing.T) {
+func TestBrokerAPIKey(t *testing.T) {
 	c := NewBrokerClient(apitest.AuthOptions(t)...)
 	_ = c.SyncServerTime(apitest.Ctx(t))
 	cx := apitest.Ctx(t)
@@ -17,7 +17,7 @@ func TestBrokerApikey(t *testing.T) {
 	const subUid = "1"
 	params := map[string]string{"subUid": subUid}
 
-	resp, err := c.NewGetSubaccountApikeyListService(subUid).Do(cx)
+	resp, err := c.NewGetSubaccountAPIKeyListService(subUid).Do(cx)
 	if err != nil {
 		if apitest.Tolerable(t, "subaccount-apikey-list", err,
 			"40029", "40099", "40034", "40068", "40014", "40037", "40054", "47001", "22001") {

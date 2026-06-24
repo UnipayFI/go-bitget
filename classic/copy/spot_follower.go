@@ -105,28 +105,28 @@ func (s *AddSpotFollowerSettingsService) Do(ctx context.Context) (*string, error
 // Sets, updates or cancels the take-profit and/or stop-loss price for a single
 // spot copy-trading order identified by its tracking number. An empty price
 // leaves the side unchanged; "0" cancels it.
-type SetSpotFollowerTpslService struct {
+type SetSpotFollowerTPSLService struct {
 	c    *CopyClient
 	body map[string]any
 }
 
-func (c *CopyClient) NewSetSpotFollowerTpslService(trackingNo string) *SetSpotFollowerTpslService {
-	return &SetSpotFollowerTpslService{c: c, body: map[string]any{"trackingNo": trackingNo}}
+func (c *CopyClient) NewSetSpotFollowerTPSLService(trackingNo string) *SetSpotFollowerTPSLService {
+	return &SetSpotFollowerTPSLService{c: c, body: map[string]any{"trackingNo": trackingNo}}
 }
 
 // SetStopSurplusPrice sets the take-profit price.
-func (s *SetSpotFollowerTpslService) SetStopSurplusPrice(v decimal.Decimal) *SetSpotFollowerTpslService {
+func (s *SetSpotFollowerTPSLService) SetStopSurplusPrice(v decimal.Decimal) *SetSpotFollowerTPSLService {
 	s.body["stopSurplusPrice"] = v.String()
 	return s
 }
 
 // SetStopLossPrice sets the stop-loss price.
-func (s *SetSpotFollowerTpslService) SetStopLossPrice(v decimal.Decimal) *SetSpotFollowerTpslService {
+func (s *SetSpotFollowerTPSLService) SetStopLossPrice(v decimal.Decimal) *SetSpotFollowerTPSLService {
 	s.body["stopLossPrice"] = v.String()
 	return s
 }
 
-func (s *SetSpotFollowerTpslService) Do(ctx context.Context) (*string, error) {
+func (s *SetSpotFollowerTPSLService) Do(ctx context.Context) (*string, error) {
 	req := request.Post(ctx, s.c, "/api/v2/copy/spot-follower/setting-tpsl", s.body).WithSign()
 	return request.Do[string](req)
 }

@@ -477,7 +477,7 @@ type LoanDebts struct {
 type LoanDebtInfo struct {
 	Coin       string          `json:"coin"`
 	Amount     decimal.Decimal `json:"amount"`
-	AmountUsdt decimal.Decimal `json:"amountUsdt"`
+	AmountUSDT decimal.Decimal `json:"amountUsdt"`
 }
 
 // GetLoanReducesService -- GET /api/v3/loan/reduces (UTA mgt. read)

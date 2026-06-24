@@ -38,7 +38,7 @@ type MixWsAccount struct {
 	MaxOpenPosAvailable decimal.Decimal `json:"maxOpenPosAvailable"` // max available balance to open positions
 	MaxTransferOut      decimal.Decimal `json:"maxTransferOut"`      // max transferable amount
 	Equity              decimal.Decimal `json:"equity"`              // account assets
-	UsdtEquity          decimal.Decimal `json:"usdtEquity"`          // account equity in USD
+	USDTEquity          decimal.Decimal `json:"usdtEquity"`          // account equity in USD
 	CrossedRiskRate     decimal.Decimal `json:"crossedRiskRate"`     // risk ratio in cross margin mode
 	UnrealizedPL        decimal.Decimal `json:"unrealizedPL"`        // unrealized PnL
 	UnionTotalMargin    decimal.Decimal `json:"unionTotalMargin"`    // margin amount under union margin mode
@@ -65,8 +65,8 @@ func (s *SubscribeMixEquityService) Do(ctx context.Context, cb WsHandler[MixWsEq
 
 type MixWsEquity struct {
 	BtcEquity        decimal.Decimal `json:"btcEquity"`        // account equity (BTC)
-	UsdtEquity       decimal.Decimal `json:"usdtEquity"`       // account equity (USDT)
-	UsdtUnrealized   decimal.Decimal `json:"usdtUnrealized"`   // unrealized PnL (USDT)
+	USDTEquity       decimal.Decimal `json:"usdtEquity"`       // account equity (USDT)
+	USDTUnrealized   decimal.Decimal `json:"usdtUnrealized"`   // unrealized PnL (USDT)
 	UnionTotalMargin decimal.Decimal `json:"unionTotalMargin"` // total multi-asset margin
 	UnionAvailable   decimal.Decimal `json:"unionAvailable"`   // available balance under multi-asset margin mode
 	UnionMm          decimal.Decimal `json:"unionMm"`          // maintenance margin under multi-asset margin mode
@@ -85,12 +85,12 @@ func (c *WebSocketClient) NewSubscribeMixPositionsService(instType InstType) *Su
 
 func (s *SubscribeMixPositionsService) Do(ctx context.Context, cb WsHandler[MixWsPosition]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsPosition](ctx, s.c, true,
-		WsArg{InstType: string(s.instType), Channel: "positions", InstId: "default"}, cb)
+		WsArg{InstType: string(s.instType), Channel: "positions", InstID: "default"}, cb)
 }
 
 type MixWsPosition struct {
-	PosId            string          `json:"posId"`            // position ID
-	InstId           string          `json:"instId"`           // product ID
+	PosID            string          `json:"posId"`            // position ID
+	InstID           string          `json:"instId"`           // product ID
 	MarginCoin       string          `json:"marginCoin"`       // currency of occupied margin
 	MarginSize       decimal.Decimal `json:"marginSize"`       // occupied margin (amount)
 	MarginMode       string          `json:"marginMode"`       // margin mode (crossed / isolated)
@@ -129,12 +129,12 @@ func (c *WebSocketClient) NewSubscribeMixPositionsHistoryService(instType InstTy
 
 func (s *SubscribeMixPositionsHistoryService) Do(ctx context.Context, cb WsHandler[MixWsPositionHistory]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsPositionHistory](ctx, s.c, true,
-		WsArg{InstType: string(s.instType), Channel: "positions-history", InstId: "default"}, cb)
+		WsArg{InstType: string(s.instType), Channel: "positions-history", InstID: "default"}, cb)
 }
 
 type MixWsPositionHistory struct {
-	PosId           string          `json:"posId"`           // position identifier
-	InstId          string          `json:"instId"`          // product ID
+	PosID           string          `json:"posId"`           // position identifier
+	InstID          string          `json:"instId"`          // product ID
 	MarginCoin      string          `json:"marginCoin"`      // margin currency
 	MarginMode      string          `json:"marginMode"`      // fixed (isolated) or crossed
 	HoldSide        string          `json:"holdSide"`        // direction of position
@@ -164,26 +164,26 @@ func (c *WebSocketClient) NewSubscribeMixFillService(instType InstType) *Subscri
 
 func (s *SubscribeMixFillService) Do(ctx context.Context, cb WsHandler[MixWsFill]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsFill](ctx, s.c, true,
-		WsArg{InstType: string(s.instType), Channel: "fill", InstId: "default"}, cb)
+		WsArg{InstType: string(s.instType), Channel: "fill", InstID: "default"}, cb)
 }
 
 type MixWsFill struct {
-	OrderId     string          `json:"orderId"`     // order identifier
-	ClientOid   string          `json:"clientOid"`   // user-defined order ID
-	TradeId     string          `json:"tradeId"`     // trade identifier
-	Symbol      string          `json:"symbol"`      // trading pair name
-	Side        string          `json:"side"`        // buy / sell
-	OrderType   string          `json:"orderType"`   // limit / market
-	PosMode     string          `json:"posMode"`     // one_way_mode / hedge_mode
-	Price       decimal.Decimal `json:"price"`       // execution price
-	BaseVolume  decimal.Decimal `json:"baseVolume"`  // base asset quantity traded
-	QuoteVolume decimal.Decimal `json:"quoteVolume"` // quote asset quantity traded
-	Profit      decimal.Decimal `json:"profit"`      // realized PnL
-	TradeSide   string          `json:"tradeSide"`   // trade classification (open/close/...)
-	TradeScope  string          `json:"tradeScope"`  // taker / maker
-	FeeDetail   []MixWsFillFee  `json:"feeDetail"`   // transaction fee breakdown
-	CTime       time.Time       `json:"cTime"`       // creation time
-	UTime       time.Time       `json:"uTime"`       // update time
+	OrderID       string          `json:"orderId"`     // order identifier
+	ClientOrderID string          `json:"clientOid"`   // user-defined order ID
+	TradeID       string          `json:"tradeId"`     // trade identifier
+	Symbol        string          `json:"symbol"`      // trading pair name
+	Side          string          `json:"side"`        // buy / sell
+	OrderType     string          `json:"orderType"`   // limit / market
+	PosMode       string          `json:"posMode"`     // one_way_mode / hedge_mode
+	Price         decimal.Decimal `json:"price"`       // execution price
+	BaseVolume    decimal.Decimal `json:"baseVolume"`  // base asset quantity traded
+	QuoteVolume   decimal.Decimal `json:"quoteVolume"` // quote asset quantity traded
+	Profit        decimal.Decimal `json:"profit"`      // realized PnL
+	TradeSide     string          `json:"tradeSide"`   // trade classification (open/close/...)
+	TradeScope    string          `json:"tradeScope"`  // taker / maker
+	FeeDetail     []MixWsFillFee  `json:"feeDetail"`   // transaction fee breakdown
+	CTime         time.Time       `json:"cTime"`       // creation time
+	UTime         time.Time       `json:"uTime"`       // update time
 }
 
 type MixWsFillFee struct {
@@ -206,19 +206,19 @@ func (c *WebSocketClient) NewSubscribeMixOrdersService(instType InstType) *Subsc
 
 func (s *SubscribeMixOrdersService) Do(ctx context.Context, cb WsHandler[MixWsOrder]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsOrder](ctx, s.c, true,
-		WsArg{InstType: string(s.instType), Channel: "orders", InstId: "default"}, cb)
+		WsArg{InstType: string(s.instType), Channel: "orders", InstID: "default"}, cb)
 }
 
 type MixWsOrder struct {
-	InstId           string          `json:"instId"`           // product ID, e.g. ETHUSDT
-	OrderId          string          `json:"orderId"`          // order ID
-	ClientOid        string          `json:"clientOid"`        // customized order ID
+	InstID           string          `json:"instId"`           // product ID, e.g. ETHUSDT
+	OrderID          string          `json:"orderId"`          // order ID
+	ClientOrderID    string          `json:"clientOid"`        // customized order ID
 	Price            decimal.Decimal `json:"price"`            // order price
 	Size             decimal.Decimal `json:"size"`             // original order amount in coin
 	PosMode          string          `json:"posMode"`          // one_way_mode / hedge_mode
 	EnterPointSource string          `json:"enterPointSource"` // order source (WEB, API, SYS, ANDROID, IOS)
 	TradeSide        string          `json:"tradeSide"`        // direction (open, close, reduce_close_long, ...)
-	NotionalUsd      decimal.Decimal `json:"notionalUsd"`      // estimated USD value of orders
+	NotionalUSD      decimal.Decimal `json:"notionalUsd"`      // estimated USD value of orders
 	OrderType        string          `json:"orderType"`        // limit / market
 	Force            string          `json:"force"`            // order validity period
 	Side             string          `json:"side"`             // order direction
@@ -226,21 +226,21 @@ type MixWsOrder struct {
 	MarginMode       string          `json:"marginMode"`       // crossed / isolated
 	MarginCoin       string          `json:"marginCoin"`       // margin coin
 	FillPrice        decimal.Decimal `json:"fillPrice"`        // latest filled price
-	TradeId          string          `json:"tradeId"`          // latest transaction ID
+	TradeID          string          `json:"tradeId"`          // latest transaction ID
 	BaseVolume       decimal.Decimal `json:"baseVolume"`       // number of latest filled orders
 	FillTime         time.Time       `json:"fillTime"`         // latest transaction time
 	FillFee          decimal.Decimal `json:"fillFee"`          // transaction fee of latest transaction
 	FillFeeCoin      string          `json:"fillFeeCoin"`      // currency of transaction fee
 	TradeScope       string          `json:"tradeScope"`       // liquidity direction (T: taker, M: maker)
 	AccBaseVolume    decimal.Decimal `json:"accBaseVolume"`    // total filled quantity
-	FillNotionalUsd  decimal.Decimal `json:"fillNotionalUsd"`  // USD value of filled orders
+	FillNotionalUSD  decimal.Decimal `json:"fillNotionalUsd"`  // USD value of filled orders
 	PriceAvg         decimal.Decimal `json:"priceAvg"`         // average filled price
 	Status           string          `json:"status"`           // live, partially_filled, filled, canceled
 	CancelReason     string          `json:"cancelReason"`     // cancellation reason
 	Leverage         decimal.Decimal `json:"leverage"`         // leverage
 	FeeDetail        []MixWsOrderFee `json:"feeDetail"`        // transaction fee details
 
-	Pnl                           decimal.Decimal `json:"pnl"`                           // profit
+	PnL                           decimal.Decimal `json:"pnl"`                           // profit
 	UTime                         time.Time       `json:"uTime"`                         // order update time
 	CTime                         time.Time       `json:"cTime"`                         // order creation time
 	ReduceOnly                    string          `json:"reduceOnly"`                    // reduce-only status (yes / no)
@@ -270,13 +270,13 @@ func (c *WebSocketClient) NewSubscribeMixOrdersAlgoService(instType InstType) *S
 
 func (s *SubscribeMixOrdersAlgoService) Do(ctx context.Context, cb WsHandler[MixWsOrderAlgo]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsOrderAlgo](ctx, s.c, true,
-		WsArg{InstType: string(s.instType), Channel: "orders-algo", InstId: "default"}, cb)
+		WsArg{InstType: string(s.instType), Channel: "orders-algo", InstID: "default"}, cb)
 }
 
 type MixWsOrderAlgo struct {
-	InstId           string          `json:"instId"`           // product ID
-	OrderId          string          `json:"orderId"`          // bot order identifier
-	ClientOid        string          `json:"clientOid"`        // custom bot order identifier
+	InstID           string          `json:"instId"`           // product ID
+	OrderID          string          `json:"orderId"`          // bot order identifier
+	ClientOrderID    string          `json:"clientOid"`        // custom bot order identifier
 	TriggerPrice     decimal.Decimal `json:"triggerPrice"`     // price level that activates the order
 	TriggerType      string          `json:"triggerType"`      // fill_price / mark_price
 	TriggerTime      time.Time       `json:"triggerTime"`      // activation timestamp
@@ -318,7 +318,7 @@ func (c *WebSocketClient) NewSubscribeMixADLNotificationService(instType InstTyp
 
 func (s *SubscribeMixADLNotificationService) Do(ctx context.Context, cb WsHandler[MixWsADLNotification]) (chan<- struct{}, <-chan struct{}, error) {
 	return Subscribe[[]MixWsADLNotification](ctx, s.c, true,
-		WsArg{InstType: string(s.instType), Channel: "adl-noti", InstId: "default"}, cb)
+		WsArg{InstType: string(s.instType), Channel: "adl-noti", InstID: "default"}, cb)
 }
 
 type MixWsADLNotification struct {

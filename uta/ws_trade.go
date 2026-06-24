@@ -37,44 +37,44 @@ func (c *UTAWebSocketClient) DialTrade(ctx context.Context) (*UTATradeConn, erro
 // WsOrderAck acknowledges a WebSocket order op. Code/Msg are only set per-item
 // on batch failures.
 type WsOrderAck struct {
-	Symbol    string    `json:"symbol"`
-	OrderID   string    `json:"orderId"`
-	ClientOid string    `json:"clientOid"`
-	CTime     time.Time `json:"cTime"`
-	Code      string    `json:"code"`
-	Msg       string    `json:"msg"`
+	Symbol        string    `json:"symbol"`
+	OrderID       string    `json:"orderId"`
+	ClientOrderID string    `json:"clientOid"`
+	CTime         time.Time `json:"cTime"`
+	Code          string    `json:"code"`
+	Msg           string    `json:"msg"`
 }
 
 // WsNewOrder describes an order to place over the stream. Price is a pointer so
 // it is omitted for market orders.
 type WsNewOrder struct {
-	Symbol      string           `json:"symbol"`
-	Side        Side             `json:"side"`
-	OrderType   OrderType        `json:"orderType"`
-	Qty         decimal.Decimal  `json:"qty"`
-	Price       *decimal.Decimal `json:"price,omitempty"`
-	TimeInForce TimeInForce      `json:"timeInForce,omitempty"`
-	ClientOid   string           `json:"clientOid,omitempty"`
-	PosSide     PosSide          `json:"posSide,omitempty"`
-	ReduceOnly  string           `json:"reduceOnly,omitempty"`
-	MarginMode  MarginMode       `json:"marginMode,omitempty"`
-	StpMode     string           `json:"stpMode,omitempty"`
+	Symbol        string           `json:"symbol"`
+	Side          Side             `json:"side"`
+	OrderType     OrderType        `json:"orderType"`
+	Qty           decimal.Decimal  `json:"qty"`
+	Price         *decimal.Decimal `json:"price,omitempty"`
+	TimeInForce   TimeInForce      `json:"timeInForce,omitempty"`
+	ClientOrderID string           `json:"clientOid,omitempty"`
+	PosSide       PosSide          `json:"posSide,omitempty"`
+	ReduceOnly    string           `json:"reduceOnly,omitempty"`
+	MarginMode    MarginMode       `json:"marginMode,omitempty"`
+	StpMode       string           `json:"stpMode,omitempty"`
 }
 
 // WsModifyOrder amends an open order. Identify it by OrderID or ClientOid.
 type WsModifyOrder struct {
-	Symbol    string           `json:"symbol,omitempty"`
-	OrderID   string           `json:"orderId,omitempty"`
-	ClientOid string           `json:"clientOid,omitempty"`
-	Qty       *decimal.Decimal `json:"qty,omitempty"`
-	Price     *decimal.Decimal `json:"price,omitempty"`
+	Symbol        string           `json:"symbol,omitempty"`
+	OrderID       string           `json:"orderId,omitempty"`
+	ClientOrderID string           `json:"clientOid,omitempty"`
+	Qty           *decimal.Decimal `json:"qty,omitempty"`
+	Price         *decimal.Decimal `json:"price,omitempty"`
 }
 
 // WsCancelOrder identifies an order to cancel by OrderID or ClientOid.
 type WsCancelOrder struct {
-	Symbol    string `json:"symbol,omitempty"`
-	OrderID   string `json:"orderId,omitempty"`
-	ClientOid string `json:"clientOid,omitempty"`
+	Symbol        string `json:"symbol,omitempty"`
+	OrderID       string `json:"orderId,omitempty"`
+	ClientOrderID string `json:"clientOid,omitempty"`
 }
 
 // PlaceOrder places a single order over the stream.

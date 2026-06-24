@@ -67,12 +67,12 @@ func (c *CopyClient) NewGetSpotTraderProfitHistoryDetailsService() *GetSpotTrade
 	return &GetSpotTraderProfitHistoryDetailsService{c: c, params: map[string]string{}}
 }
 
-func (s *GetSpotTraderProfitHistoryDetailsService) SetIdLessThan(id string) *GetSpotTraderProfitHistoryDetailsService {
+func (s *GetSpotTraderProfitHistoryDetailsService) SetIDLessThan(id string) *GetSpotTraderProfitHistoryDetailsService {
 	s.params["idLessThan"] = id
 	return s
 }
 
-func (s *GetSpotTraderProfitHistoryDetailsService) SetIdGreaterThan(id string) *GetSpotTraderProfitHistoryDetailsService {
+func (s *GetSpotTraderProfitHistoryDetailsService) SetIDGreaterThan(id string) *GetSpotTraderProfitHistoryDetailsService {
 	s.params["idGreaterThan"] = id
 	return s
 }
@@ -190,14 +190,14 @@ type SpotTraderOrderTotalDetail struct {
 	LossNum             string                  `json:"lossNum"`
 	TotalEquity         decimal.Decimal         `json:"totalEquity"`
 	WinRate             decimal.Decimal         `json:"winRate"`
-	LastWeekRoiList     []SpotTraderRoiPoint    `json:"lastWeekRoiList"`
-	LastMonthRoiList    []SpotTraderRoiPoint    `json:"lastMonthRoiList"`
+	LastWeekROIList     []SpotTraderROIPoint    `json:"lastWeekRoiList"`
+	LastMonthROIList    []SpotTraderROIPoint    `json:"lastMonthRoiList"`
 	LastWeekProfitList  []SpotTraderProfitPoint `json:"lastWeekProfitList"`
 	LastMonthProfitList []SpotTraderProfitPoint `json:"lastMonthProfitList"`
 }
 
 // SpotTraderRoiPoint is a single timestamped ROI sample in a rolling series.
-type SpotTraderRoiPoint struct {
+type SpotTraderROIPoint struct {
 	Rate  decimal.Decimal `json:"rate"`
 	Ctime time.Time       `json:"ctime"`
 }
@@ -212,26 +212,26 @@ type SpotTraderProfitPoint struct {
 // ModifySpotTraderOrderTpslService -- POST /api/v2/copy/spot-trader/order-modify-tpsl (private, state-changing)
 //
 // Modifies the take-profit and/or stop-loss prices of a spot tracking order.
-type ModifySpotTraderOrderTpslService struct {
+type ModifySpotTraderOrderTPSLService struct {
 	c    *CopyClient
 	body map[string]any
 }
 
-func (c *CopyClient) NewModifySpotTraderOrderTpslService(trackingNo string) *ModifySpotTraderOrderTpslService {
-	return &ModifySpotTraderOrderTpslService{c: c, body: map[string]any{"trackingNo": trackingNo}}
+func (c *CopyClient) NewModifySpotTraderOrderTPSLService(trackingNo string) *ModifySpotTraderOrderTPSLService {
+	return &ModifySpotTraderOrderTPSLService{c: c, body: map[string]any{"trackingNo": trackingNo}}
 }
 
-func (s *ModifySpotTraderOrderTpslService) SetStopSurplusPrice(price decimal.Decimal) *ModifySpotTraderOrderTpslService {
+func (s *ModifySpotTraderOrderTPSLService) SetStopSurplusPrice(price decimal.Decimal) *ModifySpotTraderOrderTPSLService {
 	s.body["stopSurplusPrice"] = price.String()
 	return s
 }
 
-func (s *ModifySpotTraderOrderTpslService) SetStopLossPrice(price decimal.Decimal) *ModifySpotTraderOrderTpslService {
+func (s *ModifySpotTraderOrderTPSLService) SetStopLossPrice(price decimal.Decimal) *ModifySpotTraderOrderTPSLService {
 	s.body["stopLossPrice"] = price.String()
 	return s
 }
 
-func (s *ModifySpotTraderOrderTpslService) Do(ctx context.Context) (string, error) {
+func (s *ModifySpotTraderOrderTPSLService) Do(ctx context.Context) (string, error) {
 	req := request.Post(ctx, s.c, "/api/v2/copy/spot-trader/order-modify-tpsl", s.body).WithSign()
 	resp, err := request.Do[string](req)
 	if err != nil {
@@ -252,12 +252,12 @@ func (c *CopyClient) NewGetSpotTraderOrderHistoryTrackService() *GetSpotTraderOr
 	return &GetSpotTraderOrderHistoryTrackService{c: c, params: map[string]string{}}
 }
 
-func (s *GetSpotTraderOrderHistoryTrackService) SetIdLessThan(id string) *GetSpotTraderOrderHistoryTrackService {
+func (s *GetSpotTraderOrderHistoryTrackService) SetIDLessThan(id string) *GetSpotTraderOrderHistoryTrackService {
 	s.params["idLessThan"] = id
 	return s
 }
 
-func (s *GetSpotTraderOrderHistoryTrackService) SetIdGreaterThan(id string) *GetSpotTraderOrderHistoryTrackService {
+func (s *GetSpotTraderOrderHistoryTrackService) SetIDGreaterThan(id string) *GetSpotTraderOrderHistoryTrackService {
 	s.params["idGreaterThan"] = id
 	return s
 }
@@ -327,12 +327,12 @@ func (s *GetSpotTraderOrderCurrentTrackService) SetSymbol(symbol string) *GetSpo
 	return s
 }
 
-func (s *GetSpotTraderOrderCurrentTrackService) SetIdLessThan(id string) *GetSpotTraderOrderCurrentTrackService {
+func (s *GetSpotTraderOrderCurrentTrackService) SetIDLessThan(id string) *GetSpotTraderOrderCurrentTrackService {
 	s.params["idLessThan"] = id
 	return s
 }
 
-func (s *GetSpotTraderOrderCurrentTrackService) SetIdGreaterThan(id string) *GetSpotTraderOrderCurrentTrackService {
+func (s *GetSpotTraderOrderCurrentTrackService) SetIDGreaterThan(id string) *GetSpotTraderOrderCurrentTrackService {
 	s.params["idGreaterThan"] = id
 	return s
 }
@@ -479,7 +479,7 @@ func (s *GetSpotTraderConfigSettingsService) Do(ctx context.Context) (*SpotTrade
 
 // SpotTraderConfigSettings is the trader's copy-trade configuration payload.
 type SpotTraderConfigSettings struct {
-	RemoveLimitUsdt decimal.Decimal         `json:"removeLimitUsdt"`
+	RemoveLimitUSDT decimal.Decimal         `json:"removeLimitUsdt"`
 	SpotInfoList    []SpotTraderSymbolInfo  `json:"spotInfoList"`
 	LabelList       []SpotTraderLabel       `json:"labelList"`
 	Enable          string                  `json:"enable"`
@@ -555,6 +555,6 @@ type SpotTraderFollower struct {
 	IsRemove        string          `json:"isRemove"`
 	FollowerHeadPic string          `json:"followerHeadPic"`
 	FollowerName    string          `json:"followerName"`
-	FollowerUid     string          `json:"followerUid"`
+	FollowerUID     string          `json:"followerUid"`
 	FollowerTime    time.Time       `json:"followerTime"`
 }

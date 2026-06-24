@@ -36,28 +36,28 @@ func TestOrderLifecycle(t *testing.T) {
 	ref, err := c.NewPlaceOrderService(CategorySpot, symbol, qty, SideBuy, OrderTypeLimit).
 		SetPrice(price).
 		SetTimeInForce(TimeInForcePostOnly).
-		SetClientOid(clientOid).
+		SetClientOrderID(clientOid).
 		Do(cx)
 	if err != nil {
 		t.Fatalf("place-order: %v", err)
 	}
-	t.Logf("placed orderId=%s clientOid=%s", ref.OrderId, ref.ClientOid)
-	if ref.OrderId == "" {
+	t.Logf("placed orderId=%s clientOid=%s", ref.OrderID, ref.ClientOrderID)
+	if ref.OrderID == "" {
 		t.Fatal("place-order returned empty orderId")
 	}
 
 	// Ensure we always clean up even if a later step fails.
 	defer func() {
-		_, _ = c.NewCancelOrderService().SetOrderId(ref.OrderId).SetCategory(CategorySpot).Do(ctx(t))
+		_, _ = c.NewCancelOrderService().SetOrderID(ref.OrderID).SetCategory(CategorySpot).Do(ctx(t))
 	}()
 
 	// 2) order-info by orderId — validate the Order struct against the real order.
-	order, err := c.NewGetOrderInfoService().SetOrderID(ref.OrderId).Do(cx)
+	order, err := c.NewGetOrderInfoService().SetOrderID(ref.OrderID).Do(cx)
 	if err != nil {
 		t.Fatalf("order-info: %v", err)
 	}
 	t.Logf("order: status=%s price=%s qty=%s side=%s type=%s", order.OrderStatus, order.Price, order.Qty, order.Side, order.OrderType)
-	raw := fetchRawGet(t, c, cx, "/api/v3/trade/order-info", map[string]string{"orderId": ref.OrderId}, true)
+	raw := fetchRawGet(t, c, cx, "/api/v3/trade/order-info", map[string]string{"orderId": ref.OrderID}, true)
 	assertCovers(t, "trade/order-info", raw, order)
 
 	// 3) unfilled-orders should include it.
@@ -67,19 +67,19 @@ func TestOrderLifecycle(t *testing.T) {
 	}
 	found := false
 	for _, o := range open.List {
-		if o.OrderID == ref.OrderId {
+		if o.OrderID == ref.OrderID {
 			found = true
 		}
 	}
 	t.Logf("unfilled-orders: %d (found ours=%v)", len(open.List), found)
 	if !found {
-		t.Errorf("placed order %s not present in unfilled-orders", ref.OrderId)
+		t.Errorf("placed order %s not present in unfilled-orders", ref.OrderID)
 	}
 
 	// 4) modify the price (still far below market).
 	newPrice := decimal.RequireFromString("31000")
 	if _, err := c.NewModifyOrderService().
-		SetOrderId(ref.OrderId).
+		SetOrderID(ref.OrderID).
 		SetSymbol(symbol).
 		SetCategory(CategorySpot).
 		SetPrice(newPrice).
@@ -89,7 +89,7 @@ func TestOrderLifecycle(t *testing.T) {
 	t.Logf("modified price -> %s", newPrice)
 
 	// 5) order-info reflects the new price.
-	order2, err := c.NewGetOrderInfoService().SetOrderID(ref.OrderId).Do(cx)
+	order2, err := c.NewGetOrderInfoService().SetOrderID(ref.OrderID).Do(cx)
 	if err != nil {
 		t.Fatalf("order-info(2): %v", err)
 	}
@@ -99,10 +99,10 @@ func TestOrderLifecycle(t *testing.T) {
 	}
 
 	// 6) cancel.
-	if _, err := c.NewCancelOrderService().SetOrderId(ref.OrderId).SetCategory(CategorySpot).Do(cx); err != nil {
+	if _, err := c.NewCancelOrderService().SetOrderID(ref.OrderID).SetCategory(CategorySpot).Do(cx); err != nil {
 		t.Fatalf("cancel-order: %v", err)
 	}
-	t.Logf("cancelled %s", ref.OrderId)
+	t.Logf("cancelled %s", ref.OrderID)
 
 	// 7) history-orders should now include the cancelled order.
 	hist, err := c.NewGetOrderHistoryService(CategorySpot).SetSymbol(symbol).Do(cx)
@@ -111,7 +111,7 @@ func TestOrderLifecycle(t *testing.T) {
 	}
 	inHist := false
 	for _, o := range hist.List {
-		if o.OrderID == ref.OrderId {
+		if o.OrderID == ref.OrderID {
 			inHist = true
 		}
 	}

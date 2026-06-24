@@ -16,8 +16,8 @@ const (
 	AccountTypeSpot           AccountType = "spot"
 	AccountTypeP2P            AccountType = "p2p"
 	AccountTypeCoinFutures    AccountType = "coin_futures"
-	AccountTypeUsdtFutures    AccountType = "usdt_futures"
-	AccountTypeUsdcFutures    AccountType = "usdc_futures"
+	AccountTypeUSDTFutures    AccountType = "usdt_futures"
+	AccountTypeUSDCFutures    AccountType = "usdc_futures"
 	AccountTypeCrossedMargin  AccountType = "crossed_margin"
 	AccountTypeIsolatedMargin AccountType = "isolated_margin"
 )
@@ -31,8 +31,8 @@ const (
 	DepositAccountTypeSpot        DepositAccountType = "spot"
 	DepositAccountTypeFunding     DepositAccountType = "funding"
 	DepositAccountTypeCoinFutures DepositAccountType = "coin-futures"
-	DepositAccountTypeUsdtFutures DepositAccountType = "usdt-futures"
-	DepositAccountTypeUsdcFutures DepositAccountType = "usdc-futures"
+	DepositAccountTypeUSDTFutures DepositAccountType = "usdt-futures"
+	DepositAccountTypeUSDCFutures DepositAccountType = "usdc-futures"
 )
 
 // WithdrawalTransferType selects on-chain vs internal (within-Bitget) withdrawal.
@@ -49,7 +49,7 @@ type WithdrawalInnerToType string
 const (
 	WithdrawalInnerToTypeEmail  WithdrawalInnerToType = "email"
 	WithdrawalInnerToTypeMobile WithdrawalInnerToType = "mobile"
-	WithdrawalInnerToTypeUid    WithdrawalInnerToType = "uid"
+	WithdrawalInnerToTypeUID    WithdrawalInnerToType = "uid"
 )
 
 // RecordDest is the channel a deposit/withdrawal travelled over.
@@ -96,7 +96,7 @@ func (s *TransferService) SetSymbol(symbol string) *TransferService {
 
 // SetClientOid sets a user-defined identifier; replaying the same value returns
 // the original transfer result.
-func (s *TransferService) SetClientOid(clientOid string) *TransferService {
+func (s *TransferService) SetClientOrderID(clientOid string) *TransferService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -109,8 +109,8 @@ func (s *TransferService) Do(ctx context.Context) (*TransferResult, error) {
 // TransferResult is returned by both the own-account and sub-account transfer
 // endpoints.
 type TransferResult struct {
-	TransferId string `json:"transferId"`
-	ClientOid  string `json:"clientOid"`
+	TransferID    string `json:"transferId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // SubAccountTransferService -- POST /api/v2/spot/wallet/subaccount-transfer (signed)
@@ -141,7 +141,7 @@ func (s *SubAccountTransferService) SetSymbol(symbol string) *SubAccountTransfer
 }
 
 // SetClientOid sets a user-defined identifier.
-func (s *SubAccountTransferService) SetClientOid(clientOid string) *SubAccountTransferService {
+func (s *SubAccountTransferService) SetClientOrderID(clientOid string) *SubAccountTransferService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -225,7 +225,7 @@ func (s *WithdrawalService) SetRemark(remark string) *WithdrawalService {
 }
 
 // SetClientOid sets a client-generated unique identifier.
-func (s *WithdrawalService) SetClientOid(clientOid string) *WithdrawalService {
+func (s *WithdrawalService) SetClientOrderID(clientOid string) *WithdrawalService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -267,8 +267,8 @@ func (s *WithdrawalService) Do(ctx context.Context) (*WithdrawalResult, error) {
 
 // WithdrawalResult identifies a newly-created withdrawal.
 type WithdrawalResult struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // CancelWithdrawalService -- POST /api/v2/spot/wallet/cancel-withdrawal (signed)
@@ -330,7 +330,7 @@ type DepositAddress struct {
 	Chain   string `json:"chain"`
 	Coin    string `json:"coin"`
 	Tag     string `json:"tag"`
-	Url     string `json:"url"`
+	URL     string `json:"url"`
 }
 
 // GetSubAccountDepositAddressService -- GET /api/v2/spot/wallet/subaccount-deposit-address (signed)
@@ -387,13 +387,13 @@ func (s *GetDepositRecordsService) SetCoin(coin string) *GetDepositRecordsServic
 }
 
 // SetOrderId filters by a specific order ID.
-func (s *GetDepositRecordsService) SetOrderId(orderId string) *GetDepositRecordsService {
+func (s *GetDepositRecordsService) SetOrderID(orderId string) *GetDepositRecordsService {
 	s.params["orderId"] = orderId
 	return s
 }
 
 // SetIdLessThan pages backwards: returns records with an ID older than this one.
-func (s *GetDepositRecordsService) SetIdLessThan(idLessThan string) *GetDepositRecordsService {
+func (s *GetDepositRecordsService) SetIDLessThan(idLessThan string) *GetDepositRecordsService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -417,21 +417,21 @@ func (s *GetDepositRecordsService) Do(ctx context.Context) ([]DepositRecord, err
 // sub-account deposit-record shapes (clientOid/tag/confirm appear on the
 // sub-account variant).
 type DepositRecord struct {
-	OrderId     string          `json:"orderId"`
-	TradeId     string          `json:"tradeId"`
-	Coin        string          `json:"coin"`
-	ClientOid   string          `json:"clientOid"`
-	Type        string          `json:"type"` // fixed: deposit
-	Size        decimal.Decimal `json:"size"`
-	Status      RecordStatus    `json:"status"`
-	FromAddress string          `json:"fromAddress"`
-	ToAddress   string          `json:"toAddress"`
-	Chain       string          `json:"chain"`
-	Confirm     string          `json:"confirm"`
-	Dest        RecordDest      `json:"dest"`
-	Tag         string          `json:"tag"`
-	CTime       time.Time       `json:"cTime"`
-	UTime       time.Time       `json:"uTime"`
+	OrderID       string          `json:"orderId"`
+	TradeID       string          `json:"tradeId"`
+	Coin          string          `json:"coin"`
+	ClientOrderID string          `json:"clientOid"`
+	Type          string          `json:"type"` // fixed: deposit
+	Size          decimal.Decimal `json:"size"`
+	Status        RecordStatus    `json:"status"`
+	FromAddress   string          `json:"fromAddress"`
+	ToAddress     string          `json:"toAddress"`
+	Chain         string          `json:"chain"`
+	Confirm       string          `json:"confirm"`
+	Dest          RecordDest      `json:"dest"`
+	Tag           string          `json:"tag"`
+	CTime         time.Time       `json:"cTime"`
+	UTime         time.Time       `json:"uTime"`
 }
 
 // GetSubAccountDepositRecordsService -- GET /api/v2/spot/wallet/subaccount-deposit-records (signed)
@@ -465,7 +465,7 @@ func (s *GetSubAccountDepositRecordsService) SetEndTime(t time.Time) *GetSubAcco
 }
 
 // SetIdLessThan pages backwards: returns records with an orderId older than this.
-func (s *GetSubAccountDepositRecordsService) SetIdLessThan(idLessThan string) *GetSubAccountDepositRecordsService {
+func (s *GetSubAccountDepositRecordsService) SetIDLessThan(idLessThan string) *GetSubAccountDepositRecordsService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -507,19 +507,19 @@ func (s *GetWithdrawalRecordsService) SetCoin(coin string) *GetWithdrawalRecords
 }
 
 // SetClientOid filters by a user-defined order identifier.
-func (s *GetWithdrawalRecordsService) SetClientOid(clientOid string) *GetWithdrawalRecordsService {
+func (s *GetWithdrawalRecordsService) SetClientOrderID(clientOid string) *GetWithdrawalRecordsService {
 	s.params["clientOid"] = clientOid
 	return s
 }
 
 // SetOrderId filters by a specific order ID.
-func (s *GetWithdrawalRecordsService) SetOrderId(orderId string) *GetWithdrawalRecordsService {
+func (s *GetWithdrawalRecordsService) SetOrderID(orderId string) *GetWithdrawalRecordsService {
 	s.params["orderId"] = orderId
 	return s
 }
 
 // SetIdLessThan pages backwards: returns records with an ID older than this one.
-func (s *GetWithdrawalRecordsService) SetIdLessThan(idLessThan string) *GetWithdrawalRecordsService {
+func (s *GetWithdrawalRecordsService) SetIDLessThan(idLessThan string) *GetWithdrawalRecordsService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -541,20 +541,20 @@ func (s *GetWithdrawalRecordsService) Do(ctx context.Context) ([]WithdrawalRecor
 
 // WithdrawalRecord is a single withdrawal.
 type WithdrawalRecord struct {
-	OrderId     string          `json:"orderId"`
-	TradeId     string          `json:"tradeId"`
-	Coin        string          `json:"coin"`
-	ClientOid   string          `json:"clientOid"`
-	Type        string          `json:"type"` // fixed: withdraw
-	Dest        RecordDest      `json:"dest"`
-	Size        decimal.Decimal `json:"size"`
-	Fee         decimal.Decimal `json:"fee"`
-	Status      RecordStatus    `json:"status"`
-	FromAddress string          `json:"fromAddress"`
-	ToAddress   string          `json:"toAddress"`
-	Chain       string          `json:"chain"`
-	Confirm     string          `json:"confirm"`
-	Tag         string          `json:"tag"`
-	CTime       time.Time       `json:"cTime"`
-	UTime       time.Time       `json:"uTime"`
+	OrderID       string          `json:"orderId"`
+	TradeID       string          `json:"tradeId"`
+	Coin          string          `json:"coin"`
+	ClientOrderID string          `json:"clientOid"`
+	Type          string          `json:"type"` // fixed: withdraw
+	Dest          RecordDest      `json:"dest"`
+	Size          decimal.Decimal `json:"size"`
+	Fee           decimal.Decimal `json:"fee"`
+	Status        RecordStatus    `json:"status"`
+	FromAddress   string          `json:"fromAddress"`
+	ToAddress     string          `json:"toAddress"`
+	Chain         string          `json:"chain"`
+	Confirm       string          `json:"confirm"`
+	Tag           string          `json:"tag"`
+	CTime         time.Time       `json:"cTime"`
+	UTime         time.Time       `json:"uTime"`
 }

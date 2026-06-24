@@ -67,9 +67,9 @@ func TestAccountAssets(t *testing.T) {
 		t.Fatalf("account assets: %v", err)
 	}
 	t.Logf("accountEquity=%s usdtEquity=%s assets=%d",
-		resp.AccountEquity, resp.UsdtEquity, len(resp.Assets))
+		resp.AccountEquity, resp.USDTEquity, len(resp.Assets))
 	for _, a := range resp.Assets {
-		t.Logf("  %s balance=%s available=%s usdValue=%s", a.Coin, a.Balance, a.Available, a.UsdValue)
+		t.Logf("  %s balance=%s available=%s usdValue=%s", a.Coin, a.Balance, a.Available, a.USDValue)
 	}
 	raw := fetchRawGet(t, c, cx, "/api/v3/account/assets", nil, true)
 	assertCovers(t, "account/assets", raw, resp)

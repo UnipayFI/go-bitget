@@ -39,11 +39,11 @@ const (
 )
 
 // CommissionApiType reports whether the customer trades via API.
-type CommissionApiType string
+type CommissionAPIType string
 
 const (
-	CommissionApiTypeAPI    CommissionApiType = "api"
-	CommissionApiTypeNonAPI CommissionApiType = "non_api"
+	CommissionAPITypeAPI    CommissionAPIType = "api"
+	CommissionAPITypeNonAPI CommissionAPIType = "non_api"
 )
 
 // CommissionStatus is the settlement state of a commission record.
@@ -56,11 +56,11 @@ const (
 )
 
 // KycResult is a customer's KYC verification outcome.
-type KycResult string
+type KYCResult string
 
 const (
-	KycResultPassed    KycResult = "passed"
-	KycResultNotPassed KycResult = "not_passed"
+	KYCResultPassed    KYCResult = "passed"
+	KYCResultNotPassed KYCResult = "not_passed"
 )
 
 // GetCustomerCommissionsService -- GET /api/v2/broker/customer-commissions (affiliate/agent)
@@ -289,66 +289,66 @@ type CustomerListEntry struct {
 //
 // Returns the KYC verification result for the agent's referred customers, paged
 // by idLessThan over a window of up to 90 days.
-type GetCustomerKycResultService struct {
+type GetCustomerKYCResultService struct {
 	c      *AffiliateClient
 	params map[string]string
 }
 
-func (c *AffiliateClient) NewGetCustomerKycResultService() *GetCustomerKycResultService {
-	return &GetCustomerKycResultService{c: c, params: map[string]string{}}
+func (c *AffiliateClient) NewGetCustomerKYCResultService() *GetCustomerKYCResultService {
+	return &GetCustomerKYCResultService{c: c, params: map[string]string{}}
 }
 
 // SetStartTime filters records at or after t (max 90-day range).
-func (s *GetCustomerKycResultService) SetStartTime(t time.Time) *GetCustomerKycResultService {
+func (s *GetCustomerKYCResultService) SetStartTime(t time.Time) *GetCustomerKYCResultService {
 	s.params["startTime"] = strconv.FormatInt(t.UnixMilli(), 10)
 	return s
 }
 
 // SetEndTime filters records at or before t (max 90-day range).
-func (s *GetCustomerKycResultService) SetEndTime(t time.Time) *GetCustomerKycResultService {
+func (s *GetCustomerKYCResultService) SetEndTime(t time.Time) *GetCustomerKYCResultService {
 	s.params["endTime"] = strconv.FormatInt(t.UnixMilli(), 10)
 	return s
 }
 
 // SetIDLessThan pages backward, returning data with an id older than this value.
-func (s *GetCustomerKycResultService) SetIDLessThan(id string) *GetCustomerKycResultService {
+func (s *GetCustomerKYCResultService) SetIDLessThan(id string) *GetCustomerKYCResultService {
 	s.params["idLessThan"] = id
 	return s
 }
 
 // SetLimit caps the number of records returned (default 100, max 1000).
-func (s *GetCustomerKycResultService) SetLimit(limit int) *GetCustomerKycResultService {
+func (s *GetCustomerKYCResultService) SetLimit(limit int) *GetCustomerKYCResultService {
 	s.params["limit"] = strconv.Itoa(limit)
 	return s
 }
 
 // SetUID filters to a single referred customer UID.
-func (s *GetCustomerKycResultService) SetUID(uid string) *GetCustomerKycResultService {
+func (s *GetCustomerKYCResultService) SetUID(uid string) *GetCustomerKYCResultService {
 	s.params["uid"] = uid
 	return s
 }
 
 // SetShowSub toggles inclusion of subordinate user info ("yes" or "no").
-func (s *GetCustomerKycResultService) SetShowSub(showSub string) *GetCustomerKycResultService {
+func (s *GetCustomerKYCResultService) SetShowSub(showSub string) *GetCustomerKYCResultService {
 	s.params["showSub"] = showSub
 	return s
 }
 
-func (s *GetCustomerKycResultService) Do(ctx context.Context) (*CustomerKycResult, error) {
+func (s *GetCustomerKYCResultService) Do(ctx context.Context) (*CustomerKYCResult, error) {
 	req := request.Get(ctx, s.c, "/api/v2/broker/customer-kyc-result", s.params).WithSign()
-	return request.Do[CustomerKycResult](req)
+	return request.Do[CustomerKYCResult](req)
 }
 
 // CustomerKycResult is the paged KYC-result response.
-type CustomerKycResult struct {
-	UserList []CustomerKycRecord `json:"userList"`
+type CustomerKYCResult struct {
+	UserList []CustomerKYCRecord `json:"userList"`
 	EndID    string              `json:"endId"`
 }
 
 // CustomerKycRecord is one customer's KYC outcome.
-type CustomerKycRecord struct {
+type CustomerKYCRecord struct {
 	UID       string    `json:"uid"`
-	KycResult KycResult `json:"kycResult"` // passed, not_passed
+	KYCResult KYCResult `json:"kycResult"` // passed, not_passed
 }
 
 // GetCustomerDepositService -- POST /api/v2/broker/customer-deposit (affiliate/agent)
@@ -526,7 +526,7 @@ type AgentCommissionRecord struct {
 	PartnerCommission       decimal.Decimal      `json:"partnerCommission"`
 	PartnerActualCommission decimal.Decimal      `json:"partnerActualCommission"`
 	TraderType              CommissionTraderType `json:"traderType"` // user, trader
-	ApiType                 CommissionApiType    `json:"apiType"`    // api, non_api
+	APIType                 CommissionAPIType    `json:"apiType"`    // api, non_api
 	Status                  CommissionStatus     `json:"status"`     // settled, unsettled, notIssued
 	StartCalculationTime    time.Time            `json:"startCalculationTime"`
 	EndCalculationTime      time.Time            `json:"endCalculationTime"`

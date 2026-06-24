@@ -126,11 +126,11 @@ func (s *GetSharkFinAccountService) Do(ctx context.Context) (*SharkFinAccount, e
 // SharkFinAccount is the aggregate SharkFin account summary.
 type SharkFinAccount struct {
 	BtcSubscribeAmount   decimal.Decimal `json:"btcSubscribeAmount"`
-	UsdtSubscribeAmount  decimal.Decimal `json:"usdtSubscribeAmount"`
+	USDTSubscribeAmount  decimal.Decimal `json:"usdtSubscribeAmount"`
 	BtcHistoricalAmount  decimal.Decimal `json:"btcHistoricalAmount"`
-	UsdtHistoricalAmount decimal.Decimal `json:"usdtHistoricalAmount"`
+	USDTHistoricalAmount decimal.Decimal `json:"usdtHistoricalAmount"`
 	BtcTotalEarning      decimal.Decimal `json:"btcTotalEarning"`
-	UsdtTotalEarning     decimal.Decimal `json:"usdtTotalEarning"`
+	USDTTotalEarning     decimal.Decimal `json:"usdtTotalEarning"`
 }
 
 // GetSharkFinAssetsService -- GET /api/v2/earn/sharkfin/assets (earn read)

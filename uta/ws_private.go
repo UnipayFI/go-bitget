@@ -25,7 +25,7 @@ func (s *SubscribeAccountService) Do(ctx context.Context, cb WsHandler[WsAccount
 type WsAccount struct {
 	TotalEquity      decimal.Decimal `json:"totalEquity"`
 	EffEquity        decimal.Decimal `json:"effEquity"`
-	UnrealisedPnL    decimal.Decimal `json:"unrealisedPnL"`
+	UnrealizedPnL    decimal.Decimal `json:"unrealisedPnL"`
 	Imr              decimal.Decimal `json:"imr"`
 	Mmr              decimal.Decimal `json:"mmr"`
 	MgnRatio         decimal.Decimal `json:"mgnRatio"`
@@ -41,7 +41,7 @@ type WsAccountCoin struct {
 	Locked    decimal.Decimal `json:"locked"`
 	Borrow    decimal.Decimal `json:"borrow"`
 	Debts     decimal.Decimal `json:"debts"`
-	UsdValue  decimal.Decimal `json:"usdValue"`
+	USDValue  decimal.Decimal `json:"usdValue"`
 }
 
 // SubscribePositionService -- private "position" channel.
@@ -74,8 +74,8 @@ type WsPosition struct {
 	BreakEvenPrice  decimal.Decimal `json:"breakEvenPrice"`
 	LiqPrice        decimal.Decimal `json:"liqPrice"`
 	Mmr             decimal.Decimal `json:"mmr"`
-	UnrealisedPnl   decimal.Decimal `json:"unrealisedPnl"`
-	CurRealisedPnl  decimal.Decimal `json:"curRealisedPnl"`
+	UnrealizedPnL   decimal.Decimal `json:"unrealisedPnl"`
+	CurRealisedPnL  decimal.Decimal `json:"curRealisedPnl"`
 	ProfitRate      decimal.Decimal `json:"profitRate"`
 	TotalFundingFee decimal.Decimal `json:"totalFundingFee"`
 	OpenFeeTotal    decimal.Decimal `json:"openFeeTotal"`
@@ -100,34 +100,34 @@ func (s *SubscribeOrderService) Do(ctx context.Context, cb WsHandler[WsOrder]) (
 }
 
 type WsOrder struct {
-	Category     Category        `json:"category"`
-	Symbol       string          `json:"symbol"`
-	OrderID      string          `json:"orderId"`
-	ClientOid    string          `json:"clientOid"`
-	Price        decimal.Decimal `json:"price"`
-	Qty          decimal.Decimal `json:"qty"`
-	Amount       decimal.Decimal `json:"amount"`
-	HoldMode     HoldMode        `json:"holdMode"`
-	HoldSide     PosSide         `json:"holdSide"`
-	TradeSide    string          `json:"tradeSide"`
-	DelegateType string          `json:"delegateType"`
-	OrderType    OrderType       `json:"orderType"`
-	TimeInForce  TimeInForce     `json:"timeInForce"`
-	Side         Side            `json:"side"`
-	MarginMode   MarginMode      `json:"marginMode"`
-	MarginCoin   string          `json:"marginCoin"`
-	ReduceOnly   string          `json:"reduceOnly"`
-	CumExecQty   decimal.Decimal `json:"cumExecQty"`
-	CumExecValue decimal.Decimal `json:"cumExecValue"`
-	AvgPrice     decimal.Decimal `json:"avgPrice"`
-	TotalProfit  decimal.Decimal `json:"totalProfit"`
-	OrderStatus  OrderStatus     `json:"orderStatus"`
-	CancelReason string          `json:"cancelReason"`
-	Leverage     decimal.Decimal `json:"leverage"`
-	StpMode      string          `json:"stpMode"`
-	FeeDetail    []FeeDetail     `json:"feeDetail"`
-	CreatedTime  time.Time       `json:"createdTime"`
-	UpdatedTime  time.Time       `json:"updatedTime"`
+	Category      Category        `json:"category"`
+	Symbol        string          `json:"symbol"`
+	OrderID       string          `json:"orderId"`
+	ClientOrderID string          `json:"clientOid"`
+	Price         decimal.Decimal `json:"price"`
+	Qty           decimal.Decimal `json:"qty"`
+	Amount        decimal.Decimal `json:"amount"`
+	HoldMode      HoldMode        `json:"holdMode"`
+	HoldSide      PosSide         `json:"holdSide"`
+	TradeSide     string          `json:"tradeSide"`
+	DelegateType  string          `json:"delegateType"`
+	OrderType     OrderType       `json:"orderType"`
+	TimeInForce   TimeInForce     `json:"timeInForce"`
+	Side          Side            `json:"side"`
+	MarginMode    MarginMode      `json:"marginMode"`
+	MarginCoin    string          `json:"marginCoin"`
+	ReduceOnly    string          `json:"reduceOnly"`
+	CumExecQty    decimal.Decimal `json:"cumExecQty"`
+	CumExecValue  decimal.Decimal `json:"cumExecValue"`
+	AvgPrice      decimal.Decimal `json:"avgPrice"`
+	TotalProfit   decimal.Decimal `json:"totalProfit"`
+	OrderStatus   OrderStatus     `json:"orderStatus"`
+	CancelReason  string          `json:"cancelReason"`
+	Leverage      decimal.Decimal `json:"leverage"`
+	StpMode       string          `json:"stpMode"`
+	FeeDetail     []FeeDetail     `json:"feeDetail"`
+	CreatedTime   time.Time       `json:"createdTime"`
+	UpdatedTime   time.Time       `json:"updatedTime"`
 }
 
 // SubscribeFillService -- private "fill" channel (real-time executions).
@@ -145,25 +145,25 @@ func (s *SubscribeFillService) Do(ctx context.Context, cb WsHandler[WsFill]) (ch
 }
 
 type WsFill struct {
-	Category    Category        `json:"category"`
-	Symbol      string          `json:"symbol"`
-	OrderID     string          `json:"orderId"`
-	ClientOid   string          `json:"clientOid"`
-	ExecID      string          `json:"execId"`
-	ExecLinkID  string          `json:"execLinkId"`
-	OrderType   OrderType       `json:"orderType"`
-	Side        Side            `json:"side"`
-	HoldSide    PosSide         `json:"holdSide"`
-	TradeSide   string          `json:"tradeSide"`
-	TradeScope  TradeScope      `json:"tradeScope"`
-	ExecPrice   decimal.Decimal `json:"execPrice"`
-	ExecQty     decimal.Decimal `json:"execQty"`
-	ExecValue   decimal.Decimal `json:"execValue"`
-	ExecPnl     decimal.Decimal `json:"execPnl"`
-	FeeDetail   []FeeDetail     `json:"feeDetail"`
-	IsRPI       string          `json:"isRPI"`
-	ExecTime    time.Time       `json:"execTime"`
-	UpdatedTime time.Time       `json:"updatedTime"`
+	Category      Category        `json:"category"`
+	Symbol        string          `json:"symbol"`
+	OrderID       string          `json:"orderId"`
+	ClientOrderID string          `json:"clientOid"`
+	ExecID        string          `json:"execId"`
+	ExecLinkID    string          `json:"execLinkId"`
+	OrderType     OrderType       `json:"orderType"`
+	Side          Side            `json:"side"`
+	HoldSide      PosSide         `json:"holdSide"`
+	TradeSide     string          `json:"tradeSide"`
+	TradeScope    TradeScope      `json:"tradeScope"`
+	ExecPrice     decimal.Decimal `json:"execPrice"`
+	ExecQty       decimal.Decimal `json:"execQty"`
+	ExecValue     decimal.Decimal `json:"execValue"`
+	ExecPnL       decimal.Decimal `json:"execPnl"`
+	FeeDetail     []FeeDetail     `json:"feeDetail"`
+	IsRPI         string          `json:"isRPI"`
+	ExecTime      time.Time       `json:"execTime"`
+	UpdatedTime   time.Time       `json:"updatedTime"`
 }
 
 // SubscribeFastFillService -- private "fast-fill" channel (low-latency fills).
@@ -181,18 +181,18 @@ func (s *SubscribeFastFillService) Do(ctx context.Context, cb WsHandler[WsFastFi
 }
 
 type WsFastFill struct {
-	Category    Category        `json:"category"`
-	Symbol      string          `json:"symbol"`
-	OrderID     string          `json:"orderId"`
-	ClientOid   string          `json:"clientOid"`
-	ExecID      string          `json:"execId"`
-	Side        Side            `json:"side"`
-	HoldSide    PosSide         `json:"holdSide"`
-	TradeScope  TradeScope      `json:"tradeScope"`
-	ExecPrice   decimal.Decimal `json:"execPrice"`
-	ExecQty     decimal.Decimal `json:"execQty"`
-	ExecTime    time.Time       `json:"execTime"`
-	UpdatedTime time.Time       `json:"updatedTime"`
+	Category      Category        `json:"category"`
+	Symbol        string          `json:"symbol"`
+	OrderID       string          `json:"orderId"`
+	ClientOrderID string          `json:"clientOid"`
+	ExecID        string          `json:"execId"`
+	Side          Side            `json:"side"`
+	HoldSide      PosSide         `json:"holdSide"`
+	TradeScope    TradeScope      `json:"tradeScope"`
+	ExecPrice     decimal.Decimal `json:"execPrice"`
+	ExecQty       decimal.Decimal `json:"execQty"`
+	ExecTime      time.Time       `json:"execTime"`
+	UpdatedTime   time.Time       `json:"updatedTime"`
 }
 
 // SubscribeStrategyOrderService -- private "strategy-order" channel.
@@ -210,23 +210,23 @@ func (s *SubscribeStrategyOrderService) Do(ctx context.Context, cb WsHandler[WsS
 }
 
 type WsStrategyOrder struct {
-	Category     Category        `json:"category"`
-	Symbol       string          `json:"symbol"`
-	OrderID      string          `json:"orderId"`
-	ClientOid    string          `json:"clientOid"`
-	Qty          decimal.Decimal `json:"qty"`
-	Side         Side            `json:"side"`
-	PosSide      PosSide         `json:"posSide"`
-	Type         StrategyType    `json:"type"`
-	Status       string          `json:"status"`
-	TriggerType  string          `json:"triggerType"`
-	TakeProfit   decimal.Decimal `json:"takeProfit"`
-	StopLoss     decimal.Decimal `json:"stopLoss"`
-	TpOrderType  OrderType       `json:"tpOrderType"`
-	SlOrderType  OrderType       `json:"slOrderType"`
-	TriggerPrice decimal.Decimal `json:"triggerPrice"`
-	CreatedTime  time.Time       `json:"createdTime"`
-	UpdatedTime  time.Time       `json:"updatedTime"`
+	Category      Category        `json:"category"`
+	Symbol        string          `json:"symbol"`
+	OrderID       string          `json:"orderId"`
+	ClientOrderID string          `json:"clientOid"`
+	Qty           decimal.Decimal `json:"qty"`
+	Side          Side            `json:"side"`
+	PosSide       PosSide         `json:"posSide"`
+	Type          StrategyType    `json:"type"`
+	Status        string          `json:"status"`
+	TriggerType   string          `json:"triggerType"`
+	TakeProfit    decimal.Decimal `json:"takeProfit"`
+	StopLoss      decimal.Decimal `json:"stopLoss"`
+	TpOrderType   OrderType       `json:"tpOrderType"`
+	SlOrderType   OrderType       `json:"slOrderType"`
+	TriggerPrice  decimal.Decimal `json:"triggerPrice"`
+	CreatedTime   time.Time       `json:"createdTime"`
+	UpdatedTime   time.Time       `json:"updatedTime"`
 }
 
 // SubscribeADLNotificationService -- private "adl-notification" channel.

@@ -39,7 +39,7 @@ type FundingAsset struct {
 	Coin      string          `json:"coin"`
 	Available decimal.Decimal `json:"available"`
 	Frozen    decimal.Decimal `json:"frozen"`
-	UsdtValue decimal.Decimal `json:"usdtValue"`
+	USDTValue decimal.Decimal `json:"usdtValue"`
 }
 
 // BotAccountType is the bot product line selected by GetBotAssetsService.
@@ -84,7 +84,7 @@ type BotAsset struct {
 	Equity    decimal.Decimal `json:"equity"`
 	Bonus     decimal.Decimal `json:"bonus"`
 	Frozen    decimal.Decimal `json:"frozen"`
-	UsdtValue decimal.Decimal `json:"usdtValue"`
+	USDTValue decimal.Decimal `json:"usdtValue"`
 }
 
 // GetAllAccountBalanceService -- GET /api/v2/account/all-account-balance (private)
@@ -111,5 +111,5 @@ func (s *GetAllAccountBalanceService) Do(ctx context.Context) ([]AccountBalance,
 // AccountBalance is the USDT-equivalent balance of a single account type.
 type AccountBalance struct {
 	AccountType string          `json:"accountType"`
-	UsdtBalance decimal.Decimal `json:"usdtBalance"`
+	USDTBalance decimal.Decimal `json:"usdtBalance"`
 }

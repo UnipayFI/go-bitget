@@ -62,7 +62,7 @@ type VirtualSubaccountCreateFailure struct {
 
 // VirtualSubaccountCreateSuccess is a newly created virtual sub-account.
 type VirtualSubaccountCreateSuccess struct {
-	SubAccountUid  string                  `json:"subaAccountUid"`
+	SubAccountUID  string                  `json:"subaAccountUid"`
 	SubAccountName string                  `json:"subaAccountName"`
 	Status         VirtualSubaccountStatus `json:"status"`
 	Label          string                  `json:"label"`
@@ -100,13 +100,13 @@ type ModifyVirtualSubaccountResult struct {
 // BatchCreateVirtualSubaccountAndApikeyService -- POST /api/v2/user/batch-create-virtual-subaccount-and-apikey (signed; state-changing)
 //
 // Creates a virtual sub-account together with its ApiKey in one call.
-type BatchCreateVirtualSubaccountAndApikeyService struct {
+type BatchCreateVirtualSubaccountAndAPIKeyService struct {
 	c    *CommonClient
 	body map[string]any
 }
 
-func (c *CommonClient) NewBatchCreateVirtualSubaccountAndApikeyService(subAccountName, passphrase, label string, permList []VirtualSubaccountPerm) *BatchCreateVirtualSubaccountAndApikeyService {
-	return &BatchCreateVirtualSubaccountAndApikeyService{c: c, body: map[string]any{
+func (c *CommonClient) NewBatchCreateVirtualSubaccountAndAPIKeyService(subAccountName, passphrase, label string, permList []VirtualSubaccountPerm) *BatchCreateVirtualSubaccountAndAPIKeyService {
+	return &BatchCreateVirtualSubaccountAndAPIKeyService{c: c, body: map[string]any{
 		"subAccountName": subAccountName,
 		"passphrase":     passphrase,
 		"label":          label,
@@ -114,14 +114,14 @@ func (c *CommonClient) NewBatchCreateVirtualSubaccountAndApikeyService(subAccoun
 	}}
 }
 
-func (s *BatchCreateVirtualSubaccountAndApikeyService) SetIpList(ipList []string) *BatchCreateVirtualSubaccountAndApikeyService {
+func (s *BatchCreateVirtualSubaccountAndAPIKeyService) SetIPList(ipList []string) *BatchCreateVirtualSubaccountAndAPIKeyService {
 	s.body["ipList"] = ipList
 	return s
 }
 
-func (s *BatchCreateVirtualSubaccountAndApikeyService) Do(ctx context.Context) ([]VirtualSubaccountApikey, error) {
+func (s *BatchCreateVirtualSubaccountAndAPIKeyService) Do(ctx context.Context) ([]VirtualSubaccountAPIKey, error) {
 	req := request.Post(ctx, s.c, "/api/v2/user/batch-create-virtual-subaccount-and-apikey", s.body).WithSign()
-	resp, err := request.Do[[]VirtualSubaccountApikey](req)
+	resp, err := request.Do[[]VirtualSubaccountAPIKey](req)
 	if err != nil {
 		return nil, err
 	}
@@ -130,14 +130,14 @@ func (s *BatchCreateVirtualSubaccountAndApikeyService) Do(ctx context.Context) (
 
 // VirtualSubaccountApikey is a created sub-account ApiKey, including the
 // (one-time-returned) secret key.
-type VirtualSubaccountApikey struct {
-	SubAccountUid    string                  `json:"subAccountUid"`
+type VirtualSubaccountAPIKey struct {
+	SubAccountUID    string                  `json:"subAccountUid"`
 	SubAccountName   string                  `json:"subAccountName"`
 	Label            string                  `json:"label"`
-	SubAccountApiKey string                  `json:"subAccountApiKey"`
+	SubAccountAPIKey string                  `json:"subAccountApiKey"`
 	SecretKey        string                  `json:"secretKey"`
 	PermList         []VirtualSubaccountPerm `json:"permList"`
-	IpList           []string                `json:"ipList"`
+	IPList           []string                `json:"ipList"`
 }
 
 // GetVirtualSubaccountListService -- GET /api/v2/user/virtual-subaccount-list (signed)
@@ -157,7 +157,7 @@ func (s *GetVirtualSubaccountListService) SetLimit(limit string) *GetVirtualSuba
 	return s
 }
 
-func (s *GetVirtualSubaccountListService) SetIdLessThan(idLessThan string) *GetVirtualSubaccountListService {
+func (s *GetVirtualSubaccountListService) SetIDLessThan(idLessThan string) *GetVirtualSubaccountListService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -175,13 +175,13 @@ func (s *GetVirtualSubaccountListService) Do(ctx context.Context) (*VirtualSubac
 // VirtualSubaccountList is one page of virtual sub-accounts plus the paging
 // cursor.
 type VirtualSubaccountList struct {
-	EndId          string              `json:"endId"`
+	EndID          string              `json:"endId"`
 	SubAccountList []VirtualSubaccount `json:"subAccountList"`
 }
 
 // VirtualSubaccount is a single virtual sub-account record.
 type VirtualSubaccount struct {
-	SubAccountUid  string                  `json:"subAccountUid"`
+	SubAccountUID  string                  `json:"subAccountUid"`
 	SubAccountName string                  `json:"subAccountName"`
 	Label          string                  `json:"label"`
 	Status         VirtualSubaccountStatus `json:"status"`
@@ -193,13 +193,13 @@ type VirtualSubaccount struct {
 // CreateVirtualSubaccountApikeyService -- POST /api/v2/user/create-virtual-subaccount-apikey (signed; state-changing)
 //
 // Creates an ApiKey for an existing virtual sub-account.
-type CreateVirtualSubaccountApikeyService struct {
+type CreateVirtualSubaccountAPIKeyService struct {
 	c    *CommonClient
 	body map[string]any
 }
 
-func (c *CommonClient) NewCreateVirtualSubaccountApikeyService(subAccountUid, passphrase, label string, permList []VirtualSubaccountPerm) *CreateVirtualSubaccountApikeyService {
-	return &CreateVirtualSubaccountApikeyService{c: c, body: map[string]any{
+func (c *CommonClient) NewCreateVirtualSubaccountAPIKeyService(subAccountUid, passphrase, label string, permList []VirtualSubaccountPerm) *CreateVirtualSubaccountAPIKeyService {
+	return &CreateVirtualSubaccountAPIKeyService{c: c, body: map[string]any{
 		"subAccountUid": subAccountUid,
 		"passphrase":    passphrase,
 		"label":         label,
@@ -207,27 +207,27 @@ func (c *CommonClient) NewCreateVirtualSubaccountApikeyService(subAccountUid, pa
 	}}
 }
 
-func (s *CreateVirtualSubaccountApikeyService) SetIpList(ipList []string) *CreateVirtualSubaccountApikeyService {
+func (s *CreateVirtualSubaccountAPIKeyService) SetIPList(ipList []string) *CreateVirtualSubaccountAPIKeyService {
 	s.body["ipList"] = ipList
 	return s
 }
 
-func (s *CreateVirtualSubaccountApikeyService) Do(ctx context.Context) (*VirtualSubaccountApikey, error) {
+func (s *CreateVirtualSubaccountAPIKeyService) Do(ctx context.Context) (*VirtualSubaccountAPIKey, error) {
 	req := request.Post(ctx, s.c, "/api/v2/user/create-virtual-subaccount-apikey", s.body).WithSign()
-	return request.Do[VirtualSubaccountApikey](req)
+	return request.Do[VirtualSubaccountAPIKey](req)
 }
 
 // ModifyVirtualSubaccountApikeyService -- POST /api/v2/user/modify-virtual-subaccount-apikey (signed; state-changing)
 //
 // Updates an existing virtual sub-account ApiKey's label, IP whitelist and
 // permissions.
-type ModifyVirtualSubaccountApikeyService struct {
+type ModifyVirtualSubaccountAPIKeyService struct {
 	c    *CommonClient
 	body map[string]any
 }
 
-func (c *CommonClient) NewModifyVirtualSubaccountApikeyService(subAccountUid, subAccountApiKey, passphrase, label string) *ModifyVirtualSubaccountApikeyService {
-	return &ModifyVirtualSubaccountApikeyService{c: c, body: map[string]any{
+func (c *CommonClient) NewModifyVirtualSubaccountAPIKeyService(subAccountUid, subAccountApiKey, passphrase, label string) *ModifyVirtualSubaccountAPIKeyService {
+	return &ModifyVirtualSubaccountAPIKeyService{c: c, body: map[string]any{
 		"subAccountUid":    subAccountUid,
 		"subAccountApiKey": subAccountApiKey,
 		"passphrase":       passphrase,
@@ -235,38 +235,38 @@ func (c *CommonClient) NewModifyVirtualSubaccountApikeyService(subAccountUid, su
 	}}
 }
 
-func (s *ModifyVirtualSubaccountApikeyService) SetIpList(ipList []string) *ModifyVirtualSubaccountApikeyService {
+func (s *ModifyVirtualSubaccountAPIKeyService) SetIPList(ipList []string) *ModifyVirtualSubaccountAPIKeyService {
 	s.body["ipList"] = ipList
 	return s
 }
 
-func (s *ModifyVirtualSubaccountApikeyService) SetPermList(permList []VirtualSubaccountPerm) *ModifyVirtualSubaccountApikeyService {
+func (s *ModifyVirtualSubaccountAPIKeyService) SetPermList(permList []VirtualSubaccountPerm) *ModifyVirtualSubaccountAPIKeyService {
 	s.body["permList"] = permList
 	return s
 }
 
-func (s *ModifyVirtualSubaccountApikeyService) Do(ctx context.Context) (*VirtualSubaccountApikey, error) {
+func (s *ModifyVirtualSubaccountAPIKeyService) Do(ctx context.Context) (*VirtualSubaccountAPIKey, error) {
 	req := request.Post(ctx, s.c, "/api/v2/user/modify-virtual-subaccount-apikey", s.body).WithSign()
-	return request.Do[VirtualSubaccountApikey](req)
+	return request.Do[VirtualSubaccountAPIKey](req)
 }
 
 // GetVirtualSubaccountApikeyListService -- GET /api/v2/user/virtual-subaccount-apikey-list (signed)
 //
 // Returns the ApiKeys belonging to a virtual sub-account.
-type GetVirtualSubaccountApikeyListService struct {
+type GetVirtualSubaccountAPIKeyListService struct {
 	c      *CommonClient
 	params map[string]string
 }
 
-func (c *CommonClient) NewGetVirtualSubaccountApikeyListService(subAccountUid string) *GetVirtualSubaccountApikeyListService {
-	return &GetVirtualSubaccountApikeyListService{c: c, params: map[string]string{
+func (c *CommonClient) NewGetVirtualSubaccountAPIKeyListService(subAccountUid string) *GetVirtualSubaccountAPIKeyListService {
+	return &GetVirtualSubaccountAPIKeyListService{c: c, params: map[string]string{
 		"subAccountUid": subAccountUid,
 	}}
 }
 
-func (s *GetVirtualSubaccountApikeyListService) Do(ctx context.Context) ([]VirtualSubaccountApikey, error) {
+func (s *GetVirtualSubaccountAPIKeyListService) Do(ctx context.Context) ([]VirtualSubaccountAPIKey, error) {
 	req := request.Get(ctx, s.c, "/api/v2/user/virtual-subaccount-apikey-list", s.params).WithSign()
-	resp, err := request.Do[[]VirtualSubaccountApikey](req)
+	resp, err := request.Do[[]VirtualSubaccountAPIKey](req)
 	if err != nil {
 		return nil, err
 	}

@@ -14,7 +14,7 @@ func TestInsLoan(t *testing.T) {
 	if err != nil {
 		t.Fatalf("risk unit: %v", err)
 	}
-	t.Logf("risk units: %d", len(ru.RiskUnitId))
+	t.Logf("risk units: %d", len(ru.RiskUnitID))
 	raw := fetchRawGet(t, c, cx, "/api/v3/ins-loan/risk-unit", nil, true)
 	assertCovers(t, "ins-loan/risk-unit", raw, ru)
 

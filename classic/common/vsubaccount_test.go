@@ -34,8 +34,8 @@ func TestVirtualSubaccount(t *testing.T) {
 		t.Log("virtual-subaccount-apikey-list: no virtual sub-account to query; skipping")
 		return
 	}
-	uid := listResp.SubAccountList[0].SubAccountUid
-	keyResp, err := c.NewGetVirtualSubaccountApikeyListService(uid).Do(cx)
+	uid := listResp.SubAccountList[0].SubAccountUID
+	keyResp, err := c.NewGetVirtualSubaccountAPIKeyListService(uid).Do(cx)
 	if err != nil {
 		if apitest.Tolerable(t, "virtual-subaccount-apikey-list", err, "40099", "40034", "40037", "40806", "00172", "40014", "40068") {
 			return

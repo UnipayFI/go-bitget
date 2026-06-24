@@ -102,7 +102,7 @@ func (s *GetDepositRecordsService) SetCoin(coin string) *GetDepositRecordsServic
 	return s
 }
 
-func (s *GetDepositRecordsService) SetOrderId(orderId string) *GetDepositRecordsService {
+func (s *GetDepositRecordsService) SetOrderID(orderId string) *GetDepositRecordsService {
 	s.params["orderId"] = orderId
 	return s
 }

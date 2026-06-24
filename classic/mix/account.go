@@ -40,7 +40,7 @@ type Account struct {
 	IsolatedMaxAvailable  decimal.Decimal `json:"isolatedMaxAvailable"`
 	MaxTransferOut        decimal.Decimal `json:"maxTransferOut"`
 	AccountEquity         decimal.Decimal `json:"accountEquity"`
-	UsdtEquity            decimal.Decimal `json:"usdtEquity"`
+	USDTEquity            decimal.Decimal `json:"usdtEquity"`
 	BtcEquity             decimal.Decimal `json:"btcEquity"`
 	CrossedRiskRate       decimal.Decimal `json:"crossedRiskRate"`
 	CrossedMarginLeverage decimal.Decimal `json:"crossedMarginLeverage"`
@@ -91,7 +91,7 @@ type AccountListItem struct {
 	IsolatedMaxAvailable decimal.Decimal    `json:"isolatedMaxAvailable"`
 	MaxTransferOut       decimal.Decimal    `json:"maxTransferOut"`
 	AccountEquity        decimal.Decimal    `json:"accountEquity"`
-	UsdtEquity           decimal.Decimal    `json:"usdtEquity"`
+	USDTEquity           decimal.Decimal    `json:"usdtEquity"`
 	BtcEquity            decimal.Decimal    `json:"btcEquity"`
 	CrossedRiskRate      decimal.Decimal    `json:"crossedRiskRate"`
 	UnrealizedPL         decimal.Decimal    `json:"unrealizedPL"`
@@ -153,7 +153,7 @@ type SubAccountAssetItem struct {
 	IsolatedMaxAvailable decimal.Decimal `json:"isolatedMaxAvailable"`
 	MaxTransferOut       decimal.Decimal `json:"maxTransferOut"`
 	AccountEquity        decimal.Decimal `json:"accountEquity"`
-	UsdtEquity           decimal.Decimal `json:"usdtEquity"`
+	USDTEquity           decimal.Decimal `json:"usdtEquity"`
 	BtcEquity            decimal.Decimal `json:"btcEquity"`
 	UnrealizedPL         decimal.Decimal `json:"unrealizedPL"`
 	Coupon               decimal.Decimal `json:"coupon"`
@@ -479,7 +479,7 @@ func (s *GetSwitchUnionUSDTService) Do(ctx context.Context) (*SwitchUnionUSDT, e
 
 // SwitchUnionUSDT is the USDT quota needed for the union-mode switch.
 type SwitchUnionUSDT struct {
-	UsdtAmount decimal.Decimal `json:"usdtAmount"`
+	USDTAmount decimal.Decimal `json:"usdtAmount"`
 }
 
 // GetIsolatedSymbolsService -- GET /api/v2/mix/account/isolated-symbols (private)

@@ -64,9 +64,9 @@ const (
 )
 
 // TpslType distinguishes a normal order from a take-profit/stop-loss order.
-type TpslType string
+type TPSLType string
 
 const (
-	TpslTypeNormal TpslType = "normal"
-	TpslTypeTpsl   TpslType = "tpsl"
+	TPSLTypeNormal TPSLType = "normal"
+	TPSLTypeTPSL   TPSLType = "tpsl"
 )

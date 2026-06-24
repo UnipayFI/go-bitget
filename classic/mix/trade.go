@@ -13,8 +13,8 @@ import (
 // is the reply shape for place/click-backhand/modify/cancel single-order
 // operations.
 type OrderRef struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // PlaceOrderService -- POST /api/v2/mix/order/place-order (private, state-changing)
@@ -59,7 +59,7 @@ func (s *PlaceOrderService) SetTradeSide(tradeSide TradeSide) *PlaceOrderService
 }
 
 // SetClientOid sets the client-generated order identifier.
-func (s *PlaceOrderService) SetClientOid(clientOid string) *PlaceOrderService {
+func (s *PlaceOrderService) SetClientOrderID(clientOid string) *PlaceOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -138,7 +138,7 @@ func (s *ClickBackhandService) SetTradeSide(tradeSide TradeSide) *ClickBackhandS
 }
 
 // SetClientOid sets the client-generated order identifier.
-func (s *ClickBackhandService) SetClientOid(clientOid string) *ClickBackhandService {
+func (s *ClickBackhandService) SetClientOrderID(clientOid string) *ClickBackhandService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -157,7 +157,7 @@ type BatchOrderItem struct {
 	TradeSide              TradeSide               `json:"tradeSide,omitempty"`
 	OrderType              OrderType               `json:"orderType"`
 	Force                  Force                   `json:"force,omitempty"`
-	ClientOid              string                  `json:"clientOid,omitempty"`
+	ClientOrderID          string                  `json:"clientOid,omitempty"`
 	ReduceOnly             ReduceOnly              `json:"reduceOnly,omitempty"`
 	PresetStopSurplusPrice decimal.Decimal         `json:"presetStopSurplusPrice,omitzero"`
 	PresetStopLossPrice    decimal.Decimal         `json:"presetStopLossPrice,omitzero"`
@@ -205,10 +205,10 @@ type BatchOrderResult struct {
 
 // OrderFailureItem is one rejected order in a batch operation.
 type OrderFailureItem struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	ErrorMsg  string `json:"errorMsg"`
-	ErrorCode string `json:"errorCode"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	ErrorMsg      string `json:"errorMsg"`
+	ErrorCode     string `json:"errorCode"`
 }
 
 // ModifyOrderService -- POST /api/v2/mix/order/modify-order (private, state-changing)
@@ -231,13 +231,13 @@ func (c *MixClient) NewModifyOrderService(symbol string, productType ProductType
 }
 
 // SetOrderId sets the order identifier (orderId or clientOid is required).
-func (s *ModifyOrderService) SetOrderId(orderId string) *ModifyOrderService {
+func (s *ModifyOrderService) SetOrderID(orderId string) *ModifyOrderService {
 	s.body["orderId"] = orderId
 	return s
 }
 
 // SetClientOid sets the client order identifier (orderId or clientOid is required).
-func (s *ModifyOrderService) SetClientOid(clientOid string) *ModifyOrderService {
+func (s *ModifyOrderService) SetClientOrderID(clientOid string) *ModifyOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -294,13 +294,13 @@ func (s *CancelOrderService) SetMarginCoin(marginCoin string) *CancelOrderServic
 }
 
 // SetOrderId sets the order identifier (orderId or clientOid is required).
-func (s *CancelOrderService) SetOrderId(orderId string) *CancelOrderService {
+func (s *CancelOrderService) SetOrderID(orderId string) *CancelOrderService {
 	s.body["orderId"] = orderId
 	return s
 }
 
 // SetClientOid sets the client order identifier (orderId or clientOid is required).
-func (s *CancelOrderService) SetClientOid(clientOid string) *CancelOrderService {
+func (s *CancelOrderService) SetClientOrderID(clientOid string) *CancelOrderService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -313,8 +313,8 @@ func (s *CancelOrderService) Do(ctx context.Context) (*OrderRef, error) {
 // BatchCancelItem identifies a single order to cancel in a batch-cancel request.
 // Either OrderId or ClientOid must be set (orderId takes precedence).
 type BatchCancelItem struct {
-	OrderId   string `json:"orderId,omitempty"`
-	ClientOid string `json:"clientOid,omitempty"`
+	OrderID       string `json:"orderId,omitempty"`
+	ClientOrderID string `json:"clientOid,omitempty"`
 }
 
 // BatchCancelOrdersService -- POST /api/v2/mix/order/batch-cancel-orders (private, state-changing)
@@ -347,7 +347,7 @@ func (s *BatchCancelOrdersService) SetMarginCoin(marginCoin string) *BatchCancel
 
 // SetOrderIdList sets the list of orders to cancel (max 50). When omitted, all
 // open orders matching the other filters are cancelled.
-func (s *BatchCancelOrdersService) SetOrderIdList(orderIdList []BatchCancelItem) *BatchCancelOrdersService {
+func (s *BatchCancelOrdersService) SetOrderIDList(orderIdList []BatchCancelItem) *BatchCancelOrdersService {
 	s.body["orderIdList"] = orderIdList
 	return s
 }
@@ -399,18 +399,18 @@ type ClosePositionsResult struct {
 
 // CloseOrderRef is one submitted flash-close order.
 type CloseOrderRef struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	Symbol    string `json:"symbol"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	Symbol        string `json:"symbol"`
 }
 
 // CloseOrderFailure is one position that could not be flash-closed.
 type CloseOrderFailure struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
-	Symbol    string `json:"symbol"`
-	ErrorMsg  string `json:"errorMsg"`
-	ErrorCode string `json:"errorCode"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+	Symbol        string `json:"symbol"`
+	ErrorMsg      string `json:"errorMsg"`
+	ErrorCode     string `json:"errorCode"`
 }
 
 // CancelAllOrdersService -- POST /api/v2/mix/order/cancel-all-orders (private, state-changing)
@@ -458,8 +458,8 @@ func (s *CancelAllOrdersService) Do(ctx context.Context) (*BatchOrderResult, err
 type MixOrder struct {
 	Symbol                        string          `json:"symbol"`
 	Size                          decimal.Decimal `json:"size"`
-	OrderId                       string          `json:"orderId"`
-	ClientOid                     string          `json:"clientOid"`
+	OrderID                       string          `json:"orderId"`
+	ClientOrderID                 string          `json:"clientOid"`
 	BaseVolume                    decimal.Decimal `json:"baseVolume"`
 	Fee                           decimal.Decimal `json:"fee"`
 	Price                         decimal.Decimal `json:"price"`
@@ -514,13 +514,13 @@ func (c *MixClient) NewGetOrderDetailService(symbol string, productType ProductT
 }
 
 // SetOrderId sets the order identifier (orderId or clientOid is required).
-func (s *GetOrderDetailService) SetOrderId(orderId string) *GetOrderDetailService {
+func (s *GetOrderDetailService) SetOrderID(orderId string) *GetOrderDetailService {
 	s.params["orderId"] = orderId
 	return s
 }
 
 // SetClientOid sets the client order identifier (orderId or clientOid is required).
-func (s *GetOrderDetailService) SetClientOid(clientOid string) *GetOrderDetailService {
+func (s *GetOrderDetailService) SetClientOrderID(clientOid string) *GetOrderDetailService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -545,12 +545,12 @@ func (c *MixClient) NewGetOrdersPendingService(productType ProductType) *GetOrde
 	}}
 }
 
-func (s *GetOrdersPendingService) SetOrderId(orderId string) *GetOrdersPendingService {
+func (s *GetOrdersPendingService) SetOrderID(orderId string) *GetOrdersPendingService {
 	s.params["orderId"] = orderId
 	return s
 }
 
-func (s *GetOrdersPendingService) SetClientOid(clientOid string) *GetOrdersPendingService {
+func (s *GetOrdersPendingService) SetClientOrderID(clientOid string) *GetOrdersPendingService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -567,7 +567,7 @@ func (s *GetOrdersPendingService) SetStatus(status OrderStatus) *GetOrdersPendin
 }
 
 // SetIdLessThan pages to orders older than the given order id.
-func (s *GetOrdersPendingService) SetIdLessThan(idLessThan string) *GetOrdersPendingService {
+func (s *GetOrdersPendingService) SetIDLessThan(idLessThan string) *GetOrdersPendingService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -609,12 +609,12 @@ func (c *MixClient) NewGetOrdersHistoryService(productType ProductType) *GetOrde
 	}}
 }
 
-func (s *GetOrdersHistoryService) SetOrderId(orderId string) *GetOrdersHistoryService {
+func (s *GetOrdersHistoryService) SetOrderID(orderId string) *GetOrdersHistoryService {
 	s.params["orderId"] = orderId
 	return s
 }
 
-func (s *GetOrdersHistoryService) SetClientOid(clientOid string) *GetOrdersHistoryService {
+func (s *GetOrdersHistoryService) SetClientOrderID(clientOid string) *GetOrdersHistoryService {
 	s.params["clientOid"] = clientOid
 	return s
 }
@@ -625,7 +625,7 @@ func (s *GetOrdersHistoryService) SetSymbol(symbol string) *GetOrdersHistoryServ
 }
 
 // SetIdLessThan pages to orders older than the given order id.
-func (s *GetOrdersHistoryService) SetIdLessThan(idLessThan string) *GetOrdersHistoryService {
+func (s *GetOrdersHistoryService) SetIDLessThan(idLessThan string) *GetOrdersHistoryService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -662,7 +662,7 @@ func (s *GetOrdersHistoryService) Do(ctx context.Context) (*MixOrderList, error)
 // entrustedList holds the orders and endId is the pagination cursor.
 type MixOrderList struct {
 	EntrustedList []MixOrder `json:"entrustedList"`
-	EndId         string     `json:"endId"`
+	EndID         string     `json:"endId"`
 }
 
 // MixFillFeeDetail is one fee line in a fill's fee breakdown. It is returned as a
@@ -677,10 +677,10 @@ type MixFillFeeDetail struct {
 // MixFill is a single trade execution returned by the fills and fill-history
 // endpoints.
 type MixFill struct {
-	TradeId          string             `json:"tradeId"`
+	TradeID          string             `json:"tradeId"`
 	Symbol           string             `json:"symbol"`
 	MarginCoin       string             `json:"marginCoin"`
-	OrderId          string             `json:"orderId"`
+	OrderID          string             `json:"orderId"`
 	Price            decimal.Decimal    `json:"price"`
 	BaseVolume       decimal.Decimal    `json:"baseVolume"`
 	QuoteVolume      decimal.Decimal    `json:"quoteVolume"`
@@ -709,7 +709,7 @@ func (c *MixClient) NewGetOrderFillsService(productType ProductType) *GetOrderFi
 	}}
 }
 
-func (s *GetOrderFillsService) SetOrderId(orderId string) *GetOrderFillsService {
+func (s *GetOrderFillsService) SetOrderID(orderId string) *GetOrderFillsService {
 	s.params["orderId"] = orderId
 	return s
 }
@@ -720,7 +720,7 @@ func (s *GetOrderFillsService) SetSymbol(symbol string) *GetOrderFillsService {
 }
 
 // SetIdLessThan pages to fills older than the given tradeId.
-func (s *GetOrderFillsService) SetIdLessThan(idLessThan string) *GetOrderFillsService {
+func (s *GetOrderFillsService) SetIDLessThan(idLessThan string) *GetOrderFillsService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -762,7 +762,7 @@ func (c *MixClient) NewGetFillHistoryService(productType ProductType) *GetFillHi
 	}}
 }
 
-func (s *GetFillHistoryService) SetOrderId(orderId string) *GetFillHistoryService {
+func (s *GetFillHistoryService) SetOrderID(orderId string) *GetFillHistoryService {
 	s.params["orderId"] = orderId
 	return s
 }
@@ -773,7 +773,7 @@ func (s *GetFillHistoryService) SetSymbol(symbol string) *GetFillHistoryService 
 }
 
 // SetIdLessThan pages to fills older than the given tradeId.
-func (s *GetFillHistoryService) SetIdLessThan(idLessThan string) *GetFillHistoryService {
+func (s *GetFillHistoryService) SetIDLessThan(idLessThan string) *GetFillHistoryService {
 	s.params["idLessThan"] = idLessThan
 	return s
 }
@@ -804,5 +804,5 @@ func (s *GetFillHistoryService) Do(ctx context.Context) (*MixFillList, error) {
 // executions and endId is the pagination cursor.
 type MixFillList struct {
 	FillList []MixFill `json:"fillList"`
-	EndId    string    `json:"endId"`
+	EndID    string    `json:"endId"`
 }

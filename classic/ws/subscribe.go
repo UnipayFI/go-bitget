@@ -27,7 +27,7 @@ const (
 type WsArg struct {
 	InstType string `json:"instType"`
 	Channel  string `json:"channel"`
-	InstId   string `json:"instId,omitempty"`
+	InstID   string `json:"instId,omitempty"`
 	Coin     string `json:"coin,omitempty"`
 }
 

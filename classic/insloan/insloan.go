@@ -32,19 +32,19 @@ func (s *GetProductInfosService) Do(ctx context.Context) (*ProductInfo, error) {
 // support* / *ContractOpenLine fields are shared with the management-line
 // product shape and are emitted when the product supports contract trading.
 type ProductInfo struct {
-	ProductId           string          `json:"productId"`
+	ProductID           string          `json:"productId"`
 	Leverage            string          `json:"leverage"` // e.g. 2x/4x
 	TransferLine        decimal.Decimal `json:"transferLine"`
 	SpotBuyLine         decimal.Decimal `json:"spotBuyLine"`
 	LiquidationLine     decimal.Decimal `json:"liquidationLine"`
 	StopLiquidationLine decimal.Decimal `json:"stopLiquidationLine"`
 
-	SupportUsdtContract  string          `json:"supportUsdtContract"` // YES, NO
+	SupportUSDTContract  string          `json:"supportUsdtContract"` // YES, NO
 	SupportCoinContract  string          `json:"supportCoinContract"` // YES, NO
-	SupportUsdcContract  string          `json:"supportUsdcContract"` // YES, NO
-	UsdtContractOpenLine decimal.Decimal `json:"usdtContractOpenLine"`
+	SupportUSDCContract  string          `json:"supportUsdcContract"` // YES, NO
+	USDTContractOpenLine decimal.Decimal `json:"usdtContractOpenLine"`
 	CoinContractOpenLine decimal.Decimal `json:"coinContractOpenLine"`
-	UsdcContractOpenLine decimal.Decimal `json:"usdcContractOpenLine"`
+	USDCContractOpenLine decimal.Decimal `json:"usdcContractOpenLine"`
 }
 
 // GetEnsureCoinsConvertService -- GET /api/v2/spot/ins-loan/ensure-coins-convert (private)
@@ -66,7 +66,7 @@ func (s *GetEnsureCoinsConvertService) Do(ctx context.Context) (*EnsureCoinsConv
 }
 
 type EnsureCoinsConvert struct {
-	ProductId string            `json:"productId"`
+	ProductID string            `json:"productId"`
 	CoinInfo  []EnsureCoinsInfo `json:"coinInfo"`
 }
 
@@ -101,15 +101,15 @@ func (s *GetSymbolsService) Do(ctx context.Context) (*Symbols, error) {
 }
 
 type Symbols struct {
-	ProductId            string         `json:"productId"`
+	ProductID            string         `json:"productId"`
 	SpotSymbols          []string       `json:"spotSymbols"`
 	MarginLeverage       string         `json:"marginLeverage"`
-	UsdtContractLeverage string         `json:"usdtContractLeverage"`
+	USDTContractLeverage string         `json:"usdtContractLeverage"`
 	CoinContractLeverage string         `json:"coinContractLeverage"`
-	UsdcContractLeverage string         `json:"usdcContractLeverage"`
-	UsdtContractSymbols  []ContractPair `json:"usdtContractSymbols"`
+	USDCContractLeverage string         `json:"usdcContractLeverage"`
+	USDTContractSymbols  []ContractPair `json:"usdtContractSymbols"`
 	CoinContractSymbols  []ContractPair `json:"coinContractSymbols"`
-	UsdcContractSymbols  []ContractPair `json:"usdcContractSymbols"`
+	USDCContractSymbols  []ContractPair `json:"usdcContractSymbols"`
 }
 
 type ContractPair struct {
@@ -132,7 +132,7 @@ func (c *InsLoanClient) NewGetLTVConvertService() *GetLTVConvertService {
 }
 
 // SetRiskUnitId sets the risk unit ID (required for parent account calls).
-func (s *GetLTVConvertService) SetRiskUnitId(riskUnitId string) *GetLTVConvertService {
+func (s *GetLTVConvertService) SetRiskUnitID(riskUnitId string) *GetLTVConvertService {
 	s.params["riskUnitId"] = riskUnitId
 	return s
 }
@@ -145,8 +145,8 @@ func (s *GetLTVConvertService) Do(ctx context.Context) (*LTVConvert, error) {
 type LTVConvert struct {
 	Ltv              decimal.Decimal `json:"ltv"`
 	SubAccountUids   []string        `json:"subAccountUids"`
-	UsdtBalance      decimal.Decimal `json:"usdtBalance"`
-	UnpaidUsdtAmount decimal.Decimal `json:"unpaidUsdtAmount"`
+	USDTBalance      decimal.Decimal `json:"usdtBalance"`
+	UnpaidUSDTAmount decimal.Decimal `json:"unpaidUsdtAmount"`
 	UnpaidInfo       []UnpaidInfo    `json:"unpaidInfo"`
 	BalanceInfo      []BalanceInfo   `json:"balanceInfo"`
 }
@@ -161,7 +161,7 @@ type BalanceInfo struct {
 	Coin                string          `json:"coin"`
 	Price               decimal.Decimal `json:"price"`
 	Amount              decimal.Decimal `json:"amount"`
-	ConvertedUsdtAmount decimal.Decimal `json:"convertedUsdtAmount"`
+	ConvertedUSDTAmount decimal.Decimal `json:"convertedUsdtAmount"`
 }
 
 // GetTransferedService -- GET /api/v2/spot/ins-loan/transfered (private)
@@ -178,7 +178,7 @@ func (c *InsLoanClient) NewGetTransferedService(coin string) *GetTransferedServi
 }
 
 // SetUserId sets the user ID (master account or sub-account).
-func (s *GetTransferedService) SetUserId(userId string) *GetTransferedService {
+func (s *GetTransferedService) SetUserID(userId string) *GetTransferedService {
 	s.params["userId"] = userId
 	return s
 }
@@ -191,7 +191,7 @@ func (s *GetTransferedService) Do(ctx context.Context) (*Transfered, error) {
 type Transfered struct {
 	Coin       string          `json:"coin"`
 	Transfered decimal.Decimal `json:"transfered"`
-	UserId     string          `json:"userId"`
+	UserID     string          `json:"userId"`
 }
 
 // GetRiskUnitService -- GET /api/v2/spot/ins-loan/risk-unit (private)
@@ -212,15 +212,15 @@ func (s *GetRiskUnitService) Do(ctx context.Context) (*RiskUnit, error) {
 }
 
 type RiskUnit struct {
-	RiskUnitId []string `json:"riskUnitId"`
+	RiskUnitID []string `json:"riskUnitId"`
 }
 
 // BindUidOperate is the bind/unbind action for a risk unit UID binding.
-type BindUidOperate string
+type BindUIDOperate string
 
 const (
-	BindUidOperateBind   BindUidOperate = "bind"
-	BindUidOperateUnbind BindUidOperate = "unbind"
+	BindUIDOperateBind   BindUIDOperate = "bind"
+	BindUIDOperateUnbind BindUIDOperate = "unbind"
 )
 
 // BindUidService -- POST /api/v2/spot/ins-loan/bind-uid (private, state-changing)
@@ -228,25 +228,25 @@ const (
 // Binds or unbinds a sub-account UID to a risk unit. riskUnitId is required for
 // parent account calls only; max 50 UIDs per risk unit. The response data is the
 // literal string "success" on completion.
-type BindUidService struct {
+type BindUIDService struct {
 	c    *InsLoanClient
 	body map[string]any
 }
 
-func (c *InsLoanClient) NewBindUidService(uid string, operate BindUidOperate) *BindUidService {
-	return &BindUidService{c: c, body: map[string]any{
+func (c *InsLoanClient) NewBindUIDService(uid string, operate BindUIDOperate) *BindUIDService {
+	return &BindUIDService{c: c, body: map[string]any{
 		"uid":     uid,
 		"operate": string(operate),
 	}}
 }
 
 // SetRiskUnitId sets the risk unit ID (required for parent account calls only).
-func (s *BindUidService) SetRiskUnitId(riskUnitId string) *BindUidService {
+func (s *BindUIDService) SetRiskUnitID(riskUnitId string) *BindUIDService {
 	s.body["riskUnitId"] = riskUnitId
 	return s
 }
 
-func (s *BindUidService) Do(ctx context.Context) (*string, error) {
+func (s *BindUIDService) Do(ctx context.Context) (*string, error) {
 	req := request.Post(ctx, s.c, "/api/v2/spot/ins-loan/bind-uid", s.body).WithSign()
 	return request.Do[string](req)
 }
@@ -264,7 +264,7 @@ func (c *InsLoanClient) NewGetLoanOrderService() *GetLoanOrderService {
 	return &GetLoanOrderService{c: c, params: map[string]string{}}
 }
 
-func (s *GetLoanOrderService) SetOrderId(orderId string) *GetLoanOrderService {
+func (s *GetLoanOrderService) SetOrderID(orderId string) *GetLoanOrderService {
 	s.params["orderId"] = orderId
 	return s
 }
@@ -289,9 +289,9 @@ func (s *GetLoanOrderService) Do(ctx context.Context) ([]LoanOrder, error) {
 }
 
 type LoanOrder struct {
-	OrderId        string          `json:"orderId"`
-	OrderProductId string          `json:"orderProductId"`
-	Uid            string          `json:"uid"`
+	OrderID        string          `json:"orderId"`
+	OrderProductID string          `json:"orderProductId"`
+	UID            string          `json:"uid"`
 	LoanTime       time.Time       `json:"loanTime"`
 	LoanCoin       string          `json:"loanCoin"`
 	LoanAmount     decimal.Decimal `json:"loanAmount"`
@@ -345,7 +345,7 @@ func (s *GetRepaidHistoryService) Do(ctx context.Context) ([]RepaidOrder, error)
 // (repaidAmount/repaidInterest and repayAmount/repayInterest), so both variants
 // are captured to cover whichever shape the live API returns.
 type RepaidOrder struct {
-	RepayOrderId   string          `json:"repayOrderId"`
+	RepayOrderID   string          `json:"repayOrderId"`
 	BusinessType   string          `json:"businessType"` // normal, liquidation
 	RepayType      string          `json:"repayType"`    // all, part
 	RepaidTime     time.Time       `json:"repaidTime"`

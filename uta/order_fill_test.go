@@ -29,17 +29,17 @@ func TestOrderFill(t *testing.T) {
 	if err != nil {
 		t.Fatalf("market buy: %v", err)
 	}
-	t.Logf("market buy orderId=%s", ref.OrderId)
+	t.Logf("market buy orderId=%s", ref.OrderID)
 
 	// 2) order-info: confirm it filled.
-	order, err := c.NewGetOrderInfoService().SetOrderID(ref.OrderId).Do(cx)
+	order, err := c.NewGetOrderInfoService().SetOrderID(ref.OrderID).Do(cx)
 	if err != nil {
 		t.Fatalf("order-info: %v", err)
 	}
 	t.Logf("buy: status=%s cumExecQty=%s avgPrice=%s cumExecValue=%s", order.OrderStatus, order.CumExecQty, order.AvgPrice, order.CumExecValue)
 
 	// 3) fills by orderId — validate the Fill struct against the real execution.
-	fills, err := c.NewGetFillHistoryService().SetCategory(CategorySpot).SetOrderID(ref.OrderId).Do(cx)
+	fills, err := c.NewGetFillHistoryService().SetCategory(CategorySpot).SetOrderID(ref.OrderID).Do(cx)
 	if err != nil {
 		t.Fatalf("fills: %v", err)
 	}
@@ -48,7 +48,7 @@ func TestOrderFill(t *testing.T) {
 		t.Logf("  fill execId=%s price=%s qty=%s scope=%s fee=%v", f.ExecID, f.ExecPrice, f.ExecQty, f.TradeScope, f.FeeDetail)
 	}
 	raw := fetchRawGet(t, c, cx, "/api/v3/trade/fills",
-		map[string]string{"category": string(CategorySpot), "orderId": ref.OrderId}, true)
+		map[string]string{"category": string(CategorySpot), "orderId": ref.OrderID}, true)
 	assertCovers(t, "trade/fills", raw, fills)
 
 	// 4) Sell back the BTC we now hold to restore the account. Use the live
@@ -73,5 +73,5 @@ func TestOrderFill(t *testing.T) {
 		t.Logf("sell-back failed (residual BTC left, harmless): %v", err)
 		return
 	}
-	t.Logf("sold back orderId=%s", sref.OrderId)
+	t.Logf("sold back orderId=%s", sref.OrderID)
 }

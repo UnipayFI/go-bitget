@@ -113,7 +113,7 @@ func (s *CreateSubaccountService) Do(ctx context.Context) (*Subaccount, error) {
 
 // Subaccount describes a broker sub-account.
 type Subaccount struct {
-	SubUid         string           `json:"subUid"`
+	SubUID         string           `json:"subUid"`
 	SubaccountName string           `json:"subaccountName"`
 	Status         SubaccountStatus `json:"status"`
 	PermList       []string         `json:"permList"`
@@ -247,7 +247,7 @@ func (s *GetSubaccountEmailService) Do(ctx context.Context) (*SubaccountEmail, e
 
 // SubaccountEmail is a sub-account's email binding.
 type SubaccountEmail struct {
-	SubUid          string    `json:"subUid"`
+	SubUID          string    `json:"subUid"`
 	SubaccountName  string    `json:"subaccountName"`
 	SubaccountEmail string    `json:"subaccountEmail"`
 	CTime           time.Time `json:"cTime"`
@@ -332,7 +332,7 @@ type SubaccountFutureAsset struct {
 	IsolatedMaxAvailable decimal.Decimal `json:"isolatedMaxAvailable"`
 	MaxTransferOut       decimal.Decimal `json:"maxTransferOut"`
 	AccountEquity        decimal.Decimal `json:"accountEquity"`
-	UsdtEquity           decimal.Decimal `json:"usdtEquity"`
+	USDTEquity           decimal.Decimal `json:"usdtEquity"`
 	BtcEquity            decimal.Decimal `json:"btcEquity"`
 	UnrealizedPL         decimal.Decimal `json:"unrealizedPL"`
 	UTime                time.Time       `json:"uTime"`
@@ -366,7 +366,7 @@ func (s *CreateSubaccountDepositAddressService) Do(ctx context.Context) (*Subacc
 
 // SubaccountDepositAddress is a sub-account's deposit address for a coin.
 type SubaccountDepositAddress struct {
-	SubUid  string    `json:"subUid"`
+	SubUID  string    `json:"subUid"`
 	Address string    `json:"address"`
 	Chain   string    `json:"chain"`
 	Coin    string    `json:"coin"`
@@ -406,7 +406,7 @@ func (s *SubaccountWithdrawalService) SetTag(tag string) *SubaccountWithdrawalSe
 }
 
 // SetClientOid sets a client-supplied order id.
-func (s *SubaccountWithdrawalService) SetClientOid(clientOid string) *SubaccountWithdrawalService {
+func (s *SubaccountWithdrawalService) SetClientOrderID(clientOid string) *SubaccountWithdrawalService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -418,8 +418,8 @@ func (s *SubaccountWithdrawalService) Do(ctx context.Context) (*SubaccountWithdr
 
 // SubaccountWithdrawalResult identifies a submitted sub-account withdrawal.
 type SubaccountWithdrawalResult struct {
-	OrderId   string `json:"orderId"`
-	ClientOid string `json:"clientOid"`
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
 }
 
 // SetSubaccountAutoTransferService -- POST /api/v2/broker/account/set-subaccount-autotransfer (broker, signed)
@@ -461,13 +461,13 @@ func (c *BrokerClient) NewGetSubaccountDepositRecordsService() *GetSubaccountDep
 }
 
 // SetOrderId filters to a single deposit record id.
-func (s *GetSubaccountDepositRecordsService) SetOrderId(orderId string) *GetSubaccountDepositRecordsService {
+func (s *GetSubaccountDepositRecordsService) SetOrderID(orderId string) *GetSubaccountDepositRecordsService {
 	s.params["orderId"] = orderId
 	return s
 }
 
 // SetUserId filters to a single sub-account UID.
-func (s *GetSubaccountDepositRecordsService) SetUserId(userId string) *GetSubaccountDepositRecordsService {
+func (s *GetSubaccountDepositRecordsService) SetUserID(userId string) *GetSubaccountDepositRecordsService {
 	s.params["userId"] = userId
 	return s
 }
@@ -507,8 +507,8 @@ func (s *GetSubaccountDepositRecordsService) Do(ctx context.Context) ([]Subaccou
 
 // SubaccountDepositRecord is one sub-account deposit.
 type SubaccountDepositRecord struct {
-	OrderId     string          `json:"orderId"`
-	TxId        string          `json:"txId"`
+	OrderID     string          `json:"orderId"`
+	TxID        string          `json:"txId"`
 	Coin        string          `json:"coin"`
 	Type        string          `json:"type"`
 	Dest        string          `json:"dest"`
@@ -520,7 +520,7 @@ type SubaccountDepositRecord struct {
 	Chain       string          `json:"chain"`
 	Confirm     string          `json:"confirm"`
 	Tag         string          `json:"tag"`
-	UserId      string          `json:"userId"`
+	UserID      string          `json:"userId"`
 	CTime       time.Time       `json:"cTime"`
 	UTime       time.Time       `json:"uTime"`
 }
@@ -538,13 +538,13 @@ func (c *BrokerClient) NewGetSubaccountWithdrawalRecordsService() *GetSubaccount
 }
 
 // SetOrderId filters to a single withdrawal record id.
-func (s *GetSubaccountWithdrawalRecordsService) SetOrderId(orderId string) *GetSubaccountWithdrawalRecordsService {
+func (s *GetSubaccountWithdrawalRecordsService) SetOrderID(orderId string) *GetSubaccountWithdrawalRecordsService {
 	s.params["orderId"] = orderId
 	return s
 }
 
 // SetUserId filters to a single sub-account UID.
-func (s *GetSubaccountWithdrawalRecordsService) SetUserId(userId string) *GetSubaccountWithdrawalRecordsService {
+func (s *GetSubaccountWithdrawalRecordsService) SetUserID(userId string) *GetSubaccountWithdrawalRecordsService {
 	s.params["userId"] = userId
 	return s
 }
@@ -581,13 +581,13 @@ func (s *GetSubaccountWithdrawalRecordsService) Do(ctx context.Context) (*Subacc
 // SubaccountWithdrawalRecords is a paged list of sub-account withdrawals.
 type SubaccountWithdrawalRecords struct {
 	ResultList []SubaccountWithdrawalRecord `json:"resultList"`
-	EndId      string                       `json:"endId"`
+	EndID      string                       `json:"endId"`
 }
 
 // SubaccountWithdrawalRecord is one sub-account withdrawal.
 type SubaccountWithdrawalRecord struct {
-	OrderId     string          `json:"orderId"`
-	TxId        string          `json:"txId"`
+	OrderID     string          `json:"orderId"`
+	TxID        string          `json:"txId"`
 	Coin        string          `json:"coin"`
 	Type        string          `json:"type"`
 	Dest        string          `json:"dest"`
@@ -599,7 +599,7 @@ type SubaccountWithdrawalRecord struct {
 	Chain       string          `json:"chain"`
 	Confirm     string          `json:"confirm"`
 	Tag         string          `json:"tag"`
-	UserId      string          `json:"userId"`
+	UserID      string          `json:"userId"`
 	CTime       time.Time       `json:"cTime"`
 	UTime       time.Time       `json:"uTime"`
 }
@@ -655,13 +655,13 @@ func (s *GetAllSubDepositWithdrawalService) Do(ctx context.Context) (*AllSubDepo
 // AllSubDepositWithdrawal is a paged list of cross-sub-account transfers.
 type AllSubDepositWithdrawal struct {
 	List  []SubDepositWithdrawalRecord `json:"list"`
-	EndId string                       `json:"endId"`
+	EndID string                       `json:"endId"`
 }
 
 // SubDepositWithdrawalRecord is one cross-sub-account deposit or withdrawal.
 type SubDepositWithdrawalRecord struct {
-	Uid     string          `json:"uid"`
-	TxId    string          `json:"txId"`
+	UID     string          `json:"uid"`
+	TxID    string          `json:"txId"`
 	Type    string          `json:"type"`    // deposit, withdrawal
 	SubType string          `json:"subType"` // onchain, internal, fast
 	Coin    string          `json:"coin"`
@@ -718,7 +718,7 @@ func (s *GetBrokerSubaccountsService) Do(ctx context.Context) ([]BrokerSubaccoun
 
 // BrokerSubaccountStat is the summary stats for one broker sub-account.
 type BrokerSubaccountStat struct {
-	Uid              string          `json:"uid"`
+	UID              string          `json:"uid"`
 	Asset            decimal.Decimal `json:"asset"`
 	FirstTimeDeposit time.Time       `json:"firstTimeDeposit"`
 	FirstTimeTrade   time.Time       `json:"firstTimeTrade"`
@@ -786,7 +786,7 @@ func (s *GetBrokerCommissionsService) Do(ctx context.Context) ([]BrokerCommissio
 
 // BrokerCommission is one sub-account commission breakdown row.
 type BrokerCommission struct {
-	Uid             string          `json:"uid"`
+	UID             string          `json:"uid"`
 	Coin            string          `json:"coin"`
 	Symbol          string          `json:"symbol"`
 	DealtAmount     decimal.Decimal `json:"dealtAmount"`
@@ -845,7 +845,7 @@ func (s *GetBrokerTradeVolumeService) Do(ctx context.Context) ([]BrokerTradeVolu
 
 // BrokerTradeVolume is one sub-account's trade volume breakdown.
 type BrokerTradeVolume struct {
-	Uid          string          `json:"uid"`
+	UID          string          `json:"uid"`
 	Volume       decimal.Decimal `json:"volume"`
 	SpotVolume   decimal.Decimal `json:"spotVolume"`
 	FutureVolume decimal.Decimal `json:"futureVolume"`

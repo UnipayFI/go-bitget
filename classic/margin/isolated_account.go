@@ -67,7 +67,7 @@ func (c *MarginClient) NewIsolatedBorrowService(symbol, coin string, borrowAmoun
 	}}
 }
 
-func (s *IsolatedBorrowService) SetClientOid(clientOid string) *IsolatedBorrowService {
+func (s *IsolatedBorrowService) SetClientOrderID(clientOid string) *IsolatedBorrowService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -79,7 +79,7 @@ func (s *IsolatedBorrowService) Do(ctx context.Context) (*IsolatedBorrowResult, 
 
 // IsolatedBorrowResult is the outcome of an isolated borrow request.
 type IsolatedBorrowResult struct {
-	LoanId       string          `json:"loanId"`
+	LoanID       string          `json:"loanId"`
 	Symbol       string          `json:"symbol"`
 	Coin         string          `json:"coin"`
 	BorrowAmount decimal.Decimal `json:"borrowAmount"`
@@ -101,7 +101,7 @@ func (c *MarginClient) NewIsolatedRepayService(symbol, coin string, repayAmount 
 	}}
 }
 
-func (s *IsolatedRepayService) SetClientOid(clientOid string) *IsolatedRepayService {
+func (s *IsolatedRepayService) SetClientOrderID(clientOid string) *IsolatedRepayService {
 	s.body["clientOid"] = clientOid
 	return s
 }
@@ -114,7 +114,7 @@ func (s *IsolatedRepayService) Do(ctx context.Context) (*IsolatedRepayResult, er
 // IsolatedRepayResult is the outcome of an isolated repay request.
 type IsolatedRepayResult struct {
 	RemainDebtAmount decimal.Decimal `json:"remainDebtAmount"`
-	RepayId          string          `json:"repayId"`
+	RepayID          string          `json:"repayId"`
 	Symbol           string          `json:"symbol"`
 	Coin             string          `json:"coin"`
 	RepayAmount      decimal.Decimal `json:"repayAmount"`
@@ -197,19 +197,19 @@ type IsolatedInterestRateAndLimit struct {
 	BaseDailyInterestRate     decimal.Decimal         `json:"baseDailyInterestRate"`
 	BaseAnnuallyInterestRate  decimal.Decimal         `json:"baseAnnuallyInterestRate"`
 	BaseMaxBorrowableAmount   decimal.Decimal         `json:"baseMaxBorrowableAmount"`
-	BaseVipList               []IsolatedMarginVipItem `json:"baseVipList"`
+	BaseVIPList               []IsolatedMarginVIPItem `json:"baseVipList"`
 	QuoteCoin                 string                  `json:"quoteCoin"`
 	QuoteTransferable         bool                    `json:"quoteTransferable"`
 	QuoteBorrowable           bool                    `json:"quoteBorrowable"`
 	QuoteDailyInterestRate    decimal.Decimal         `json:"quoteDailyInterestRate"`
 	QuoteAnnuallyInterestRate decimal.Decimal         `json:"quoteAnnuallyInterestRate"`
 	QuoteMaxBorrowableAmount  decimal.Decimal         `json:"quoteMaxBorrowableAmount"`
-	QuoteList                 []IsolatedMarginVipItem `json:"quoteList"`
+	QuoteList                 []IsolatedMarginVIPItem `json:"quoteList"`
 }
 
 // IsolatedMarginVipItem is one VIP tier of the isolated-margin interest-rate
 // schedule.
-type IsolatedMarginVipItem struct {
+type IsolatedMarginVIPItem struct {
 	Level                string          `json:"level"`
 	DailyInterestRate    decimal.Decimal `json:"dailyInterestRate"`
 	Limit                decimal.Decimal `json:"limit"`
@@ -335,7 +335,7 @@ func (s *IsolatedFlashRepayService) Do(ctx context.Context) ([]IsolatedFlashRepa
 
 // IsolatedFlashRepayResult is the per-pair outcome of a flash repay request.
 type IsolatedFlashRepayResult struct {
-	RepayId string `json:"repayId"`
+	RepayID string `json:"repayId"`
 	Symbol  string `json:"symbol"`
 	Result  string `json:"result"` // success / failure
 }
@@ -364,6 +364,6 @@ func (s *QueryIsolatedFlashRepayStatusService) Do(ctx context.Context) ([]Isolat
 
 // IsolatedFlashRepayStatus is one repayment's result status.
 type IsolatedFlashRepayStatus struct {
-	RepayId string `json:"repayId"`
+	RepayID string `json:"repayId"`
 	Status  string `json:"status"`
 }
