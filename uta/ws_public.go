@@ -172,6 +172,9 @@ type WsRPIOrderBook struct {
 }
 
 // SubscribeLiquidationService -- public "liquidation" channel (futures only).
+//
+// Pushes once per second, carrying only the highest-quantity liquidation record
+// for the long and short side of each trading pair in that second.
 type SubscribeLiquidationService struct {
 	c        *UTAWebSocketClient
 	instType WsInstType
