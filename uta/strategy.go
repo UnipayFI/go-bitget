@@ -27,8 +27,9 @@ const (
 
 // PlaceStrategyOrderService -- POST /api/v3/trade/place-strategy-order (UTA trade read & write)
 //
-// Places a take-profit/stop-loss ("tpsl") or trigger ("trigger") strategy order
-// for a futures symbol. The reply data carries the assigned order identifiers.
+// Places a take-profit/stop-loss ("tpsl") or trigger ("trigger") strategy order.
+// Supported business lines: spot, margin, and futures. The reply data carries
+// the assigned order identifiers.
 type PlaceStrategyOrderService struct {
 	c    *UTAClient
 	body map[string]any
@@ -310,8 +311,8 @@ func (s *CancelStrategyOrderService) Do(ctx context.Context) (*any, error) {
 
 // GetUnfilledStrategyOrdersService -- GET /api/v3/trade/unfilled-strategy-orders (UTA trade read)
 //
-// Returns the account's open (unfilled) strategy orders for a futures category,
-// optionally filtered to a single strategy type.
+// Returns the account's open (unfilled) strategy orders for a spot, margin, or
+// futures category, optionally filtered to a single strategy type.
 type GetUnfilledStrategyOrdersService struct {
 	c      *UTAClient
 	params map[string]string
@@ -365,7 +366,7 @@ type StrategyOrder struct {
 // GetHistoryStrategyOrdersService -- GET /api/v3/trade/history-strategy-orders (UTA trade read)
 //
 // Returns the account's historical (completed/cancelled) strategy orders for a
-// futures category, paginated by cursor.
+// spot, margin, or futures category, paginated by cursor.
 type GetHistoryStrategyOrdersService struct {
 	c      *UTAClient
 	params map[string]string
