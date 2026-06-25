@@ -482,7 +482,7 @@ type MixOrder struct {
 	PresetStopLossExecutePrice    decimal.Decimal `json:"presetStopLossExecutePrice"`
 	QuoteVolume                   decimal.Decimal `json:"quoteVolume"`
 	OrderType                     OrderType       `json:"orderType"`
-	Leverage                      string          `json:"leverage"`
+	Leverage                      decimal.Decimal `json:"leverage"`
 	MarginMode                    MarginMode      `json:"marginMode"`
 	ReduceOnly                    ReduceOnly      `json:"reduceOnly"`
 	EnterPointSource              string          `json:"enterPointSource"`
@@ -495,6 +495,16 @@ type MixOrder struct {
 	FeeDetail                     string          `json:"feeDetail"`
 	CTime                         time.Time       `json:"cTime"`
 	UTime                         time.Time       `json:"uTime"`
+}
+
+// EffectiveStatus returns the order status regardless of which endpoint shape
+// produced the value: orders-pending / orders-history fill Status, order-detail
+// fills State (the same semantic value under a different JSON key).
+func (o *MixOrder) EffectiveStatus() OrderStatus {
+	if o.Status != "" {
+		return o.Status
+	}
+	return o.State
 }
 
 // GetOrderDetailService -- GET /api/v2/mix/order/detail (private)

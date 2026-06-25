@@ -80,9 +80,9 @@ func (s *PlaceStrategyOrderService) SetPosSide(posSide PosSide) *PlaceStrategyOr
 	return s
 }
 
-// SetReduceOnly sets the reduce-only indicator ("yes" or "no").
-func (s *PlaceStrategyOrderService) SetReduceOnly(reduceOnly string) *PlaceStrategyOrderService {
-	s.body["reduceOnly"] = reduceOnly
+// SetReduceOnly sets the reduce-only indicator (defaults to ReduceOnlyNo).
+func (s *PlaceStrategyOrderService) SetReduceOnly(reduceOnly ReduceOnly) *PlaceStrategyOrderService {
+	s.body["reduceOnly"] = string(reduceOnly)
 	return s
 }
 

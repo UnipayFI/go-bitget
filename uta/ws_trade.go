@@ -56,7 +56,7 @@ type WsNewOrder struct {
 	TimeInForce   TimeInForce      `json:"timeInForce,omitempty"`
 	ClientOrderID string           `json:"clientOid,omitempty"`
 	PosSide       PosSide          `json:"posSide,omitempty"`
-	ReduceOnly    string           `json:"reduceOnly,omitempty"`
+	ReduceOnly    ReduceOnly       `json:"reduceOnly,omitempty"`
 	MarginMode    MarginMode       `json:"marginMode,omitempty"`
 	StpMode       string           `json:"stpMode,omitempty"`
 }

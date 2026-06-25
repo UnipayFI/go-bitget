@@ -116,7 +116,7 @@ type WsOrder struct {
 	Side          Side            `json:"side"`
 	MarginMode    MarginMode      `json:"marginMode"`
 	MarginCoin    string          `json:"marginCoin"`
-	ReduceOnly    string          `json:"reduceOnly"`
+	ReduceOnly    ReduceOnly      `json:"reduceOnly"`
 	CumExecQty    decimal.Decimal `json:"cumExecQty"`
 	CumExecValue  decimal.Decimal `json:"cumExecValue"`
 	AvgPrice      decimal.Decimal `json:"avgPrice"`

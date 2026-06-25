@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/UnipayFI/go-bitget/common"
@@ -36,10 +37,17 @@ type WsArg struct {
 	Interval string `json:"interval,omitempty"` // candlestick (kline) channel only
 }
 
-// WsPush is the envelope Bitget pushes for a data event. Action is "snapshot"
-// (full) or "update" (incremental).
+// WsAction classifies a data push as a full snapshot or an incremental update.
+type WsAction string
+
+const (
+	WsActionSnapshot WsAction = "snapshot" // full state
+	WsActionUpdate   WsAction = "update"   // incremental change
+)
+
+// WsPush is the envelope Bitget pushes for a data event.
 type WsPush[T any] struct {
-	Action string    `json:"action"`
+	Action WsAction  `json:"action"`
 	Arg    WsArg     `json:"arg"`
 	Data   T         `json:"data"`
 	Ts     time.Time `json:"ts"`
@@ -144,14 +152,18 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, arg any,
 
 	doneC := make(chan struct{})
 	stopC := make(chan struct{})
-	silent := false
+	// silent suppresses callback delivery on the deliberate-shutdown path: once the caller
+	// closes doneC to stop, the ReadMessage error from the watcher closing the conn must not
+	// reach the callback. atomic because the watcher and reader run on different goroutines.
+	var silent atomic.Bool
 
 	go keepAlive(conn, common.DEFAULT_KEEP_ALIVE_INTERVAL)
 	go func() {
 		select {
 		case <-stopC:
-			silent = true
+			silent.Store(true)
 		case <-doneC:
+			silent.Store(true)
 		}
 		// Best-effort unsubscribe before closing.
 		unsub := wsOp{Op: "unsubscribe", Args: []any{arg}}
@@ -164,7 +176,7 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, arg any,
 		for {
 			_, message, err := conn.ReadMessage()
 			if err != nil {
-				if !silent {
+				if !silent.Load() {
 					cb(nil, err)
 				}
 				close(stopC)
@@ -182,7 +194,18 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, arg any,
 			}
 			switch {
 			case hdr.Event == "error":
-				cb(nil, &WsError{Code: hdr.codeString(), Message: hdr.Msg})
+				// A server error control frame (subscription rejected 30001/30016, relogin
+				// failure, etc.) is protocol-level fatal: under the one-connection-per-subscription
+				// model this connection is permanently dead, and if the reader kept looping the
+				// stream would be "fake-alive" (connected, never delivering data, never reconnecting).
+				// Deliver the error, then close(stopC)+return to terminate the reader, matching the
+				// transport-level ReadMessage error path so the caller drives reconnect/resubscribe
+				// off the stop-close (the documented done/stop contract).
+				if !silent.Load() {
+					cb(nil, &WsError{Code: hdr.codeString(), Message: hdr.Msg})
+				}
+				close(stopC)
+				return
 			case hdr.Action != "":
 				cb(message, nil)
 			default:

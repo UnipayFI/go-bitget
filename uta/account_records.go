@@ -44,8 +44,8 @@ func (s *GetFinancialRecordsService) SetEndTime(t time.Time) *GetFinancialRecord
 	return s
 }
 
-func (s *GetFinancialRecordsService) SetLimit(limit string) *GetFinancialRecordsService {
-	s.params["limit"] = limit
+func (s *GetFinancialRecordsService) SetLimit(limit int) *GetFinancialRecordsService {
+	s.params["limit"] = strconv.Itoa(limit)
 	return s
 }
 
@@ -65,16 +65,27 @@ type FinancialRecords struct {
 }
 
 type FinancialRecord struct {
-	Category Category        `json:"category"`
-	ID       string          `json:"id"`
-	Symbol   string          `json:"symbol"`
-	Coin     string          `json:"coin"`
-	Type     string          `json:"type"`
-	Amount   decimal.Decimal `json:"amount"`
-	Fee      decimal.Decimal `json:"fee"`
-	Balance  decimal.Decimal `json:"balance"`
-	Ts       time.Time       `json:"ts"`
+	Category Category            `json:"category"`
+	ID       string              `json:"id"`
+	Symbol   string              `json:"symbol"`
+	Coin     string              `json:"coin"`
+	Type     FinancialRecordType `json:"type"`
+	Amount   decimal.Decimal     `json:"amount"`
+	Fee      decimal.Decimal     `json:"fee"`
+	Balance  decimal.Decimal     `json:"balance"`
+	Ts       time.Time           `json:"ts"`
 }
+
+// FinancialRecordType classifies a financial-records entry. The constants below
+// cover the contract settlement-fee (funding) entries SDK callers filter on; the
+// full vocabulary is large and overlaps the tax endpoint
+// (classic/tax.FutureTaxType uses the same upper-case identifiers).
+type FinancialRecordType string
+
+const (
+	FinancialRecordContractMainSettleFeeUserIn  FinancialRecordType = "CONTRACT_MAIN_SETTLE_FEE_USER_IN"
+	FinancialRecordContractMainSettleFeeUserOut FinancialRecordType = "CONTRACT_MAIN_SETTLE_FEE_USER_OUT"
+)
 
 // GetConvertRecordsService -- GET /api/v3/account/convert-records (UTA mgt. read)
 //
@@ -101,8 +112,8 @@ func (s *GetConvertRecordsService) SetEndTime(t time.Time) *GetConvertRecordsSer
 	return s
 }
 
-func (s *GetConvertRecordsService) SetLimit(limit string) *GetConvertRecordsService {
-	s.params["limit"] = limit
+func (s *GetConvertRecordsService) SetLimit(limit int) *GetConvertRecordsService {
+	s.params["limit"] = strconv.Itoa(limit)
 	return s
 }
 

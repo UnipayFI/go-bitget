@@ -73,9 +73,9 @@ type Instrument struct {
 	MinOrderQty         decimal.Decimal  `json:"minOrderQty"`
 	MaxOrderQty         decimal.Decimal  `json:"maxOrderQty"`
 	MinOrderAmount      decimal.Decimal  `json:"minOrderAmount"`
-	PricePrecision      string           `json:"pricePrecision"`
-	QuantityPrecision   string           `json:"quantityPrecision"`
-	QuotePrecision      string           `json:"quotePrecision"`
+	PricePrecision      decimal.Decimal  `json:"pricePrecision"`
+	QuantityPrecision   decimal.Decimal  `json:"quantityPrecision"`
+	QuotePrecision      decimal.Decimal  `json:"quotePrecision"`
 	MaxSymbolOrderNum   string           `json:"maxSymbolOrderNum"`
 	MaxProductOrderNum  string           `json:"maxProductOrderNum"`
 	MaxPositionNum      string           `json:"maxPositionNum"`
@@ -93,8 +93,8 @@ type Instrument struct {
 	QuantityMultiplier decimal.Decimal `json:"quantityMultiplier"`
 	MaxMarketOrderQty  decimal.Decimal `json:"maxMarketOrderQty"`
 	FundInterval       string          `json:"fundInterval"`
-	MinLeverage        string          `json:"minLeverage"`
-	MaxLeverage        string          `json:"maxLeverage"`
+	MinLeverage        decimal.Decimal `json:"minLeverage"`
+	MaxLeverage        decimal.Decimal `json:"maxLeverage"`
 	OffTime            time.Time       `json:"offTime"`
 	LimitOpenTime      time.Time       `json:"limitOpenTime"`
 	DeliveryTime       time.Time       `json:"deliveryTime"`

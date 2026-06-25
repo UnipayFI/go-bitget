@@ -1,5 +1,7 @@
 package mix
 
+import "strings"
+
 // ProductType is the futures product line a symbol or request targets.
 type ProductType string
 
@@ -15,6 +17,15 @@ type MarginMode string
 const (
 	MarginModeIsolated MarginMode = "isolated"
 	MarginModeCrossed  MarginMode = "crossed"
+)
+
+// BillBusinessType filters account/bill entries by business type. The verified
+// value for contract settlement (funding) fees is below; other candidates
+// (contract_main_settle_fee / funding_fee / settle_fee) return 40020.
+type BillBusinessType string
+
+const (
+	BillBusinessTypeContractSettleFee BillBusinessType = "contract_settle_fee"
 )
 
 // Side is the order direction.
@@ -117,6 +128,17 @@ const (
 	ReduceOnlyYes ReduceOnly = "YES"
 	ReduceOnlyNo  ReduceOnly = "NO"
 )
+
+// Bool reports whether the reduce-only flag is set, tolerating case and the
+// alternate "true"/"1" shapes the mix order stream uses.
+func (r ReduceOnly) Bool() bool {
+	switch strings.ToLower(string(r)) {
+	case "yes", "true", "1":
+		return true
+	default:
+		return false
+	}
+}
 
 // AssetMode is the futures account's asset/collateral mode: union (multi-asset,
 // shared collateral pool) or single (per-coin margin).

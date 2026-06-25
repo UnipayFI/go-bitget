@@ -31,13 +31,16 @@ type WsArg struct {
 	Coin     string `json:"coin,omitempty"`
 }
 
-// WsPush is the envelope Bitget pushes for a v2 data event. Action is "snapshot"
-// (full) or "update" (incremental).
+// InstAll is the instId sentinel that subscribes a private channel to every
+// symbol rather than narrowing to one.
+const InstAll = "default"
+
+// WsPush is the envelope Bitget pushes for a v2 data event.
 type WsPush[T any] struct {
-	Action string    `json:"action"`
-	Arg    WsArg     `json:"arg"`
-	Data   T         `json:"data"`
-	Ts     time.Time `json:"ts"`
+	Action request.WsAction `json:"action"`
+	Arg    WsArg            `json:"arg"`
+	Data   T                `json:"data"`
+	Ts     time.Time        `json:"ts"`
 }
 
 // WsHandler is invoked for every push (or error) on a subscription. The push's

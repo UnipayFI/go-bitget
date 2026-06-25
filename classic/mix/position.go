@@ -76,7 +76,7 @@ type Position struct {
 	Available        decimal.Decimal `json:"available"`
 	Locked           decimal.Decimal `json:"locked"`
 	Total            decimal.Decimal `json:"total"`
-	Leverage         string          `json:"leverage"`
+	Leverage         decimal.Decimal `json:"leverage"`
 	AchievedProfits  decimal.Decimal `json:"achievedProfits"`
 	OpenPriceAvg     decimal.Decimal `json:"openPriceAvg"`
 	MarginMode       MarginMode      `json:"marginMode"`

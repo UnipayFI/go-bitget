@@ -2,6 +2,7 @@ package mix
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/UnipayFI/go-bitget/request"
 	"github.com/shopspring/decimal"
@@ -50,8 +51,8 @@ func (c *MixClient) NewSetLeverageService(symbol string, productType ProductType
 
 // SetLeverage sets the leverage ratio for cross margin and one-way isolated
 // positions.
-func (s *SetLeverageService) SetLeverage(leverage string) *SetLeverageService {
-	s.body["leverage"] = leverage
+func (s *SetLeverageService) SetLeverage(leverage int) *SetLeverageService {
+	s.body["leverage"] = strconv.Itoa(leverage)
 	return s
 }
 

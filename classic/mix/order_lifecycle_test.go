@@ -37,7 +37,7 @@ func TestMixOrderLifecycle(t *testing.T) {
 	cx := apitest.Ctx(t)
 
 	// 1. set-leverage (idempotent: 10x).
-	if _, err := c.NewSetLeverageService(symbol, productType, marginCoin).SetLeverage("10").Do(cx); err != nil {
+	if _, err := c.NewSetLeverageService(symbol, productType, marginCoin).SetLeverage(10).Do(cx); err != nil {
 		t.Fatalf("set-leverage: %v", err)
 	}
 	t.Log("set leverage 10x")

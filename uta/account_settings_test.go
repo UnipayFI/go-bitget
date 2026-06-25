@@ -23,7 +23,7 @@ func TestAccountSettingsWrite(t *testing.T) {
 
 	// set-leverage: the account holds no positions, so adjusting a futures
 	// symbol's leverage is fully reversible and side-effect free.
-	res, err := c.NewSetLeverageService(CategoryUSDTFutures, "5").
+	res, err := c.NewSetLeverageService(CategoryUSDTFutures, 5).
 		SetSymbol("ETHUSDT").
 		SetMarginMode(MarginModeCrossed).
 		Do(ctx(t))

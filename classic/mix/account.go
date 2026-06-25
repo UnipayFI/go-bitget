@@ -356,8 +356,8 @@ func (s *GetAccountBillService) SetCoin(coin string) *GetAccountBillService {
 	return s
 }
 
-func (s *GetAccountBillService) SetBusinessType(businessType string) *GetAccountBillService {
-	s.params["businessType"] = businessType
+func (s *GetAccountBillService) SetBusinessType(businessType BillBusinessType) *GetAccountBillService {
+	s.params["businessType"] = string(businessType)
 	return s
 }
 

@@ -51,9 +51,9 @@ func (s *PlaceOrderService) SetClientOrderID(clientOid string) *PlaceOrderServic
 	return s
 }
 
-// SetReduceOnly sets the reduce-only flag ("yes" or "no"; defaults to "no").
-func (s *PlaceOrderService) SetReduceOnly(reduceOnly string) *PlaceOrderService {
-	s.body["reduceOnly"] = reduceOnly
+// SetReduceOnly sets the reduce-only flag (defaults to ReduceOnlyNo).
+func (s *PlaceOrderService) SetReduceOnly(reduceOnly ReduceOnly) *PlaceOrderService {
+	s.body["reduceOnly"] = string(reduceOnly)
 	return s
 }
 

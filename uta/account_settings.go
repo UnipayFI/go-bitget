@@ -2,6 +2,7 @@ package uta
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/UnipayFI/go-bitget/request"
 	"github.com/shopspring/decimal"
@@ -16,10 +17,10 @@ type SetLeverageService struct {
 	body map[string]any
 }
 
-func (c *UTAClient) NewSetLeverageService(category Category, leverage string) *SetLeverageService {
+func (c *UTAClient) NewSetLeverageService(category Category, leverage int) *SetLeverageService {
 	return &SetLeverageService{c: c, body: map[string]any{
 		"category": string(category),
-		"leverage": leverage,
+		"leverage": strconv.Itoa(leverage),
 	}}
 }
 

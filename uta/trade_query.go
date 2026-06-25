@@ -36,7 +36,7 @@ type Order struct {
 	HoldMode      HoldMode        `json:"holdMode"`
 	TradeSide     string          `json:"tradeSide"`
 	DelegateType  string          `json:"delegateType"`
-	ReduceOnly    string          `json:"reduceOnly"`
+	ReduceOnly    ReduceOnly      `json:"reduceOnly"`
 	MarginMode    MarginMode      `json:"marginMode"`
 	StpMode       string          `json:"stpMode"`
 	TakeProfit    decimal.Decimal `json:"takeProfit"`
@@ -117,8 +117,8 @@ func (s *GetOpenOrdersService) SetEndTime(t time.Time) *GetOpenOrdersService {
 	return s
 }
 
-func (s *GetOpenOrdersService) SetLimit(limit string) *GetOpenOrdersService {
-	s.params["limit"] = limit
+func (s *GetOpenOrdersService) SetLimit(limit int) *GetOpenOrdersService {
+	s.params["limit"] = strconv.Itoa(limit)
 	return s
 }
 
@@ -162,8 +162,8 @@ func (s *GetOrderHistoryService) SetEndTime(t time.Time) *GetOrderHistoryService
 	return s
 }
 
-func (s *GetOrderHistoryService) SetLimit(limit string) *GetOrderHistoryService {
-	s.params["limit"] = limit
+func (s *GetOrderHistoryService) SetLimit(limit int) *GetOrderHistoryService {
+	s.params["limit"] = strconv.Itoa(limit)
 	return s
 }
 
@@ -219,8 +219,8 @@ func (s *GetFillHistoryService) SetEndTime(t time.Time) *GetFillHistoryService {
 	return s
 }
 
-func (s *GetFillHistoryService) SetLimit(limit string) *GetFillHistoryService {
-	s.params["limit"] = limit
+func (s *GetFillHistoryService) SetLimit(limit int) *GetFillHistoryService {
+	s.params["limit"] = strconv.Itoa(limit)
 	return s
 }
 

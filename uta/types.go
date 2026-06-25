@@ -1,5 +1,7 @@
 package uta
 
+import "strings"
+
 // Category is the product line a symbol or request targets.
 type Category string
 
@@ -34,6 +36,29 @@ const (
 	PosSideLong  PosSide = "long"
 	PosSideShort PosSide = "short"
 )
+
+// ReduceOnly is the reduce-only flag used by both the order-placement request
+// (SetReduceOnly / WsNewOrder) and the order responses. The UTA wire values are
+// lower-case "yes"/"no" (the classic mix endpoints use upper-case "YES"/"NO");
+// responses may also arrive as "true"/"false" or "1"/"0", so Bool decodes
+// tolerantly.
+type ReduceOnly string
+
+const (
+	ReduceOnlyYes ReduceOnly = "yes"
+	ReduceOnlyNo  ReduceOnly = "no"
+)
+
+// Bool reports whether the reduce-only flag is set, tolerating the several
+// shapes Bitget returns ("yes"/"true"/"1", any case).
+func (r ReduceOnly) Bool() bool {
+	switch strings.ToLower(string(r)) {
+	case "yes", "true", "1":
+		return true
+	default:
+		return false
+	}
+}
 
 // TimeInForce determines how long an order stays active.
 type TimeInForce string

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/UnipayFI/go-bitget/classic/mix"
 	"github.com/shopspring/decimal"
 )
 
@@ -243,7 +244,7 @@ type MixWsOrder struct {
 	PnL                           decimal.Decimal `json:"pnl"`                           // profit
 	UTime                         time.Time       `json:"uTime"`                         // order update time
 	CTime                         time.Time       `json:"cTime"`                         // order creation time
-	ReduceOnly                    string          `json:"reduceOnly"`                    // reduce-only status (yes / no)
+	ReduceOnly                    mix.ReduceOnly  `json:"reduceOnly"`                    // reduce-only status (yes / no)
 	PresetStopSurplusPrice        decimal.Decimal `json:"presetStopSurplusPrice"`        // take-profit price
 	PresetStopLossPrice           decimal.Decimal `json:"presetStopLossPrice"`           // stop-loss price
 	StpMode                       string          `json:"stpMode"`                       // none, cancel_taker, cancel_maker, cancel_both
