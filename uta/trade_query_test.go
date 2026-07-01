@@ -39,4 +39,13 @@ func TestTradeQuery(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/trade/fills",
 		map[string]string{"category": string(CategoryUSDTFutures)}, true)
 	assertCovers(t, "trade/fills", raw, fills)
+
+	// Loan data.
+	loan, err := c.NewGetLoanDataService().Do(cx)
+	if err != nil {
+		t.Fatalf("loan data: %v", err)
+	}
+	t.Logf("loan data: currentLoans=%s debtCoins=%d", loan.CurrentLoans, len(loan.DebtCoinList))
+	raw = fetchRawGet(t, c, cx, "/api/v3/trade/loan-data", nil, true)
+	assertCovers(t, "trade/loan-data", raw, loan)
 }

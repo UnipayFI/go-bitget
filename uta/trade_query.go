@@ -241,6 +241,36 @@ type FillList struct {
 	Cursor string `json:"cursor"`
 }
 
+// GetLoanDataService -- GET /api/v3/trade/loan-data (UTA trade read)
+//
+// Returns the unified account's aggregate loan position: total borrowed value,
+// next interest deduction time, and the per-coin debt breakdown.
+type GetLoanDataService struct {
+	c *UTAClient
+}
+
+func (c *UTAClient) NewGetLoanDataService() *GetLoanDataService {
+	return &GetLoanDataService{c: c}
+}
+
+func (s *GetLoanDataService) Do(ctx context.Context) (*LoanData, error) {
+	req := request.Get(ctx, s.c, "/api/v3/trade/loan-data").WithSign()
+	return request.Do[LoanData](req)
+}
+
+type LoanData struct {
+	CurrentLoans        decimal.Decimal `json:"currentLoans"` // total current borrowed amount (USD)
+	InterestPaymentTime time.Time       `json:"interestPaymentTime"`
+	DebtCoinList        []LoanDebtCoin  `json:"debtCoinList"`
+}
+
+type LoanDebtCoin struct {
+	Coin                 string          `json:"coin"`
+	Debt                 decimal.Decimal `json:"debt"`
+	InterestFreeAmount   decimal.Decimal `json:"interestFreeAmount"`
+	InterestRateNextHour decimal.Decimal `json:"interestRateNextHour"`
+}
+
 // Fill is a single trade execution.
 type Fill struct {
 	ExecID        string          `json:"execId"`
