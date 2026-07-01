@@ -35,6 +35,8 @@ type AccountAssets struct {
 	Imr               decimal.Decimal `json:"imr"`              // initial margin AMOUNT (quote ccy), not a ratio
 	MgnRatio          decimal.Decimal `json:"mgnRatio"`         // margin ratio (≈ mmr/equity)
 	PositionMgnRatio  decimal.Decimal `json:"positionMgnRatio"` // position-only margin ratio
+	PositionValue     decimal.Decimal `json:"positionValue"`    // position value (USD)
+	Leverage          decimal.Decimal `json:"leverage"`         // account leverage (non-negative)
 	Assets            []CoinAsset     `json:"assets"`
 }
 
@@ -46,4 +48,37 @@ type CoinAsset struct {
 	Available decimal.Decimal `json:"available"`
 	Debt      decimal.Decimal `json:"debt"`
 	Locked    decimal.Decimal `json:"locked"`
+}
+
+// GetAllFeeRateService -- GET /api/v3/account/all-fee-rate (UTA mgt. read)
+//
+// Returns the account's maker/taker trading fee rates across all trading pairs
+// in a product category, optionally filtered to a single symbol.
+type GetAllFeeRateService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetAllFeeRateService(category Category) *GetAllFeeRateService {
+	return &GetAllFeeRateService{c: c, params: map[string]string{"category": string(category)}}
+}
+
+func (s *GetAllFeeRateService) SetSymbol(symbol string) *GetAllFeeRateService {
+	s.params["symbol"] = symbol
+	return s
+}
+
+func (s *GetAllFeeRateService) Do(ctx context.Context) ([]SymbolFeeRate, error) {
+	req := request.Get(ctx, s.c, "/api/v3/account/all-fee-rate", s.params).WithSign()
+	resp, err := request.Do[[]SymbolFeeRate](req)
+	if err != nil {
+		return nil, err
+	}
+	return *resp, nil
+}
+
+type SymbolFeeRate struct {
+	Symbol       string          `json:"symbol"`
+	MakerFeeRate decimal.Decimal `json:"makerFeeRate"`
+	TakerFeeRate decimal.Decimal `json:"takerFeeRate"`
 }

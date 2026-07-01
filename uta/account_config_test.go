@@ -52,6 +52,15 @@ func TestAccountConfig(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/account/fee-rate", map[string]string{"category": cat, "symbol": symbol}, true)
 	assertCovers(t, "account/fee-rate", raw, feeRate)
 
+	// All fee rates.
+	allFeeRate, err := c.NewGetAllFeeRateService(CategoryUSDTFutures).SetSymbol(symbol).Do(cx)
+	if err != nil {
+		t.Fatalf("all fee rate: %v", err)
+	}
+	t.Logf("all fee rate: %d", len(allFeeRate))
+	raw = fetchRawGet(t, c, cx, "/api/v3/account/all-fee-rate", map[string]string{"category": cat, "symbol": symbol}, true)
+	assertCovers(t, "account/all-fee-rate", raw, allFeeRate)
+
 	// Open-interest limit.
 	oiLimit, err := c.NewGetOILimitService(CategoryUSDTFutures, symbol).Do(cx)
 	if err != nil {
