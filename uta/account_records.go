@@ -65,15 +65,18 @@ type FinancialRecords struct {
 }
 
 type FinancialRecord struct {
-	Category Category            `json:"category"`
-	ID       string              `json:"id"`
-	Symbol   string              `json:"symbol"`
-	Coin     string              `json:"coin"`
-	Type     FinancialRecordType `json:"type"`
-	Amount   decimal.Decimal     `json:"amount"`
-	Fee      decimal.Decimal     `json:"fee"`
-	Balance  decimal.Decimal     `json:"balance"`
-	Ts       time.Time           `json:"ts"`
+	Category        Category            `json:"category"`
+	ID              string              `json:"id"`
+	Symbol          string              `json:"symbol"`
+	Coin            string              `json:"coin"`
+	Type            FinancialRecordType `json:"type"`
+	PositionType    string              `json:"positionType"` // crossed, isolated
+	PositionAmount  decimal.Decimal     `json:"positionAmount"`
+	PositionBalance decimal.Decimal     `json:"positionBalance"`
+	Amount          decimal.Decimal     `json:"amount"`
+	Fee             decimal.Decimal     `json:"fee"`
+	Balance         decimal.Decimal     `json:"balance"`
+	Ts              time.Time           `json:"ts"`
 }
 
 // FinancialRecordType classifies a financial-records entry. The constants below
@@ -89,15 +92,27 @@ const (
 
 // GetConvertRecordsService -- GET /api/v3/account/convert-records (UTA mgt. read)
 //
-// Returns the unified account's coin-conversion records for a from/to coin
-// pair, paginated by cursor and bounded to a 90-day access window.
+// Returns the unified account's coin-conversion records, paginated by cursor and
+// bounded to a 90-day access window. fromCoin and toCoin are optional filters.
 type GetConvertRecordsService struct {
 	c      *UTAClient
 	params map[string]string
 }
 
-func (c *UTAClient) NewGetConvertRecordsService(fromCoin, toCoin string) *GetConvertRecordsService {
-	return &GetConvertRecordsService{c: c, params: map[string]string{"fromCoin": fromCoin, "toCoin": toCoin}}
+func (c *UTAClient) NewGetConvertRecordsService() *GetConvertRecordsService {
+	return &GetConvertRecordsService{c: c, params: map[string]string{}}
+}
+
+// SetFromCoin filters records by the source coin.
+func (s *GetConvertRecordsService) SetFromCoin(fromCoin string) *GetConvertRecordsService {
+	s.params["fromCoin"] = fromCoin
+	return s
+}
+
+// SetToCoin filters records by the target coin.
+func (s *GetConvertRecordsService) SetToCoin(toCoin string) *GetConvertRecordsService {
+	s.params["toCoin"] = toCoin
+	return s
 }
 
 // SetStartTime filters records at or after t (90-day access window).

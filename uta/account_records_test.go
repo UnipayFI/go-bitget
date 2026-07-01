@@ -20,7 +20,7 @@ func TestAccountRecords(t *testing.T) {
 	assertCovers(t, "account/financial-records", raw, fin)
 
 	// Convert records.
-	conv, err := c.NewGetConvertRecordsService("USDT", "USDC").Do(cx)
+	conv, err := c.NewGetConvertRecordsService().SetFromCoin("USDT").SetToCoin("USDC").Do(cx)
 	if err != nil {
 		t.Fatalf("convert records: %v", err)
 	}
