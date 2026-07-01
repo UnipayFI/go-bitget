@@ -187,6 +187,54 @@ func (s *ModifyOrderService) SetCategory(category Category) *ModifyOrderService 
 	return s
 }
 
+// SetTakeProfit sets the preset take-profit trigger price (pass "0" to cancel).
+func (s *ModifyOrderService) SetTakeProfit(takeProfit decimal.Decimal) *ModifyOrderService {
+	s.body["takeProfit"] = takeProfit.String()
+	return s
+}
+
+// SetStopLoss sets the preset stop-loss trigger price (pass "0" to cancel).
+func (s *ModifyOrderService) SetStopLoss(stopLoss decimal.Decimal) *ModifyOrderService {
+	s.body["stopLoss"] = stopLoss.String()
+	return s
+}
+
+// SetTpTriggerBy sets the take-profit trigger price type (market or mark).
+func (s *ModifyOrderService) SetTpTriggerBy(tpTriggerBy string) *ModifyOrderService {
+	s.body["tpTriggerBy"] = tpTriggerBy
+	return s
+}
+
+// SetSlTriggerBy sets the stop-loss trigger price type (market or mark).
+func (s *ModifyOrderService) SetSlTriggerBy(slTriggerBy string) *ModifyOrderService {
+	s.body["slTriggerBy"] = slTriggerBy
+	return s
+}
+
+// SetTpOrderType sets the take-profit order type (limit or market).
+func (s *ModifyOrderService) SetTpOrderType(tpOrderType OrderType) *ModifyOrderService {
+	s.body["tpOrderType"] = string(tpOrderType)
+	return s
+}
+
+// SetSlOrderType sets the stop-loss order type (limit or market).
+func (s *ModifyOrderService) SetSlOrderType(slOrderType OrderType) *ModifyOrderService {
+	s.body["slOrderType"] = string(slOrderType)
+	return s
+}
+
+// SetTpLimitPrice sets the take-profit execution price for limit orders.
+func (s *ModifyOrderService) SetTpLimitPrice(tpLimitPrice decimal.Decimal) *ModifyOrderService {
+	s.body["tpLimitPrice"] = tpLimitPrice.String()
+	return s
+}
+
+// SetSlLimitPrice sets the stop-loss execution price for limit orders.
+func (s *ModifyOrderService) SetSlLimitPrice(slLimitPrice decimal.Decimal) *ModifyOrderService {
+	s.body["slLimitPrice"] = slLimitPrice.String()
+	return s
+}
+
 func (s *ModifyOrderService) Do(ctx context.Context) (*OrderRef, error) {
 	req := request.Post(ctx, s.c, "/api/v3/trade/modify-order", s.body).WithSign()
 	return request.Do[OrderRef](req)
