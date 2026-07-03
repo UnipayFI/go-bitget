@@ -62,8 +62,8 @@ func (c *UTAClient) NewGetFeeGroupService(category string) *GetFeeGroupService {
 	return &GetFeeGroupService{c: c, params: map[string]string{"category": category}}
 }
 
-// SetGroup filters to a single group ("GROUP_A", "GROUP_B", ...); all groups
-// are returned when omitted.
+// SetGroup filters to a single group ("GROUP_A", "GROUP_B", "GROUP_C",
+// "DEFAULT"); GROUP_C is Futures only. All groups are returned when omitted.
 func (s *GetFeeGroupService) SetGroup(group string) *GetFeeGroupService {
 	s.params["group"] = group
 	return s
@@ -94,10 +94,12 @@ type FeeGroupLabel struct {
 }
 
 // FeeGroupTier is one maker-fee tier within a group. Level is the tier label
-// ("MM1" through "MM5"); a negative MakerFeeRate is a maker rebate.
+// ("MM1" through "MM5", or "PRO1" through "PRO6"); a negative MakerFeeRate is a
+// maker rebate. TakerFeeRate is only returned for the PRO levels.
 type FeeGroupTier struct {
 	Level        string          `json:"level"`
 	MakerFeeRate decimal.Decimal `json:"makerFeeRate"`
+	TakerFeeRate decimal.Decimal `json:"takerFeeRate"`
 }
 
 // GetCashDividendRecordsService -- GET /api/v3/market/cash-dividend-records
