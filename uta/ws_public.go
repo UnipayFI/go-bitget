@@ -52,7 +52,8 @@ type WsTicker struct {
 	Ts              time.Time       `json:"ts"`
 }
 
-// SubscribeKlineService -- public "kline" candlestick channel.
+// SubscribeKlineService -- public "kline" candlestick channel. Reality stock
+// (rtoken) symbols such as rAAPLUSDT are also supported.
 type SubscribeKlineService struct {
 	c        *UTAWebSocketClient
 	instType WsInstType
@@ -169,6 +170,38 @@ type WsRPIOrderBook struct {
 	Seq  int64               `json:"seq"`
 	Pseq int64               `json:"pseq"`
 	Ts   time.Time           `json:"ts"`
+}
+
+// SubscribeRealityOrderBookService -- "reality-orderbook" channel: raw
+// (unaggregated) depth for a Reality (US stock) trading pair, e.g. RAAPLUSDT.
+// Every push is a full snapshot.
+//
+// This channel requires API Key authentication and whitelist access (apply via
+// your BD contact), so the subscription is sent over the authenticated
+// connection.
+type SubscribeRealityOrderBookService struct {
+	c      *UTAWebSocketClient
+	symbol string
+}
+
+func (c *UTAWebSocketClient) NewSubscribeRealityOrderBookService(symbol string) *SubscribeRealityOrderBookService {
+	return &SubscribeRealityOrderBookService{c: c, symbol: symbol}
+}
+
+func (s *SubscribeRealityOrderBookService) Do(ctx context.Context, cb WsHandler[WsRealityOrderBook]) (chan<- struct{}, <-chan struct{}, error) {
+	return request.Subscribe[[]WsRealityOrderBook](ctx, s.c, true,
+		request.WsArg{InstType: wsInstTypeUTA, Topic: "reality-orderbook", Symbol: s.symbol}, cb)
+}
+
+// WsRealityOrderBook rows are [price, size] pairs: asks ascending, bids
+// descending. Seq/Pseq are the current and previous push serial numbers.
+type WsRealityOrderBook struct {
+	Symbol string              `json:"symbol"`
+	Asks   [][]decimal.Decimal `json:"a"`
+	Bids   [][]decimal.Decimal `json:"b"`
+	Seq    string              `json:"seq"`
+	Pseq   string              `json:"pseq"`
+	Ts     time.Time           `json:"ts"`
 }
 
 // SubscribeLiquidationService -- public "liquidation" channel (futures only).

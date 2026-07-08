@@ -140,6 +140,46 @@ func TestWsPublicRPIOrderBook(t *testing.T) {
 	}
 }
 
+// TestWsRealityOrderBook exercises the authenticated reality-orderbook channel.
+// It needs API keys (skipped otherwise) and whitelist access, so an error frame
+// (access not granted) is treated as a skip rather than a failure.
+func TestWsRealityOrderBook(t *testing.T) {
+	ws := testWsClient(t)
+	msgC := make(chan *request.WsPush[[]WsRealityOrderBook], 4)
+	errC := make(chan error, 4)
+	done, _, err := ws.NewSubscribeRealityOrderBookService("RAAPLUSDT").
+		Do(context.Background(), func(p *request.WsPush[[]WsRealityOrderBook], err error) {
+			if err != nil {
+				select {
+				case errC <- err:
+				default:
+				}
+				return
+			}
+			select {
+			case msgC <- p:
+			default:
+			}
+		})
+	if err != nil {
+		t.Fatalf("subscribe reality-orderbook: %v", err)
+	}
+	defer close(done)
+
+	select {
+	case e := <-errC:
+		t.Skipf("reality-orderbook not available (whitelist required): %v", e)
+	case p := <-msgC:
+		if len(p.Data) == 0 {
+			t.Fatal("reality-orderbook push had empty data")
+		}
+		t.Logf("reality-orderbook action=%s symbol=%s asks=%d bids=%d seq=%s ts=%s",
+			p.Action, p.Data[0].Symbol, len(p.Data[0].Asks), len(p.Data[0].Bids), p.Data[0].Seq, p.Data[0].Ts)
+	case <-time.After(12 * time.Second):
+		t.Skip("no reality-orderbook message (symbol may be closed or not whitelisted)")
+	}
+}
+
 func TestWsPublicLiquidation(t *testing.T) {
 	ws := testPublicWsClient()
 	errC := make(chan error, 4)
