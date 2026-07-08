@@ -79,6 +79,7 @@ func (c *UTAClient) NewGetOrderBookService(category Category, symbol string) *Ge
 	}}
 }
 
+// SetLimit sets the depth limit (max 1000).
 func (s *GetOrderBookService) SetLimit(limit int) *GetOrderBookService {
 	s.params["limit"] = strconv.Itoa(limit)
 	return s
@@ -113,6 +114,7 @@ func (c *UTAClient) NewGetRPIOrderBookService(category Category, symbol string) 
 	}}
 }
 
+// SetLimit sets the depth limit (max 1000).
 func (s *GetRPIOrderBookService) SetLimit(limit int) *GetRPIOrderBookService {
 	s.params["limit"] = strconv.Itoa(limit)
 	return s
