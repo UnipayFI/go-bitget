@@ -183,6 +183,7 @@ type MovePositionItem struct {
 //
 // Transfers up to 10 futures positions from one account to another. fromUid,
 // toUid and category are required; positions are supplied via SetPositions.
+// Business limit: 100 times/day/UID, minimum 30 seconds between requests.
 type MovePositionsService struct {
 	c    *UTAClient
 	body map[string]any
