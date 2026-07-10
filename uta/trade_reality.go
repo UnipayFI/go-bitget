@@ -2,6 +2,8 @@ package uta
 
 import (
 	"context"
+	"strconv"
+	"time"
 
 	"github.com/UnipayFI/go-bitget/request"
 	"github.com/shopspring/decimal"
@@ -76,4 +78,69 @@ func (s *CancelRealityOrderService) SetClientOrderID(clientOid string) *CancelRe
 func (s *CancelRealityOrderService) Do(ctx context.Context) (*OrderRef, error) {
 	req := request.Post(ctx, s.c, "/api/v3/trade/cancel-reality-order", s.body).WithSign()
 	return request.Do[OrderRef](req)
+}
+
+// GetRealityOrderBookService -- GET /api/v3/account/reality-orderbook (UTA trade read)
+//
+// Returns the order book depth snapshot for a Reality stock trading pair (e.g.
+// rAAPLUSDT). Requires API Key authentication and Reality access. symbol is
+// required.
+type GetRealityOrderBookService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetRealityOrderBookService(symbol string) *GetRealityOrderBookService {
+	return &GetRealityOrderBookService{c: c, params: map[string]string{"symbol": symbol}}
+}
+
+func (s *GetRealityOrderBookService) Do(ctx context.Context) (*RealityOrderBook, error) {
+	req := request.Get(ctx, s.c, "/api/v3/account/reality-orderbook", s.params).WithSign()
+	return request.Do[RealityOrderBook](req)
+}
+
+// RealityOrderBook is a Reality trading pair's order book depth snapshot. Asks
+// ("a") and bids ("b") arrive as arrays of [price, size] string pairs.
+type RealityOrderBook struct {
+	Symbol string              `json:"symbol"`
+	Asks   [][]decimal.Decimal `json:"a"`
+	Bids   [][]decimal.Decimal `json:"b"`
+	Ts     time.Time           `json:"ts"`
+}
+
+// GetRealityFillsService -- GET /api/v3/account/reality-fills (UTA trade read)
+//
+// Returns the most recent platform fills for a Reality stock trading pair (e.g.
+// rAAPLUSDT), covering the last 3 months. Requires API Key authentication and
+// Reality access. symbol is required; limit defaults to 100 (max 100).
+type GetRealityFillsService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetRealityFillsService(symbol string) *GetRealityFillsService {
+	return &GetRealityFillsService{c: c, params: map[string]string{"symbol": symbol}}
+}
+
+func (s *GetRealityFillsService) SetLimit(limit int) *GetRealityFillsService {
+	s.params["limit"] = strconv.Itoa(limit)
+	return s
+}
+
+func (s *GetRealityFillsService) Do(ctx context.Context) ([]RealityFill, error) {
+	req := request.Get(ctx, s.c, "/api/v3/account/reality-fills", s.params).WithSign()
+	resp, err := request.Do[[]RealityFill](req)
+	if err != nil {
+		return nil, err
+	}
+	return *resp, nil
+}
+
+// RealityFill is a single recent platform fill for a Reality trading pair.
+type RealityFill struct {
+	ExecID string          `json:"execId"`
+	Price  decimal.Decimal `json:"price"`
+	Size   decimal.Decimal `json:"size"`
+	Side   Side            `json:"side"`
+	Ts     time.Time       `json:"ts"`
 }
