@@ -161,7 +161,8 @@ func (s *GetRecentFillsService) Do(ctx context.Context) ([]MarketFill, error) {
 // GetFillsHistoryService -- GET /api/v2/mix/market/fills-history (public)
 //
 // Returns historical public trades (fills) for a contract, paged by trade id /
-// time window.
+// time window. When neither startTime nor endTime is set, the API defaults to
+// the most recent 7-day window.
 type GetFillsHistoryService struct {
 	c      *MixClient
 	params map[string]string

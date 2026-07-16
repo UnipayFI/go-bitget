@@ -484,6 +484,8 @@ type MarketFill struct {
 // GetMarketTradesService -- GET /api/v2/spot/market/fills-history (public)
 //
 // Returns historical public trades (fills) for a symbol, paged via tradeId.
+// When neither startTime nor endTime is set, the API defaults to the most
+// recent 7-day window.
 type GetMarketTradesService struct {
 	c      *SpotClient
 	params map[string]string
