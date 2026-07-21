@@ -72,6 +72,7 @@ type Position struct {
 	TotalFunding     decimal.Decimal `json:"totalFunding"`
 	OpenFeeTotal     decimal.Decimal `json:"openFeeTotal"`
 	CloseFeeTotal    decimal.Decimal `json:"closeFeeTotal"`
+	CashDividend     decimal.Decimal `json:"cashDividend"` // cash dividend, in USDT
 	CreatedTime      time.Time       `json:"createdTime"`
 	UpdatedTime      time.Time       `json:"updatedTime"`
 }
@@ -144,6 +145,7 @@ type HistoryPosition struct {
 	TotalFunding   decimal.Decimal `json:"totalFunding"`
 	OpenFeeTotal   decimal.Decimal `json:"openFeeTotal"`
 	CloseFeeTotal  decimal.Decimal `json:"closeFeeTotal"`
+	CashDividend   decimal.Decimal `json:"cashDividend"` // cash dividend, in USDT
 	CreatedTime    time.Time       `json:"createdTime"`
 	UpdatedTime    time.Time       `json:"updatedTime"`
 }
