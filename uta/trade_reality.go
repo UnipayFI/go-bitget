@@ -14,8 +14,8 @@ import (
 // Submits a limit or market order for Reality stock trading pairs (e.g.
 // rAAPLUSDT). Restricted to whitelisted UIDs. symbol, side, orderType and qty
 // are required; price is required for limit orders. For market buys qty is in
-// the quote coin, otherwise in the base coin. The reply carries the new order's
-// identifiers.
+// the quote coin, otherwise in the base coin. category selects spot vs. margin
+// trading (defaults to SPOT). The reply carries the new order's identifiers.
 type PlaceRealityOrderService struct {
 	c    *UTAClient
 	body map[string]any
@@ -28,6 +28,13 @@ func (c *UTAClient) NewPlaceRealityOrderService(symbol string, side Side, orderT
 		"orderType": string(orderType),
 		"qty":       qty.String(),
 	}}
+}
+
+// SetCategory selects the trading mode: CategorySpot or CategoryMargin
+// (defaults to CategorySpot).
+func (s *PlaceRealityOrderService) SetCategory(category Category) *PlaceRealityOrderService {
+	s.body["category"] = string(category)
+	return s
 }
 
 // SetPrice sets the order price (required for limit orders).
@@ -51,7 +58,8 @@ func (s *PlaceRealityOrderService) Do(ctx context.Context) (*OrderRef, error) {
 //
 // Cancels an unfilled or partially filled Reality stock order. Restricted to
 // whitelisted UIDs. symbol is required; identify the order by orderId or
-// clientOid (orderId wins if both are set).
+// clientOid (orderId wins if both are set). category selects spot vs. margin
+// trading (defaults to SPOT).
 type CancelRealityOrderService struct {
 	c    *UTAClient
 	body map[string]any
@@ -61,6 +69,13 @@ func (c *UTAClient) NewCancelRealityOrderService(symbol string) *CancelRealityOr
 	return &CancelRealityOrderService{c: c, body: map[string]any{
 		"symbol": symbol,
 	}}
+}
+
+// SetCategory selects the trading mode: CategorySpot or CategoryMargin
+// (defaults to CategorySpot).
+func (s *CancelRealityOrderService) SetCategory(category Category) *CancelRealityOrderService {
+	s.body["category"] = string(category)
+	return s
 }
 
 // SetOrderID sets the order identifier (orderId or clientOid is required).
