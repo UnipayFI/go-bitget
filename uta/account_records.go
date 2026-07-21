@@ -88,6 +88,9 @@ type FinancialRecordType string
 const (
 	FinancialRecordContractMainSettleFeeUserIn  FinancialRecordType = "CONTRACT_MAIN_SETTLE_FEE_USER_IN"
 	FinancialRecordContractMainSettleFeeUserOut FinancialRecordType = "CONTRACT_MAIN_SETTLE_FEE_USER_OUT"
+	// RWA cash-dividend cross-margin funding-fee entries.
+	FinancialRecordRWAContractMainSettleFeeUserIn  FinancialRecordType = "RWA_CONTRACT_MAIN_SETTLE_FEE_USER_IN"
+	FinancialRecordRWAContractMainSettleFeeUserOut FinancialRecordType = "RWA_CONTRACT_MAIN_SETTLE_FEE_USER_OUT"
 )
 
 // GetConvertRecordsService -- GET /api/v3/account/convert-records (UTA mgt. read)
