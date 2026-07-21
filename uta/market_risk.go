@@ -163,9 +163,11 @@ func (s *GetMarginLoansService) Do(ctx context.Context) (*MarginLoan, error) {
 }
 
 type MarginLoan struct {
-	DailyInterest  decimal.Decimal `json:"dailyInterest"`
-	AnnualInterest decimal.Decimal `json:"annualInterest"`
-	Limit          decimal.Decimal `json:"limit"`
+	DailyInterest        decimal.Decimal `json:"dailyInterest"`
+	AnnualInterest       decimal.Decimal `json:"annualInterest"`
+	Limit                decimal.Decimal `json:"limit"`
+	MasterSubLimit       decimal.Decimal `json:"masterSubLimit"`       // master/sub account borrow limit
+	PlatformRemaingQuota decimal.Decimal `json:"platformRemaingQuota"` // platform remaining quota (Bitget's spelling)
 }
 
 // GetPositionTierService -- GET /api/v3/market/position-tier
