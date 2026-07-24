@@ -196,14 +196,11 @@ func (s *SubscribeRealityOrderBookService) Do(ctx context.Context, cb WsHandler[
 }
 
 // WsRealityOrderBook rows are [price, size] pairs: asks ascending, bids
-// descending. Seq/Pseq are the current and previous push serial numbers.
+// descending.
 type WsRealityOrderBook struct {
 	Symbol string              `json:"symbol"`
 	Asks   [][]decimal.Decimal `json:"a"`
 	Bids   [][]decimal.Decimal `json:"b"`
-	Seq    string              `json:"seq"`
-	Pseq   string              `json:"pseq"`
-	Ts     time.Time           `json:"ts"`
 }
 
 // SubscribeLiquidationService -- public "liquidation" channel (futures only).

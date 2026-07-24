@@ -173,8 +173,8 @@ func TestWsRealityOrderBook(t *testing.T) {
 		if len(p.Data) == 0 {
 			t.Fatal("reality-orderbook push had empty data")
 		}
-		t.Logf("reality-orderbook action=%s symbol=%s asks=%d bids=%d seq=%s ts=%s",
-			p.Action, p.Data[0].Symbol, len(p.Data[0].Asks), len(p.Data[0].Bids), p.Data[0].Seq, p.Data[0].Ts)
+		t.Logf("reality-orderbook action=%s symbol=%s asks=%d bids=%d",
+			p.Action, p.Data[0].Symbol, len(p.Data[0].Asks), len(p.Data[0].Bids))
 	case <-time.After(12 * time.Second):
 		t.Skip("no reality-orderbook message (symbol may be closed or not whitelisted)")
 	}
