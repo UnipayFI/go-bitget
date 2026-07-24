@@ -81,6 +81,7 @@ type WsPosition struct {
 	TotalFundingFee decimal.Decimal `json:"totalFundingFee"`
 	OpenFeeTotal    decimal.Decimal `json:"openFeeTotal"`
 	CloseFeeTotal   decimal.Decimal `json:"closeFeeTotal"`
+	CashDividend    decimal.Decimal `json:"cashDividend"` // cash dividend, in USDT
 	PositionStatus  string          `json:"positionStatus"`
 	CreatedTime     time.Time       `json:"createdTime"`
 	UpdatedTime     time.Time       `json:"updatedTime"`
