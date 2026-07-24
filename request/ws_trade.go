@@ -38,14 +38,22 @@ type wsTradeOp struct {
 // WsTradeResponse is the reply to a trade op. Args carries the topic-specific
 // payload (e.g. the order acknowledgements).
 type WsTradeResponse[T any] struct {
-	Event  string    `json:"event"`
-	ID     string    `json:"id"`
-	Topic  string    `json:"topic"`
-	Code   string    `json:"code"`
-	Msg    string    `json:"msg"`
-	Args   T         `json:"args"`
-	ConnID string    `json:"connId"`
-	Ts     time.Time `json:"ts"`
+	Event     string             `json:"event"`
+	ID        string             `json:"id"`
+	Topic     string             `json:"topic"`
+	Code      string             `json:"code"`
+	Msg       string             `json:"msg"`
+	Args      T                  `json:"args"`
+	RateLimit []WsTradeRateLimit `json:"rateLimit"`
+	ConnID    string             `json:"connId"`
+	Ts        time.Time          `json:"ts"`
+}
+
+// WsTradeRateLimit reports the remaining quota for a rate-limit dimension on a
+// trade op response.
+type WsTradeRateLimit struct {
+	Limit     string `json:"limit"`     // quota for this dimension
+	Remaining string `json:"remaining"` // remaining available quota
 }
 
 // DialWsTrade opens the private gateway, logs in, and returns a ready trade

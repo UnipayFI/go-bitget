@@ -59,6 +59,9 @@ type WsNewOrder struct {
 	ReduceOnly    ReduceOnly       `json:"reduceOnly,omitempty"`
 	MarginMode    MarginMode       `json:"marginMode,omitempty"`
 	StpMode       string           `json:"stpMode,omitempty"`
+	// ReceiveWindow is the order's validity window in ms ([10, 60000]); the
+	// order is rejected if the gateway receives it after the window elapses.
+	ReceiveWindow string `json:"receiveWindow,omitempty"`
 }
 
 // WsModifyOrder amends an open order. Identify it by OrderID or ClientOid.
