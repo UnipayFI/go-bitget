@@ -30,6 +30,7 @@ type WsAccount struct {
 	Mmr              decimal.Decimal `json:"mmr"`
 	MgnRatio         decimal.Decimal `json:"mgnRatio"`
 	PositionMgnRatio decimal.Decimal `json:"positionMgnRatio"`
+	Bonus            decimal.Decimal `json:"bonus"` // USDT bonus amount
 	Coin             []WsAccountCoin `json:"coin"`
 }
 

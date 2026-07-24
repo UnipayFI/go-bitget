@@ -37,6 +37,7 @@ type AccountAssets struct {
 	PositionMgnRatio  decimal.Decimal `json:"positionMgnRatio"` // position-only margin ratio
 	PositionValue     decimal.Decimal `json:"positionValue"`    // position value (USD)
 	Leverage          decimal.Decimal `json:"leverage"`         // account leverage (non-negative)
+	Bonus             decimal.Decimal `json:"bonus"`            // USDT bonus amount
 	Assets            []CoinAsset     `json:"assets"`
 }
 
