@@ -53,6 +53,8 @@ type Ticker struct {
 	Price24hPcnt decimal.Decimal `json:"price24hPcnt"`
 	Volume24h    decimal.Decimal `json:"volume24h"`
 	Turnover24h  decimal.Decimal `json:"turnover24h"`
+	// PlatformTurnover24h is the 24h platform volume, only available for rtoken.
+	PlatformTurnover24h decimal.Decimal `json:"platformTurnover24h"`
 
 	// Futures-only fields.
 	IndexPrice        decimal.Decimal `json:"indexPrice"`
