@@ -91,6 +91,17 @@ const (
 	// RWA cash-dividend cross-margin funding-fee entries.
 	FinancialRecordRWAContractMainSettleFeeUserIn  FinancialRecordType = "RWA_CONTRACT_MAIN_SETTLE_FEE_USER_IN"
 	FinancialRecordRWAContractMainSettleFeeUserOut FinancialRecordType = "RWA_CONTRACT_MAIN_SETTLE_FEE_USER_OUT"
+	// RWA contract rebase entries (position open/close and in-SSM buy/sell).
+	FinancialRecordRWAContractRebaseUserOpenLong   FinancialRecordType = "RWA_CONTRACT_REBASE_USER_OPEN_LONG"
+	FinancialRecordRWAContractRebaseUserOpenShort  FinancialRecordType = "RWA_CONTRACT_REBASE_USER_OPEN_SHORT"
+	FinancialRecordRWAContractRebaseUserCloseLong  FinancialRecordType = "RWA_CONTRACT_REBASE_USER_CLOSE_LONG"
+	FinancialRecordRWAContractRebaseUserCloseShort FinancialRecordType = "RWA_CONTRACT_REBASE_USER_CLOSE_SHORT"
+	FinancialRecordRWAContractRebaseUserBuyInSSM   FinancialRecordType = "RWA_CONTRACT_REBASE_USER_BUY_IN_SSM"
+	FinancialRecordRWAContractRebaseUserSellInSSM  FinancialRecordType = "RWA_CONTRACT_REBASE_USER_SELL_IN_SSM"
+	// Copy-trading (trace) transfer entries between the UTA and funding account.
+	FinancialRecordTraceTransferUserOut  FinancialRecordType = "TRACE_TRANSFER_USER_OUT"
+	FinancialRecordTraceTransferUserIn   FinancialRecordType = "TRACE_TRANSFER_USER_IN"
+	FinancialRecordTraceTransferRefundIn FinancialRecordType = "TRACE_TRANSFER_REFUND_IN"
 )
 
 // GetConvertRecordsService -- GET /api/v3/account/convert-records (UTA mgt. read)
