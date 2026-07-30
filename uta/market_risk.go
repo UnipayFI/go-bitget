@@ -88,7 +88,8 @@ type RiskReserveHourRecord struct {
 // GetRiskReserveAllService -- GET /api/v3/market/risk-reserve-all
 //
 // Returns the current risk-reserve (insurance) fund balances for every fund in
-// a product category, with the trading pairs each fund backs.
+// a product category, with the trading pairs each fund backs. Balances refresh
+// every minute (previously hourly).
 type GetRiskReserveAllService struct {
 	c      *UTAClient
 	params map[string]string
