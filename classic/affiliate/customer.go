@@ -66,7 +66,8 @@ const (
 // GetCustomerCommissionsService -- GET /api/v2/broker/customer-commissions (affiliate/agent)
 //
 // Returns the agent's direct commission records for referred customers, paged by
-// idLessThan over a window of up to 30 days.
+// idLessThan over a window of up to 30 days. Records with a totalRebateAmount of
+// 0 are excluded from the response.
 type GetCustomerCommissionsService struct {
 	c      *AffiliateClient
 	params map[string]string
