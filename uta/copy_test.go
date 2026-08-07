@@ -49,4 +49,44 @@ func TestCopy(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/copy/futures/transfer-record",
 		map[string]string{"limit": "20"}, true)
 	assertCovers(t, "copy/futures/transfer-record", raw, records)
+
+	// Current followers.
+	current, err := c.NewGetCopyCurrentFollowersService().SetLimit("20").Do(cx)
+	if err != nil {
+		t.Fatalf("current followers: %v", err)
+	}
+	t.Logf("current followers: %d", len(current.List))
+	raw = fetchRawGet(t, c, cx, "/api/v3/copy/futures/current-follower",
+		map[string]string{"limit": "20"}, true)
+	assertCovers(t, "copy/futures/current-follower", raw, current)
+
+	// History followers.
+	history, err := c.NewGetCopyHistoryFollowersService().SetLimit("20").Do(cx)
+	if err != nil {
+		t.Fatalf("history followers: %v", err)
+	}
+	t.Logf("history followers: %d", len(history.List))
+	raw = fetchRawGet(t, c, cx, "/api/v3/copy/futures/history-follower",
+		map[string]string{"limit": "20"}, true)
+	assertCovers(t, "copy/futures/history-follower", raw, history)
+
+	// Profit summary.
+	summary, err := c.NewGetCopyProfitSummaryService().Do(cx)
+	if err != nil {
+		t.Fatalf("profit summary: %v", err)
+	}
+	t.Logf("profit summary: total=%s allocated=%s pending=%s",
+		summary.TotalProfit, summary.TotalAllocatedProfit, summary.TotalPendingProfit)
+	raw = fetchRawGet(t, c, cx, "/api/v3/copy/futures/profit-summary", nil, true)
+	assertCovers(t, "copy/futures/profit-summary", raw, summary)
+
+	// Profit details.
+	details, err := c.NewGetCopyProfitDetailsService().SetLimit("20").Do(cx)
+	if err != nil {
+		t.Fatalf("profit details: %v", err)
+	}
+	t.Logf("profit details: %d", len(details.List))
+	raw = fetchRawGet(t, c, cx, "/api/v3/copy/futures/profit-details",
+		map[string]string{"limit": "20"}, true)
+	assertCovers(t, "copy/futures/profit-details", raw, details)
 }
