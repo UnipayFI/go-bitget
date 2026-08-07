@@ -176,7 +176,8 @@ type WsRPIOrderBook struct {
 
 // SubscribeRealityOrderBookService -- "reality-orderbook" channel: raw
 // (unaggregated) depth for a Reality (US stock) trading pair, e.g. RAAPLUSDT.
-// Every push is a full snapshot.
+// Every push is a full snapshot, with complete depth in both trading and
+// non-trading sessions.
 //
 // This channel requires API Key authentication and whitelist access (apply via
 // your BD contact), so the subscription is sent over the authenticated
