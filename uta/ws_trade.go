@@ -60,8 +60,13 @@ type WsNewOrder struct {
 	MarginMode    MarginMode       `json:"marginMode,omitempty"`
 	StpMode       string           `json:"stpMode,omitempty"`
 	// ReceiveWindow is the order's validity window in ms ([10, 60000]); the
-	// order is rejected if the gateway receives it after the window elapses.
+	// order is cancelled (cancelReason "cancel_receiveWindow") if the window
+	// elapses before the gateway processes it. Only takes effect together with
+	// RequestTime.
 	ReceiveWindow string `json:"receiveWindow,omitempty"`
+	// RequestTime is the client-side request timestamp in ms, the origin the
+	// ReceiveWindow is measured from.
+	RequestTime string `json:"requestTime,omitempty"`
 }
 
 // WsModifyOrder amends an open order. Identify it by OrderID or ClientOid.

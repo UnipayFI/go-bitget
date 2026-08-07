@@ -48,7 +48,7 @@ type Order struct {
 	TpLimitPrice  decimal.Decimal `json:"tpLimitPrice"`
 	SlLimitPrice  decimal.Decimal `json:"slLimitPrice"`
 	FeeDetail     []FeeDetail     `json:"feeDetail"`
-	CancelReason  string          `json:"cancelReason"`
+	CancelReason  string          `json:"cancelReason"` // incl. cancel_receiveWindow (receiveWindow expired)
 	ExecType      ExecType        `json:"execType"`
 	CreatedTime   time.Time       `json:"createdTime"`
 	UpdatedTime   time.Time       `json:"updatedTime"`

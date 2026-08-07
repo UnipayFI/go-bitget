@@ -124,7 +124,7 @@ type WsOrder struct {
 	AvgPrice      decimal.Decimal `json:"avgPrice"`
 	TotalProfit   decimal.Decimal `json:"totalProfit"`
 	OrderStatus   OrderStatus     `json:"orderStatus"`
-	CancelReason  string          `json:"cancelReason"`
+	CancelReason  string          `json:"cancelReason"` // incl. cancel_receiveWindow (receiveWindow expired)
 	Leverage      decimal.Decimal `json:"leverage"`
 	StpMode       string          `json:"stpMode"`
 	FeeDetail     []FeeDetail     `json:"feeDetail"`
