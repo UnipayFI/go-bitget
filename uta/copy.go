@@ -121,6 +121,14 @@ func (c *UTAClient) NewCopyTransferService(transferType, coin string, amount dec
 	}}
 }
 
+// SetInAccountType restricts the source accounts a transfer-in may draw from:
+// a comma-separated list of "funding", "uta" and "otc". All three are used when
+// omitted, deducted in the order funding -> otc -> uta.
+func (s *CopyTransferService) SetInAccountType(inAccountType string) *CopyTransferService {
+	s.body["inAccountType"] = inAccountType
+	return s
+}
+
 func (s *CopyTransferService) Do(ctx context.Context) (*CopyTransferResult, error) {
 	req := request.Post(ctx, s.c, "/api/v3/copy/futures/transfer", s.body).WithSign()
 	return request.Do[CopyTransferResult](req)
@@ -175,9 +183,11 @@ type CopyTransferRecords struct {
 }
 
 type CopyTransferRecord struct {
-	TransferID  string          `json:"transferId"`
-	FromType    string          `json:"fromType"` // spot, uta, lead
-	ToType      string          `json:"toType"`   // spot, uta, lead
+	TransferID string `json:"transferId"`
+	// FromType and ToType are spot, uta, lead or otc; a single record may carry
+	// several account types, comma-separated.
+	FromType    string          `json:"fromType"`
+	ToType      string          `json:"toType"`
 	Coin        string          `json:"coin"`
 	Amount      decimal.Decimal `json:"amount"`
 	Status      string          `json:"status"` // Successful, Failed, Processing
