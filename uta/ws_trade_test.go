@@ -7,8 +7,32 @@ import (
 	"testing"
 	"time"
 
+	"github.com/UnipayFI/go-bitget/common"
 	"github.com/shopspring/decimal"
 )
+
+// TestWsOrderAckCovers checks WsOrderAck against the acknowledgement shapes the
+// docs publish for the single and batch trade channels. The live counterpart
+// (TestWsTradeLifecycle) only runs with write credentials, so the doc samples
+// are what keeps the struct honest offline.
+func TestWsOrderAckCovers(t *testing.T) {
+	for _, tc := range []struct {
+		label string
+		raw   string
+	}{
+		{"place-order", `{"symbol":"BTCUSDT","orderId":"xxxxxxxx","clientOid":"xxxxxxxx","cTime":"1750034397008","receiveTime":"1750034396998123","pushTime":"1750034397076456"}`},
+		{"batch-place", `{"code":"0","msg":"Success","symbol":"BTCUSDT","orderId":"xxxxxxxx","clientOid":"xxxxxxxx","receiveTime":"1750034396998123","pushTime":"1750034397076456"}`},
+	} {
+		var ack WsOrderAck
+		if err := common.JSONUnmarshal([]byte(tc.raw), &ack); err != nil {
+			t.Fatalf("%s: unmarshal: %v", tc.label, err)
+		}
+		assertCovers(t, tc.label, []byte(tc.raw), ack)
+		if ack.ReceiveTime.UnixMicro() != 1750034396998123 {
+			t.Errorf("%s: receiveTime = %d us, want microsecond precision", tc.label, ack.ReceiveTime.UnixMicro())
+		}
+	}
+}
 
 // TestWsTradeLifecycle places a tiny, far-from-market resting SPOT limit order
 // over the WebSocket trade connection and cancels it over the same connection.
