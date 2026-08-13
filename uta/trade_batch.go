@@ -65,13 +65,17 @@ func (s *PlaceBatchService) Do(ctx context.Context) ([]OrderResult, error) {
 // Either OrderID or ClientOid must be set (orderId takes priority if both are
 // supplied).
 type BatchModifyItem struct {
-	OrderID       string          `json:"orderId,omitempty"`
-	ClientOrderID string          `json:"clientOid,omitempty"`
-	Qty           decimal.Decimal `json:"qty,omitempty"`
-	Price         decimal.Decimal `json:"price,omitempty"`
-	AutoCancel    string          `json:"autoCancel,omitempty"` // yes, no (default)
-	Symbol        string          `json:"symbol,omitempty"`
-	Category      Category        `json:"category,omitempty"`
+	OrderID       string `json:"orderId,omitempty"`
+	ClientOrderID string `json:"clientOid,omitempty"`
+	// RequestID is a custom request ID identifying this modification (max 32
+	// characters, no special characters; uniqueness is not validated). It is
+	// echoed back on the private order channel, not in the reply.
+	RequestID  string          `json:"requestId,omitempty"`
+	Qty        decimal.Decimal `json:"qty,omitempty"`
+	Price      decimal.Decimal `json:"price,omitempty"`
+	AutoCancel string          `json:"autoCancel,omitempty"` // yes, no (default)
+	Symbol     string          `json:"symbol,omitempty"`
+	Category   Category        `json:"category,omitempty"`
 }
 
 // BatchModifyOrderService -- POST /api/v3/trade/batch-modify-order

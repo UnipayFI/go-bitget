@@ -156,6 +156,14 @@ func (s *ModifyOrderService) SetClientOrderID(clientOid string) *ModifyOrderServ
 	return s
 }
 
+// SetRequestID sets a custom request ID identifying this modify request (max 32
+// characters, no special characters; uniqueness is not validated). It is echoed
+// back on the private order channel, not in this reply.
+func (s *ModifyOrderService) SetRequestID(requestId string) *ModifyOrderService {
+	s.body["requestId"] = requestId
+	return s
+}
+
 // SetQty sets the new order quantity (qty or price is required).
 func (s *ModifyOrderService) SetQty(qty decimal.Decimal) *ModifyOrderService {
 	s.body["qty"] = qty.String()

@@ -106,6 +106,7 @@ type WsOrder struct {
 	Symbol        string          `json:"symbol"`
 	OrderID       string          `json:"orderId"`
 	ClientOrderID string          `json:"clientOid"`
+	RequestID     string          `json:"requestId"` // only set if the modify request carried one
 	Price         decimal.Decimal `json:"price"`
 	Qty           decimal.Decimal `json:"qty"`
 	Amount        decimal.Decimal `json:"amount"`

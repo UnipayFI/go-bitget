@@ -76,11 +76,15 @@ type WsNewOrder struct {
 
 // WsModifyOrder amends an open order. Identify it by OrderID or ClientOid.
 type WsModifyOrder struct {
-	Symbol        string           `json:"symbol,omitempty"`
-	OrderID       string           `json:"orderId,omitempty"`
-	ClientOrderID string           `json:"clientOid,omitempty"`
-	Qty           *decimal.Decimal `json:"qty,omitempty"`
-	Price         *decimal.Decimal `json:"price,omitempty"`
+	Symbol        string `json:"symbol,omitempty"`
+	OrderID       string `json:"orderId,omitempty"`
+	ClientOrderID string `json:"clientOid,omitempty"`
+	// RequestID is a custom request ID identifying this modification (max 32
+	// characters, no special characters). It is echoed back on the private order
+	// channel, not in the acknowledgement.
+	RequestID string           `json:"requestId,omitempty"`
+	Qty       *decimal.Decimal `json:"qty,omitempty"`
+	Price     *decimal.Decimal `json:"price,omitempty"`
 }
 
 // WsCancelOrder identifies an order to cancel by OrderID or ClientOid.
