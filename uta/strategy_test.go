@@ -28,4 +28,20 @@ func TestStrategy(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/trade/history-strategy-orders",
 		map[string]string{"category": string(CategoryUSDTFutures)}, true)
 	assertCovers(t, "trade/history-strategy-orders", raw, history)
+
+	// Sub-orders of the newest historical strategy order. Only iceberg and twap
+	// orders fan out into several sub-orders, so the list is often empty — the
+	// call still proves the endpoint and its signing.
+	if len(history.List) == 0 {
+		t.Skip("no historical strategy orders; skipping sub-order query")
+	}
+	orderID := history.List[0].OrderID
+	sub, err := c.NewGetStrategySubOrdersService(orderID).Do(cx)
+	if err != nil {
+		t.Fatalf("strategy sub orders: %v", err)
+	}
+	t.Logf("sub orders of %s: %d cursor=%s", orderID, len(sub.List), sub.Cursor)
+	raw = fetchRawGet(t, c, cx, "/api/v3/trade/strategy-sub-orders",
+		map[string]string{"orderId": orderID}, true)
+	assertCovers(t, "trade/strategy-sub-orders", raw, sub)
 }

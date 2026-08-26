@@ -13,8 +13,12 @@ import (
 type StrategyType string
 
 const (
-	StrategyTypeTPSL    StrategyType = "tpsl"
-	StrategyTypeTrigger StrategyType = "trigger"
+	StrategyTypeTPSL         StrategyType = "tpsl"
+	StrategyTypeTrigger      StrategyType = "trigger"
+	StrategyTypeOCO          StrategyType = "oco"
+	StrategyTypeTrailingStop StrategyType = "trailing_stop"
+	StrategyTypeIceberg      StrategyType = "iceberg"
+	StrategyTypeTWAP         StrategyType = "twap"
 )
 
 // TriggerBy is the price series a strategy order's trigger watches.
@@ -23,13 +27,149 @@ type TriggerBy string
 const (
 	TriggerByMarket TriggerBy = "market"
 	TriggerByMark   TriggerBy = "mark"
+	// TriggerByIndex is accepted only as a trailing stop's activationType, and
+	// only on futures.
+	TriggerByIndex TriggerBy = "index"
 )
+
+// TrailType is how a trailing stop measures its distance from the best price.
+type TrailType string
+
+const (
+	TrailTypeRatio  TrailType = "ratio"
+	TrailTypeSpread TrailType = "spread"
+)
+
+// IcebergSplitMode is how an iceberg order divides its total quantity.
+type IcebergSplitMode string
+
+const (
+	// IcebergSplitModeQuantity splits by quantity per sub-order (qtyPerOrder),
+	// IcebergSplitModeOrder by sub-order count (splitOrderNumbers).
+	IcebergSplitModeQuantity IcebergSplitMode = "quantity"
+	IcebergSplitModeOrder    IcebergSplitMode = "order"
+)
+
+// IcebergOrderPreference is how an iceberg order prices its sub-orders.
+type IcebergOrderPreference string
+
+const (
+	IcebergOrderPreferenceFasterExecution IcebergOrderPreference = "faster_execution"
+	IcebergOrderPreferenceFixedDistance   IcebergOrderPreference = "fixed_distance"
+	IcebergOrderPreferenceFixedPrice      IcebergOrderPreference = "fixed_price"
+)
+
+// IcebergExecutionStrategy picks the side of the book an iceberg sub-order
+// joins. It applies only to IcebergOrderPreferenceFasterExecution.
+type IcebergExecutionStrategy string
+
+const (
+	// IcebergExecutionStrategyQueue1 queues at the best price on our own side,
+	// IcebergExecutionStrategyCounterparty1 takes the best opposing price.
+	IcebergExecutionStrategyQueue1        IcebergExecutionStrategy = "queue1"
+	IcebergExecutionStrategyCounterparty1 IcebergExecutionStrategy = "counterparty1"
+)
+
+// OffsetType is how a price offset is expressed — as a percentage of the
+// reference price or as an absolute spread. It is shared by the iceberg
+// fixedDistanceType and the TWAP limitOffsetType.
+type OffsetType string
+
+const (
+	OffsetTypePercentage OffsetType = "percentage"
+	OffsetTypeSpread     OffsetType = "spread"
+)
+
+// The four param sets below configure the oco, trailing_stop, iceberg and twap
+// strategy types. Bitget types each of them as a list in both the request and
+// the response, so they are modelled as slices even though a strategy order
+// carries exactly one param set.
+
+// StrategyOCOParams configures an OCO ("one cancels the other") strategy order:
+// a resting limit order paired with a conditional order, whichever triggers
+// first cancelling the other.
+type StrategyOCOParams struct {
+	// OCOLimitPrice is the limit leg — bottom-fishing for a buy, take-profit
+	// for a sell. OCOTriggerPrice is the conditional leg — chase-up for a buy,
+	// stop-loss for a sell.
+	OCOLimitPrice   decimal.Decimal `json:"ocoLimitPrice"`
+	OCOTriggerPrice decimal.Decimal `json:"ocoTriggerPrice"`
+	OCOOrderType    OrderType       `json:"ocoOrderType"`
+	// OCOOrderPrice is the conditional leg's execution price, required when
+	// OCOOrderType is limit.
+	OCOOrderPrice decimal.Decimal `json:"ocoOrderPrice"`
+}
+
+// StrategyTrailingStopParams configures a trailing stop: once the market
+// reaches ActivationPrice the order follows the best price at TrailVariance,
+// firing when the price retraces by that much.
+type StrategyTrailingStopParams struct {
+	ActivationPrice decimal.Decimal `json:"activationPrice"`
+	// ActivationType is the price series watched for activation; index is
+	// futures-only.
+	ActivationType TriggerBy `json:"activationType"`
+	TrailType      TrailType `json:"trailType"`
+	// TrailVariance is a percentage for TrailTypeRatio (spot [0.1-20], futures
+	// [0.1-10]) and an absolute price distance for TrailTypeSpread.
+	TrailVariance decimal.Decimal `json:"trailVariance"`
+	// PreOrderType is the type of the order placed when the trail fires;
+	// PreOrderPrice is required when it is limit.
+	PreOrderType  OrderType       `json:"preOrderType"`
+	PreOrderPrice decimal.Decimal `json:"preOrderPrice"`
+}
+
+// StrategyIcebergParams configures an iceberg order: one large order worked as
+// a series of smaller sub-orders so the full size never shows on the book.
+type StrategyIcebergParams struct {
+	SplitMode IcebergSplitMode `json:"splitMode"`
+	// QtyPerOrder is required for IcebergSplitModeQuantity, SplitOrderNumbers
+	// (range [1-100]) for IcebergSplitModeOrder.
+	QtyPerOrder       decimal.Decimal        `json:"qtyPerOrder"`
+	SplitOrderNumbers string                 `json:"splitOrderNumbers"`
+	OrderPreference   IcebergOrderPreference `json:"orderPreference"`
+	// ExecutionStrategy applies to IcebergOrderPreferenceFasterExecution.
+	ExecutionStrategy IcebergExecutionStrategy `json:"executionStrategy"`
+	// FixedDistanceType and Distance apply to
+	// IcebergOrderPreferenceFixedDistance, FixedPrice to
+	// IcebergOrderPreferenceFixedPrice.
+	FixedDistanceType OffsetType      `json:"fixedDistanceType"`
+	Distance          decimal.Decimal `json:"distance"`
+	FixedPrice        decimal.Decimal `json:"fixedPrice"`
+	// PriceLimit caps how far the sub-orders may chase the market; it applies
+	// to the faster_execution and fixed_distance preferences.
+	PriceLimit decimal.Decimal `json:"priceLimit"`
+}
+
+// StrategyTWAPParams configures a TWAP order: the total quantity is sliced into
+// equal sub-orders released at a fixed interval over Duration.
+type StrategyTWAPParams struct {
+	// Duration is the total run time in minutes, range [1-1440]. Interval is
+	// the sub-order frequency in seconds: 5, 10, 20, 30 or 60.
+	Duration string `json:"duration"`
+	Interval string `json:"interval"`
+	// OrderType is the sub-order type (defaults to market).
+	OrderType OrderType `json:"orderType"`
+	// LimitOffsetType picks which of LimitOffsetPercentage (range
+	// [0.001-0.1]) and LimitOffsetSpread prices a limit sub-order away from the
+	// market. The spread may not exceed 20%.
+	LimitOffsetType       OffsetType      `json:"limitOffsetType"`
+	LimitOffsetPercentage decimal.Decimal `json:"limitOffsetPercentage"`
+	LimitOffsetSpread     decimal.Decimal `json:"limitOffsetSpread"`
+	// TWAPTriggerPrice delays the strategy until the market reaches it;
+	// TWAPTerminationPrice ends the strategy early when the market reaches it.
+	TWAPTriggerPrice     decimal.Decimal `json:"twapTriggerPrice"`
+	TWAPTerminationPrice decimal.Decimal `json:"twapTerminationPrice"`
+}
 
 // PlaceStrategyOrderService -- POST /api/v3/trade/place-strategy-order (UTA trade read & write)
 //
-// Places a take-profit/stop-loss ("tpsl") or trigger ("trigger") strategy order.
-// Supported business lines: spot, margin, and futures. The reply data carries
-// the assigned order identifiers.
+// Places a strategy order of any StrategyType: take-profit/stop-loss ("tpsl"),
+// trigger ("trigger"), OCO ("oco"), trailing stop ("trailing_stop"), iceberg
+// ("iceberg") or TWAP ("twap"). The last four are configured through their own
+// param set — SetOCOParams, SetTrailingStopParams, SetIcebergParams,
+// SetTWAPParams — which is required once SetType selects them. Supported
+// business lines: spot, margin, and futures. The reply data carries the
+// assigned order identifiers.
 type PlaceStrategyOrderService struct {
 	c    *UTAClient
 	body map[string]any
@@ -42,7 +182,8 @@ func (c *UTAClient) NewPlaceStrategyOrderService(category Category, symbol strin
 	}}
 }
 
-// SetClientOid sets the client order ID (6-hour idempotent validity).
+// SetClientOid sets the client order ID (6-hour idempotent validity). Bitget
+// honours it only when the strategy type is tpsl.
 func (s *PlaceStrategyOrderService) SetClientOrderID(clientOid string) *PlaceStrategyOrderService {
 	s.body["clientOid"] = clientOid
 	return s
@@ -51,6 +192,32 @@ func (s *PlaceStrategyOrderService) SetClientOrderID(clientOid string) *PlaceStr
 // SetType sets the strategy type (defaults to tpsl).
 func (s *PlaceStrategyOrderService) SetType(strategyType StrategyType) *PlaceStrategyOrderService {
 	s.body["type"] = string(strategyType)
+	return s
+}
+
+// SetOCOParams sets the OCO configuration, required when the type is oco.
+func (s *PlaceStrategyOrderService) SetOCOParams(ocoParams []StrategyOCOParams) *PlaceStrategyOrderService {
+	s.body["ocoParams"] = ocoParams
+	return s
+}
+
+// SetTrailingStopParams sets the trailing-stop configuration, required when the
+// type is trailing_stop.
+func (s *PlaceStrategyOrderService) SetTrailingStopParams(trailingStopParams []StrategyTrailingStopParams) *PlaceStrategyOrderService {
+	s.body["trailingStopParams"] = trailingStopParams
+	return s
+}
+
+// SetIcebergParams sets the iceberg configuration, required when the type is
+// iceberg.
+func (s *PlaceStrategyOrderService) SetIcebergParams(icebergParams []StrategyIcebergParams) *PlaceStrategyOrderService {
+	s.body["icebergParams"] = icebergParams
+	return s
+}
+
+// SetTWAPParams sets the TWAP configuration, required when the type is twap.
+func (s *PlaceStrategyOrderService) SetTWAPParams(twapParams []StrategyTWAPParams) *PlaceStrategyOrderService {
+	s.body["twapParams"] = twapParams
 	return s
 }
 
@@ -322,7 +489,8 @@ func (c *UTAClient) NewGetUnfilledStrategyOrdersService(category Category) *GetU
 	return &GetUnfilledStrategyOrdersService{c: c, params: map[string]string{"category": string(category)}}
 }
 
-// SetType filters by strategy type (tpsl or trigger).
+// SetType filters by strategy type (tpsl, trigger, oco, trailing_stop,
+// iceberg or twap).
 func (s *GetUnfilledStrategyOrdersService) SetType(strategyType StrategyType) *GetUnfilledStrategyOrdersService {
 	s.params["type"] = string(strategyType)
 	return s
@@ -359,8 +527,14 @@ type StrategyOrder struct {
 	TriggerPrice      decimal.Decimal `json:"triggerPrice"`
 	TriggerOrderType  OrderType       `json:"triggerOrderType"`
 	TriggerOrderPrice decimal.Decimal `json:"triggerOrderPrice"`
-	CreatedTime       time.Time       `json:"createdTime"`
-	UpdatedTime       time.Time       `json:"updatedTime"`
+	// Exactly one of the four param sets below is populated, matching the
+	// strategy type the order was placed with.
+	OCOParams          []StrategyOCOParams          `json:"ocoParams"`
+	TrailingStopParams []StrategyTrailingStopParams `json:"trailingStopParams"`
+	IcebergParams      []StrategyIcebergParams      `json:"icebergParams"`
+	TWAPParams         []StrategyTWAPParams         `json:"twapParams"`
+	CreatedTime        time.Time                    `json:"createdTime"`
+	UpdatedTime        time.Time                    `json:"updatedTime"`
 }
 
 // GetHistoryStrategyOrdersService -- GET /api/v3/trade/history-strategy-orders (UTA trade read)
@@ -376,7 +550,8 @@ func (c *UTAClient) NewGetHistoryStrategyOrdersService(category Category) *GetHi
 	return &GetHistoryStrategyOrdersService{c: c, params: map[string]string{"category": string(category)}}
 }
 
-// SetType filters by strategy type (tpsl or trigger).
+// SetType filters by strategy type (tpsl, trigger, oco, trailing_stop,
+// iceberg or twap).
 func (s *GetHistoryStrategyOrdersService) SetType(strategyType StrategyType) *GetHistoryStrategyOrdersService {
 	s.params["type"] = string(strategyType)
 	return s
@@ -414,4 +589,57 @@ func (s *GetHistoryStrategyOrdersService) Do(ctx context.Context) (*HistoryStrat
 type HistoryStrategyOrders struct {
 	List   []StrategyOrder `json:"list"`
 	Cursor string          `json:"cursor"`
+}
+
+// GetStrategySubOrdersService -- GET /api/v3/trade/strategy-sub-orders (UTA trade read)
+//
+// Returns the sub-orders a strategy order has generated, paginated by cursor.
+// Only the strategy types that work an order in slices — iceberg and twap —
+// produce more than one.
+type GetStrategySubOrdersService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetStrategySubOrdersService(orderID string) *GetStrategySubOrdersService {
+	return &GetStrategySubOrdersService{c: c, params: map[string]string{"orderId": orderID}}
+}
+
+// SetLimit sets the page size (default 100, max 100).
+func (s *GetStrategySubOrdersService) SetLimit(limit string) *GetStrategySubOrdersService {
+	s.params["limit"] = limit
+	return s
+}
+
+// SetCursor sets the pagination cursor from a previous response.
+func (s *GetStrategySubOrdersService) SetCursor(cursor string) *GetStrategySubOrdersService {
+	s.params["cursor"] = cursor
+	return s
+}
+
+func (s *GetStrategySubOrdersService) Do(ctx context.Context) (*StrategySubOrders, error) {
+	req := request.Get(ctx, s.c, "/api/v3/trade/strategy-sub-orders", s.params).WithSign()
+	return request.Do[StrategySubOrders](req)
+}
+
+type StrategySubOrders struct {
+	List   []StrategySubOrder `json:"list"`
+	Cursor string             `json:"cursor"`
+}
+
+// StrategySubOrder is one order a strategy order placed on the book.
+type StrategySubOrder struct {
+	SubOrderID       string          `json:"subOrderId"`
+	SubClientOrderID string          `json:"subClientOid"`
+	Category         Category        `json:"category"`
+	Symbol           string          `json:"symbol"`
+	Price            decimal.Decimal `json:"price"`
+	Qty              decimal.Decimal `json:"qty"`
+	CumExecQty       decimal.Decimal `json:"cumExecQty"`
+	AvgPrice         decimal.Decimal `json:"avgPrice"`
+	Side             Side            `json:"side"`
+	PosSide          PosSide         `json:"posSide"` // futures only
+	Status           string          `json:"status"`  // filled, cancelled, failed
+	CreatedTime      time.Time       `json:"createdTime"`
+	UpdatedTime      time.Time       `json:"updatedTime"`
 }
