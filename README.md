@@ -8,7 +8,7 @@ A Go SDK for the [Bitget](https://www.bitget.com/api-doc/uta/intro) exchange, co
 
 | Account system | API | Aligned to |
 |---|---|---|
-| **UTA** — Unified Trading Account | `/api/v3` REST + v3 WebSocket | [2026-08-20](https://www.bitget.com/api-doc/uta/changelog) |
+| **UTA** — Unified Trading Account | `/api/v3` REST + v3 WebSocket | [2026-08-25](https://www.bitget.com/api-doc/uta/changelog) |
 | **Classic** — per-product account | `/api/v2` REST + v2 WebSocket | [2026-08-18](https://www.bitget.com/api-doc/classic/changelog) |
 
 Response structs are reconciled against the live API (not just the docs), so endpoints stay in sync with the dates above.
@@ -141,10 +141,10 @@ pos, _ := mx.NewGetAllPositionService(mix.ProductTypeUSDTFutures).Do(ctx)
 
 | Area | Files |
 |------|-------|
-| Market data | `market*.go` — instruments, tickers, orderbook, candles, funding rate, open interest, … |
+| Market data | `market*.go` — instruments, tickers, orderbook, candles, funding rate, open interest, RWA stock & company data, … |
 | Account | `account*.go` — assets, settings, leverage, fee rate, records, transfer, deposit, withdrawal, … |
 | Trade | `trade_*.go` — place/modify/cancel, batch, cancel-symbol, countdown-cancel, queries |
-| Position / Strategy | `position.go` `strategy.go` — positions, ADL rank, trigger & TPSL plans |
+| Position / Strategy | `position.go` `strategy.go` `grid.go` — positions, ADL rank, TPSL/trigger/OCO/trailing-stop/iceberg/TWAP plans, grid bots |
 | Copy / Earn / Loans / Tax | `copy.go` `earn.go` `crypto_loan.go` `ins_loan.go` `tax.go` |
 | Broker / P2P / Sub-account | `broker.go` `p2p.go` `sub_account.go` |
 | WebSocket | `ws_public.go` `ws_private.go` `ws_trade.go` |
