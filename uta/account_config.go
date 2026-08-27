@@ -79,7 +79,9 @@ type AccountInfo struct {
 // GetDeltaInfoService -- GET /api/v3/account/delta-info (UTA mgt. read)
 //
 // Returns the account's delta-neutral status and per-coin net position ratios
-// used for ADL ranking.
+// used for ADL ranking. Each positionRatio is populated as long as the account
+// has the delta-neutral switch (deltaSwitch) enabled; the former
+// hedge-eligibility criteria no longer apply.
 type GetDeltaInfoService struct {
 	c *UTAClient
 }

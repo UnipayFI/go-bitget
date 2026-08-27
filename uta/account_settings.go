@@ -113,8 +113,9 @@ func (s *SetMarginService) Do(ctx context.Context) (*string, error) {
 
 // AdjustAccountModeService -- POST /api/v3/account/adjust-account-mode (UTA mgt. read & write)
 //
-// Switches the unified account's trading mode (basic, advanced, delta, or
-// isolated). The reply data is null on success.
+// Switches the unified account's trading mode (basic, advanced, or isolated).
+// The delta mode is deprecated: pass advanced together with SetDeltaSwitch to
+// turn the delta-neutral switch on or off. The reply data is null on success.
 type AdjustAccountModeService struct {
 	c    *UTAClient
 	body map[string]any
@@ -124,6 +125,13 @@ func (c *UTAClient) NewAdjustAccountModeService(mode string) *AdjustAccountModeS
 	return &AdjustAccountModeService{c: c, body: map[string]any{
 		"mode": mode,
 	}}
+}
+
+// SetDeltaSwitch toggles the delta-neutral switch ("yes" or "no"). Only
+// effective when mode is advanced; it replaces the deprecated delta mode.
+func (s *AdjustAccountModeService) SetDeltaSwitch(deltaSwitch string) *AdjustAccountModeService {
+	s.body["deltaSwitch"] = deltaSwitch
+	return s
 }
 
 // SetTargetUid sets the target account UID for sub-account operations (defaults
