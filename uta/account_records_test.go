@@ -19,6 +19,16 @@ func TestAccountRecords(t *testing.T) {
 		map[string]string{"category": string(CategoryUSDTFutures), "coin": "USDT"}, true)
 	assertCovers(t, "account/financial-records", raw, fin)
 
+	// Funding account financial records.
+	funding, err := c.NewGetFundingFinancialRecordsService().SetCoin("USDT").Do(cx)
+	if err != nil {
+		t.Fatalf("funding financial records: %v", err)
+	}
+	t.Logf("funding financial records: %d cursor=%s", len(funding.List), funding.Cursor)
+	raw = fetchRawGet(t, c, cx, "/api/v3/account/funding-financial-records",
+		map[string]string{"coin": "USDT"}, true)
+	assertCovers(t, "account/funding-financial-records", raw, funding)
+
 	// Convert records.
 	conv, err := c.NewGetConvertRecordsService().SetFromCoin("USDT").SetToCoin("USDC").Do(cx)
 	if err != nil {

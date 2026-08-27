@@ -104,6 +104,73 @@ const (
 	FinancialRecordTraceTransferRefundIn FinancialRecordType = "TRACE_TRANSFER_REFUND_IN"
 )
 
+// GetFundingFinancialRecordsService -- GET /api/v3/account/funding-financial-records (UTA mgt. read)
+//
+// Returns the funding account's financial (ledger) records, paginated by cursor
+// and bounded to a 90-day access window.
+type GetFundingFinancialRecordsService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetFundingFinancialRecordsService() *GetFundingFinancialRecordsService {
+	return &GetFundingFinancialRecordsService{c: c, params: map[string]string{}}
+}
+
+func (s *GetFundingFinancialRecordsService) SetCoin(coin string) *GetFundingFinancialRecordsService {
+	s.params["coin"] = coin
+	return s
+}
+
+// SetType filters by the record type (buy, sell, deposit, withdraw,
+// transfer_in, interest, dividend, ...).
+func (s *GetFundingFinancialRecordsService) SetType(recordType string) *GetFundingFinancialRecordsService {
+	s.params["type"] = recordType
+	return s
+}
+
+// SetStartTime filters records at or after t (90-day access window).
+func (s *GetFundingFinancialRecordsService) SetStartTime(t time.Time) *GetFundingFinancialRecordsService {
+	s.params["startTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetEndTime filters records at or before t (max 30-day range from startTime).
+func (s *GetFundingFinancialRecordsService) SetEndTime(t time.Time) *GetFundingFinancialRecordsService {
+	s.params["endTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+func (s *GetFundingFinancialRecordsService) SetLimit(limit int) *GetFundingFinancialRecordsService {
+	s.params["limit"] = strconv.Itoa(limit)
+	return s
+}
+
+func (s *GetFundingFinancialRecordsService) SetCursor(cursor string) *GetFundingFinancialRecordsService {
+	s.params["cursor"] = cursor
+	return s
+}
+
+func (s *GetFundingFinancialRecordsService) Do(ctx context.Context) (*FundingFinancialRecords, error) {
+	req := request.Get(ctx, s.c, "/api/v3/account/funding-financial-records", s.params).WithSign()
+	return request.Do[FundingFinancialRecords](req)
+}
+
+type FundingFinancialRecords struct {
+	List   []FundingFinancialRecord `json:"list"`
+	Cursor string                   `json:"cursor"`
+}
+
+type FundingFinancialRecord struct {
+	ID        string          `json:"id"`
+	Coin      string          `json:"coin"`
+	GroupType string          `json:"groupType"` // transaction, deposit, withdraw, transfer, financial, loan, convert, rwa, stock, ...
+	Type      string          `json:"type"`      // buy, sell, deposit, withdraw, transfer_in, interest, dividend, ...
+	Amount    decimal.Decimal `json:"amount"`
+	Balance   decimal.Decimal `json:"balance"`
+	Ts        time.Time       `json:"ts"`
+}
+
 // GetConvertRecordsService -- GET /api/v3/account/convert-records (UTA mgt. read)
 //
 // Returns the unified account's coin-conversion records, paginated by cursor and
