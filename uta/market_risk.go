@@ -158,6 +158,13 @@ func (c *UTAClient) NewGetMarginLoansService(coin string) *GetMarginLoansService
 	return &GetMarginLoansService{c: c, params: map[string]string{"coin": coin}}
 }
 
+// SetLevel selects the user tier the rates and limits are quoted for: vip0 to
+// vip7 or pro1 to pro6 (defaults to vip0).
+func (s *GetMarginLoansService) SetLevel(level string) *GetMarginLoansService {
+	s.params["level"] = level
+	return s
+}
+
 func (s *GetMarginLoansService) Do(ctx context.Context) (*MarginLoan, error) {
 	req := request.Get(ctx, s.c, "/api/v3/market/margin-loans", s.params)
 	return request.Do[MarginLoan](req)
