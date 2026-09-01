@@ -22,7 +22,7 @@ func (c *UTAClient) NewGetServerTimeService() *GetServerTimeService {
 }
 
 func (s *GetServerTimeService) Do(ctx context.Context) (*ServerTimeResponse, error) {
-	req := request.Get(ctx, s.c, "/api/v2/public/time")
+	req := request.Get(ctx, s.c, "/api/v2/public/time").WithoutDemoTrading()
 	return request.Do[ServerTimeResponse](req)
 }
 
