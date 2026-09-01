@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -96,7 +97,7 @@ func (h wsHeader) ok() bool {
 // Returns a done channel (close to stop) and a stop channel (closed when the
 // reader exits). The typed Data field of the push is decoded into *T.
 func Subscribe[T any](ctx context.Context, client WsClient, private bool, arg WsArg, cb func(*WsPush[T], error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
-	return subscribeBytes(ctx, client, private, arg, func(message []byte, e error) {
+	return subscribeBytes(ctx, client, private, []any{arg}, func(message []byte, e error) {
 		if e != nil {
 			cb(nil, e)
 			return
@@ -113,7 +114,21 @@ func Subscribe[T any](ctx context.Context, client WsClient, private bool, arg Ws
 // SubscribeRaw is like Subscribe but delivers each data frame's raw bytes,
 // for channels whose payload shape the caller wants to decode itself.
 func SubscribeRaw(ctx context.Context, client WsClient, private bool, arg WsArg, cb func(message []byte, err error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
-	return subscribeBytes(ctx, client, private, arg, cb)
+	return subscribeBytes(ctx, client, private, []any{arg}, cb)
+}
+
+// SubscribeRawArgs subscribes multiple v3 channels over one connection and
+// delivers each data frame as raw bytes. Bitget accepts all args in a single
+// subscribe operation; callers should still shard large channel sets.
+func SubscribeRawArgs(ctx context.Context, client WsClient, private bool, args []WsArg, cb func(message []byte, err error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
+	if len(args) == 0 {
+		return nil, nil, errors.New("ws subscribe: no args")
+	}
+	values := make([]any, len(args))
+	for i := range args {
+		values[i] = args[i]
+	}
+	return subscribeBytes(ctx, client, private, values, cb)
 }
 
 // SubscribeRawArg is like SubscribeRaw but accepts an arbitrary subscription arg
@@ -122,10 +137,13 @@ func SubscribeRaw(ctx context.Context, client WsClient, private bool, arg WsArg,
 // their own arg type here while reusing the shared connection/login/keepalive
 // machinery.
 func SubscribeRawArg(ctx context.Context, client WsClient, private bool, arg any, cb func(message []byte, err error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
-	return subscribeBytes(ctx, client, private, arg, cb)
+	return subscribeBytes(ctx, client, private, []any{arg}, cb)
 }
 
-func subscribeBytes(ctx context.Context, client WsClient, private bool, arg any, cb func(message []byte, err error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
+func subscribeBytes(ctx context.Context, client WsClient, private bool, args []any, cb func(message []byte, err error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
+	if len(args) == 0 {
+		return nil, nil, errors.New("ws subscribe: no args")
+	}
 	endpoint := client.GetPublicURL()
 	if private {
 		endpoint = client.GetPrivateURL()
@@ -143,7 +161,7 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, arg any,
 		}
 	}
 
-	sub := wsOp{Op: "subscribe", Args: []any{arg}}
+	sub := wsOp{Op: "subscribe", Args: args}
 	data, _ := common.JSONMarshal(sub)
 	if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
 		conn.Close()
@@ -156,8 +174,9 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, arg any,
 	// closes doneC to stop, the ReadMessage error from the watcher closing the conn must not
 	// reach the callback. atomic because the watcher and reader run on different goroutines.
 	var silent atomic.Bool
+	var writeMu sync.Mutex
 
-	go keepAlive(conn, common.DEFAULT_KEEP_ALIVE_INTERVAL)
+	go keepAlive(conn, &writeMu, common.DEFAULT_KEEP_ALIVE_INTERVAL)
 	go func() {
 		select {
 		case <-stopC:
@@ -166,9 +185,9 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, arg any,
 			silent.Store(true)
 		}
 		// Best-effort unsubscribe before closing.
-		unsub := wsOp{Op: "unsubscribe", Args: []any{arg}}
+		unsub := wsOp{Op: "unsubscribe", Args: args}
 		if b, e := common.JSONMarshal(unsub); e == nil {
-			_ = conn.WriteMessage(websocket.TextMessage, b)
+			_ = writeText(conn, &writeMu, b)
 		}
 		conn.Close()
 	}()
@@ -296,14 +315,20 @@ func wsLogin(client WsClient, conn *websocket.Conn) error {
 
 // keepAlive sends Bitget's literal "ping" text frame on an interval; the server
 // replies "pong" (handled in the read loop).
-func keepAlive(conn *websocket.Conn, interval time.Duration) {
+func keepAlive(conn *websocket.Conn, writeMu *sync.Mutex, interval time.Duration) {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 	for range ticker.C {
-		if err := conn.WriteMessage(websocket.TextMessage, []byte("ping")); err != nil {
+		if err := writeText(conn, writeMu, []byte("ping")); err != nil {
 			return
 		}
 	}
+}
+
+func writeText(conn *websocket.Conn, mu *sync.Mutex, data []byte) error {
+	mu.Lock()
+	defer mu.Unlock()
+	return conn.WriteMessage(websocket.TextMessage, data)
 }
 
 // WsError is a Bitget WebSocket control-frame error.
