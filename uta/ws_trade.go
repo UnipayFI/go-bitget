@@ -64,6 +64,8 @@ type WsNewOrder struct {
 	ReduceOnly    ReduceOnly       `json:"reduceOnly,omitempty"`
 	MarginMode    MarginMode       `json:"marginMode,omitempty"`
 	StpMode       string           `json:"stpMode,omitempty"`
+	// AutoBorrow enables auto-borrowing of the spent coin (spot orders only).
+	AutoBorrow AutoBorrow `json:"autoBorrow,omitempty"`
 	// ReceiveWindow is the order's validity window in ms ([10, 60000]); the
 	// order is cancelled (cancelReason "cancel_receiveWindow") if the window
 	// elapses before the gateway processes it. Only takes effect together with

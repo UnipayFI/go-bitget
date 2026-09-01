@@ -276,13 +276,22 @@ func (s *GetMaxOpenAvailableService) SetSize(size decimal.Decimal) *GetMaxOpenAv
 	return s
 }
 
+// SetAutoBorrow toggles auto-borrowing of the spent coin (spot only, defaults
+// to AutoBorrowNo); enabling it also populates MaxOpen for spot.
+func (s *GetMaxOpenAvailableService) SetAutoBorrow(autoBorrow AutoBorrow) *GetMaxOpenAvailableService {
+	s.body["autoBorrow"] = string(autoBorrow)
+	return s
+}
+
 func (s *GetMaxOpenAvailableService) Do(ctx context.Context) (*MaxOpenAvailable, error) {
 	req := request.Post(ctx, s.c, "/api/v3/account/max-open-available", s.body).WithSign()
 	return request.Do[MaxOpenAvailable](req)
 }
 
 type MaxOpenAvailable struct {
-	Available        decimal.Decimal `json:"available"`
+	Available decimal.Decimal `json:"available"`
+	// MaxOpen is the maximum openable size. Margin always carries a value; spot
+	// only carries one when autoBorrow is enabled.
 	MaxOpen          decimal.Decimal `json:"maxOpen"`
 	BuyOpenCost      decimal.Decimal `json:"buyOpenCost"`
 	SellOpenCost     decimal.Decimal `json:"sellOpenCost"`

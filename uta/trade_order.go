@@ -70,6 +70,13 @@ func (s *PlaceOrderService) SetMarginMode(marginMode MarginMode) *PlaceOrderServ
 	return s
 }
 
+// SetAutoBorrow toggles auto-borrowing of the spent coin (spot orders only,
+// defaults to AutoBorrowNo).
+func (s *PlaceOrderService) SetAutoBorrow(autoBorrow AutoBorrow) *PlaceOrderService {
+	s.body["autoBorrow"] = string(autoBorrow)
+	return s
+}
+
 // SetTpTriggerBy sets the take-profit trigger price type (market or mark).
 func (s *PlaceOrderService) SetTpTriggerBy(tpTriggerBy string) *PlaceOrderService {
 	s.body["tpTriggerBy"] = tpTriggerBy

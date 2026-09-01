@@ -60,6 +60,18 @@ func (r ReduceOnly) Bool() bool {
 	}
 }
 
+// AutoBorrow is the spot auto-borrow switch used by the order-placement
+// (SetAutoBorrow / WsNewOrder) and max-open-available requests. It defaults to
+// disabled. When enabled, and the received coin does not support borrowing
+// while the spent coin does, the system borrows the spent coin to cover the
+// shortfall if its available balance is insufficient.
+type AutoBorrow string
+
+const (
+	AutoBorrowYes AutoBorrow = "yes"
+	AutoBorrowNo  AutoBorrow = "no"
+)
+
 // TimeInForce determines how long an order stays active.
 type TimeInForce string
 
