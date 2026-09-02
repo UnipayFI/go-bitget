@@ -39,7 +39,6 @@ type Request struct {
 	query    []kv
 	bodyJSON string
 	needSign bool
-	skipDemo bool
 	err      error
 }
 
@@ -137,13 +136,6 @@ func mergeBody(body ...map[string]any) map[string]any {
 // at send time. Public market endpoints omit this.
 func (r *Request) WithSign() *Request {
 	r.needSign = true
-	return r
-}
-
-// WithoutDemoTrading omits the paptrading header for shared public endpoints
-// that Demo does not route, such as the v2 server-time endpoint.
-func (r *Request) WithoutDemoTrading() *Request {
-	r.skipDemo = true
 	return r
 }
 

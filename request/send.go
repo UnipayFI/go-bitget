@@ -118,7 +118,7 @@ func (r *Request) prepare() error {
 		r.r.SetHeader("Content-Type", "application/json")
 		r.r.SetBody(r.bodyJSON)
 	}
-	if r.client.IsDemoTrading() && !r.skipDemo {
+	if r.client.IsDemoTrading() {
 		r.r.SetHeader("paptrading", "1")
 	}
 	if !r.needSign {

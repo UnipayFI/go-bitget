@@ -9,10 +9,10 @@ import (
 	"github.com/UnipayFI/go-bitget/client"
 )
 
-func TestSyncServerTimeOmitsDemoHeader(t *testing.T) {
+func TestSyncServerTimeIncludesDemoHeader(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if got := r.Header.Get("paptrading"); got != "" {
-			t.Errorf("paptrading header = %q, want empty for v2 public time", got)
+		if got := r.Header.Get("paptrading"); got != "1" {
+			t.Errorf("paptrading header = %q, want 1", got)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"code":"00000","msg":"success","data":{"serverTime":"1788275950592"}}`))
