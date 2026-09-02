@@ -40,3 +40,15 @@ const wsInstTypeUTA = "UTA"
 func (c *UTAWebSocketClient) Subscribe(ctx context.Context, private bool, arg request.WsArg, cb func([]byte, error)) (chan<- struct{}, <-chan struct{}, error) {
 	return request.SubscribeRaw(ctx, c, private, arg, cb)
 }
+
+// SubscribeMany subscribes multiple channels over one connection and returns
+// raw pushes so callers can dispatch mixed topics by the envelope arg.
+func (c *UTAWebSocketClient) SubscribeMany(ctx context.Context, private bool, args []request.WsArg, cb func([]byte, error)) (chan<- struct{}, <-chan struct{}, error) {
+	return request.SubscribeRawArgs(ctx, c, private, args, cb)
+}
+
+// OpenSubscription opens a long-lived multiplexed connection whose channel
+// set can be updated without reconnecting.
+func (c *UTAWebSocketClient) OpenSubscription(ctx context.Context, private bool, args []request.WsArg, cb func([]byte, error)) (*request.RawSubscription, error) {
+	return request.OpenRawSubscription(ctx, c, private, args, cb)
+}
