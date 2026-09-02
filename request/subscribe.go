@@ -103,16 +103,13 @@ type rawSubscription struct {
 }
 
 // OpenRawSubscription opens one public or private connection and installs the
-// initial channel set. Later updates reuse the same connection.
+// initial channel set. Later updates reuse the same connection. The context
+// controls setup only; call Close to stop the established subscription.
 func OpenRawSubscription(ctx context.Context, client WsClient, private bool, args []WsArg, cb func(message []byte, err error)) (*RawSubscription, error) {
 	if len(args) == 0 {
 		return nil, errors.New("ws subscribe: no args")
 	}
-	values := make([]any, len(args))
-	for i := range args {
-		values[i] = args[i]
-	}
-	sub, err := openRawSubscription(ctx, client, private, values, cb)
+	sub, err := openRawSubscription(ctx, client, private, anyWsArgs(args), cb)
 	if err != nil {
 		return nil, err
 	}
@@ -125,11 +122,7 @@ func (s *RawSubscription) Subscribe(args []WsArg) error {
 	if s == nil || s.inner == nil {
 		return errors.New("ws subscription is nil")
 	}
-	values := make([]any, len(args))
-	for i := range args {
-		values[i] = args[i]
-	}
-	return s.inner.update("subscribe", values)
+	return s.inner.update("subscribe", anyWsArgs(args))
 }
 
 // Unsubscribe removes channels from the existing connection. Unknown args are
@@ -138,11 +131,7 @@ func (s *RawSubscription) Unsubscribe(args []WsArg) error {
 	if s == nil || s.inner == nil {
 		return errors.New("ws subscription is nil")
 	}
-	values := make([]any, len(args))
-	for i := range args {
-		values[i] = args[i]
-	}
-	return s.inner.update("unsubscribe", values)
+	return s.inner.update("unsubscribe", anyWsArgs(args))
 }
 
 func (s *RawSubscription) Close() error {
@@ -205,11 +194,7 @@ func SubscribeRawArgs(ctx context.Context, client WsClient, private bool, args [
 	if len(args) == 0 {
 		return nil, nil, errors.New("ws subscribe: no args")
 	}
-	values := make([]any, len(args))
-	for i := range args {
-		values[i] = args[i]
-	}
-	return subscribeBytes(ctx, client, private, values, cb)
+	return subscribeBytes(ctx, client, private, anyWsArgs(args), cb)
 }
 
 // SubscribeRawArg is like SubscribeRaw but accepts an arbitrary subscription arg
@@ -241,6 +226,10 @@ func openRawSubscription(ctx context.Context, client WsClient, private bool, arg
 	if len(args) == 0 {
 		return nil, errors.New("ws subscribe: no args")
 	}
+	args, keys, err := uniqueWsArgs(args)
+	if err != nil {
+		return nil, err
+	}
 	endpoint := client.GetPublicURL()
 	if private {
 		endpoint = client.GetPrivateURL()
@@ -268,13 +257,8 @@ func openRawSubscription(ctx context.Context, client WsClient, private bool, arg
 	_ = conn.SetWriteDeadline(time.Time{})
 
 	active := make(map[string]any, len(args))
-	for _, arg := range args {
-		key, err := wsArgKey(arg)
-		if err != nil {
-			conn.Close()
-			return nil, err
-		}
-		active[key] = arg
+	for i, key := range keys {
+		active[key] = args[i]
 	}
 	s := &rawSubscription{conn: conn, cb: cb, active: active, closeC: make(chan struct{}), stopC: make(chan struct{}), lastWrite: time.Now()}
 
@@ -283,23 +267,8 @@ func openRawSubscription(ctx context.Context, client WsClient, private bool, arg
 		select {
 		case <-s.stopC:
 		case <-s.closeC:
-		case <-ctx.Done():
 		}
 		s.silent.Store(true)
-		// Best-effort unsubscribe before closing.
-		if s.opMu.TryLock() {
-			remaining := make([]any, 0, len(s.active))
-			for _, arg := range s.active {
-				remaining = append(remaining, arg)
-			}
-			unsub := wsOp{Op: "unsubscribe", Args: remaining}
-			if b, e := common.JSONMarshal(unsub); e == nil && len(remaining) > 0 && s.writeMu.TryLock() {
-				_ = conn.SetWriteDeadline(time.Now().Add(time.Second))
-				_ = conn.WriteMessage(websocket.TextMessage, b)
-				s.writeMu.Unlock()
-			}
-			s.opMu.Unlock()
-		}
 		conn.Close()
 	}()
 	go func() {
@@ -359,19 +328,19 @@ func (s *rawSubscription) update(op string, args []any) error {
 		return errors.New("ws subscription stopped")
 	default:
 	}
+	args, keys, err := uniqueWsArgs(args)
+	if err != nil {
+		return err
+	}
 	filtered := make([]any, 0, len(args))
-	keys := make([]string, 0, len(args))
-	for _, arg := range args {
-		key, err := wsArgKey(arg)
-		if err != nil {
-			return err
-		}
+	filteredKeys := make([]string, 0, len(args))
+	for i, key := range keys {
 		_, exists := s.active[key]
 		if (op == "subscribe" && exists) || (op == "unsubscribe" && !exists) {
 			continue
 		}
-		filtered = append(filtered, arg)
-		keys = append(keys, key)
+		filtered = append(filtered, args[i])
+		filteredKeys = append(filteredKeys, key)
 	}
 	if len(filtered) == 0 {
 		return nil
@@ -384,7 +353,7 @@ func (s *rawSubscription) update(op string, args []any) error {
 		s.conn.Close()
 		return err
 	}
-	for i, key := range keys {
+	for i, key := range filteredKeys {
 		if op == "subscribe" {
 			s.active[key] = filtered[i]
 		} else {
@@ -402,6 +371,33 @@ func (s *rawSubscription) close() {
 func wsArgKey(arg any) (string, error) {
 	data, err := common.JSONMarshal(arg)
 	return common.BytesToString(data), err
+}
+
+func anyWsArgs(args []WsArg) []any {
+	values := make([]any, len(args))
+	for i := range args {
+		values[i] = args[i]
+	}
+	return values
+}
+
+func uniqueWsArgs(args []any) ([]any, []string, error) {
+	unique := make([]any, 0, len(args))
+	keys := make([]string, 0, len(args))
+	seen := make(map[string]struct{}, len(args))
+	for _, arg := range args {
+		key, err := wsArgKey(arg)
+		if err != nil {
+			return nil, nil, err
+		}
+		if _, exists := seen[key]; exists {
+			continue
+		}
+		seen[key] = struct{}{}
+		unique = append(unique, arg)
+		keys = append(keys, key)
+	}
+	return unique, keys, nil
 }
 
 // DialPrivateLoggedIn dials the private WebSocket gateway and completes the

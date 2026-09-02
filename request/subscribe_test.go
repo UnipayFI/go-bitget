@@ -48,6 +48,18 @@ type blockedWriteConn struct {
 	deadlineChanged chan struct{}
 }
 
+type failWriteConn struct {
+	net.Conn
+	fail atomic.Bool
+}
+
+func (c *failWriteConn) Write(p []byte) (int, error) {
+	if c.fail.Load() {
+		return 0, net.ErrClosed
+	}
+	return c.Conn.Write(p)
+}
+
 func newBlockedWriteConn(conn net.Conn) *blockedWriteConn {
 	return &blockedWriteConn{Conn: conn, release: make(chan struct{}), deadlineChanged: make(chan struct{}, 1)}
 }
@@ -345,5 +357,179 @@ func TestSubscribeRawArgsCloseSurvivesBlockedWrite(t *testing.T) {
 	case <-stop:
 	case <-time.After(2 * time.Second):
 		t.Fatal("close blocked behind a stuck websocket write")
+	}
+}
+
+func TestSubscribeRawArgsContextOnlyControlsSetup(t *testing.T) {
+	subscribed := make(chan struct{})
+	upgrader := websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		defer conn.Close()
+		if _, _, err := conn.ReadMessage(); err != nil {
+			return
+		}
+		close(subscribed)
+		for {
+			if _, _, err := conn.ReadMessage(); err != nil {
+				return
+			}
+		}
+	}))
+	defer server.Close()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	done, stop, err := SubscribeRawArgs(ctx, &testWSClient{url: "ws" + strings.TrimPrefix(server.URL, "http")}, false,
+		[]WsArg{{InstType: "spot", Topic: "ticker", Symbol: "BTCUSDT"}}, func([]byte, error) {})
+	if err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case <-subscribed:
+	case <-time.After(time.Second):
+		t.Fatal("timed out waiting for subscription")
+	}
+	cancel()
+	select {
+	case <-stop:
+		t.Fatal("subscription stopped when setup context was cancelled")
+	case <-time.After(100 * time.Millisecond):
+	}
+	close(done)
+	select {
+	case <-stop:
+	case <-time.After(time.Second):
+		t.Fatal("timed out waiting for stop")
+	}
+}
+
+func TestRawSubscriptionDeduplicatesEachBatch(t *testing.T) {
+	type operation struct {
+		Op   string  `json:"op"`
+		Args []WsArg `json:"args"`
+	}
+	operations := make(chan operation, 3)
+	upgrader := websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		defer conn.Close()
+		for {
+			_, message, err := conn.ReadMessage()
+			if err != nil {
+				return
+			}
+			var op operation
+			if common.JSONUnmarshal(message, &op) == nil && (op.Op == "subscribe" || op.Op == "unsubscribe") {
+				operations <- op
+			}
+		}
+	}))
+	defer server.Close()
+
+	client := &testWSClient{url: "ws" + strings.TrimPrefix(server.URL, "http")}
+	initial := WsArg{InstType: "spot", Topic: "ticker", Symbol: "BTCUSDT"}
+	sub, err := OpenRawSubscription(context.Background(), client, false, []WsArg{initial, initial}, func([]byte, error) {})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer sub.Close()
+	added := WsArg{InstType: "spot", Topic: "ticker", Symbol: "ETHUSDT"}
+	if err := sub.Subscribe([]WsArg{added, added}); err != nil {
+		t.Fatal(err)
+	}
+	if err := sub.Unsubscribe([]WsArg{added, added}); err != nil {
+		t.Fatal(err)
+	}
+	for i, want := range []operation{{Op: "subscribe", Args: []WsArg{initial}}, {Op: "subscribe", Args: []WsArg{added}}, {Op: "unsubscribe", Args: []WsArg{added}}} {
+		select {
+		case got := <-operations:
+			if got.Op != want.Op || fmt.Sprint(got.Args) != fmt.Sprint(want.Args) {
+				t.Fatalf("operation %d = %+v, want %+v", i, got, want)
+			}
+		case <-time.After(time.Second):
+			t.Fatalf("timed out waiting for operation %d", i)
+		}
+	}
+}
+
+func TestRawSubscriptionStopsOnServerDisconnect(t *testing.T) {
+	upgrader := websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		_, _, _ = conn.ReadMessage()
+		_ = conn.Close()
+	}))
+	defer server.Close()
+
+	done, stop, err := SubscribeRawArgs(context.Background(), &testWSClient{url: "ws" + strings.TrimPrefix(server.URL, "http")}, false,
+		[]WsArg{{InstType: "spot", Topic: "ticker", Symbol: "BTCUSDT"}}, func([]byte, error) {})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer close(done)
+	select {
+	case <-stop:
+	case <-time.After(time.Second):
+		t.Fatal("timed out waiting for stop after server disconnect")
+	}
+}
+
+func TestRawSubscriptionStopsOnHeartbeatWriteFailure(t *testing.T) {
+	subscribed := make(chan struct{})
+	upgrader := websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		defer conn.Close()
+		if _, _, err := conn.ReadMessage(); err != nil {
+			return
+		}
+		close(subscribed)
+		for {
+			if _, _, err := conn.ReadMessage(); err != nil {
+				return
+			}
+		}
+	}))
+	defer server.Close()
+
+	dialer := *websocket.DefaultDialer
+	var failed *failWriteConn
+	dialer.NetDialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		conn, err := (&net.Dialer{}).DialContext(ctx, network, address)
+		if err != nil {
+			return nil, err
+		}
+		failed = &failWriteConn{Conn: conn}
+		return failed, nil
+	}
+	sub, err := OpenRawSubscription(context.Background(), &testWSClient{url: "ws" + strings.TrimPrefix(server.URL, "http"), dialer: &dialer}, false,
+		[]WsArg{{InstType: "spot", Topic: "ticker", Symbol: "BTCUSDT"}}, func([]byte, error) {})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer sub.Close()
+	select {
+	case <-subscribed:
+	case <-time.After(time.Second):
+		t.Fatal("timed out waiting for subscription")
+	}
+	failed.fail.Store(true)
+	go keepAlive(sub.inner, time.Millisecond)
+	select {
+	case <-sub.Stop():
+	case <-time.After(time.Second):
+		t.Fatal("timed out waiting for stop after heartbeat write failure")
 	}
 }
