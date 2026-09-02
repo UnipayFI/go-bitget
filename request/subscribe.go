@@ -186,8 +186,10 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, args []a
 		}
 		// Best-effort unsubscribe before closing.
 		unsub := wsOp{Op: "unsubscribe", Args: args}
-		if b, e := common.JSONMarshal(unsub); e == nil {
-			_ = writeText(conn, &writeMu, b)
+		if b, e := common.JSONMarshal(unsub); e == nil && writeMu.TryLock() {
+			_ = conn.SetWriteDeadline(time.Now().Add(time.Second))
+			_ = conn.WriteMessage(websocket.TextMessage, b)
+			writeMu.Unlock()
 		}
 		conn.Close()
 	}()
