@@ -46,3 +46,9 @@ func (c *UTAWebSocketClient) Subscribe(ctx context.Context, private bool, arg re
 func (c *UTAWebSocketClient) SubscribeMany(ctx context.Context, private bool, args []request.WsArg, cb func([]byte, error)) (chan<- struct{}, <-chan struct{}, error) {
 	return request.SubscribeRawArgs(ctx, c, private, args, cb)
 }
+
+// OpenSubscription opens a long-lived multiplexed connection whose channel
+// set can be updated without reconnecting.
+func (c *UTAWebSocketClient) OpenSubscription(ctx context.Context, private bool, args []request.WsArg, cb func([]byte, error)) (*request.RawSubscription, error) {
+	return request.OpenRawSubscription(ctx, c, private, args, cb)
+}

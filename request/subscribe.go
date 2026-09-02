@@ -81,6 +81,87 @@ type wsHeader struct {
 	Msg    string         `json:"msg"`
 }
 
+// RawSubscription owns one long-lived websocket connection. Subscribe and
+// Unsubscribe update that connection in place; Stop is closed when its reader
+// exits. Close is idempotent.
+type RawSubscription struct {
+	inner *rawSubscription
+}
+
+type rawSubscription struct {
+	conn      *websocket.Conn
+	cb        func([]byte, error)
+	writeMu   sync.Mutex
+	lastWrite time.Time
+	opMu      sync.Mutex
+	active    map[string]any
+	closeC    chan struct{}
+	stopC     chan struct{}
+	closeOnce sync.Once
+	stopOnce  sync.Once
+	silent    atomic.Bool
+}
+
+// OpenRawSubscription opens one public or private connection and installs the
+// initial channel set. Later updates reuse the same connection.
+func OpenRawSubscription(ctx context.Context, client WsClient, private bool, args []WsArg, cb func(message []byte, err error)) (*RawSubscription, error) {
+	if len(args) == 0 {
+		return nil, errors.New("ws subscribe: no args")
+	}
+	values := make([]any, len(args))
+	for i := range args {
+		values[i] = args[i]
+	}
+	sub, err := openRawSubscription(ctx, client, private, values, cb)
+	if err != nil {
+		return nil, err
+	}
+	return &RawSubscription{inner: sub}, nil
+}
+
+// Subscribe adds channels to the existing connection. Already-active args are
+// ignored, so callback-only updates do not consume a subscription request.
+func (s *RawSubscription) Subscribe(args []WsArg) error {
+	if s == nil || s.inner == nil {
+		return errors.New("ws subscription is nil")
+	}
+	values := make([]any, len(args))
+	for i := range args {
+		values[i] = args[i]
+	}
+	return s.inner.update("subscribe", values)
+}
+
+// Unsubscribe removes channels from the existing connection. Unknown args are
+// ignored.
+func (s *RawSubscription) Unsubscribe(args []WsArg) error {
+	if s == nil || s.inner == nil {
+		return errors.New("ws subscription is nil")
+	}
+	values := make([]any, len(args))
+	for i := range args {
+		values[i] = args[i]
+	}
+	return s.inner.update("unsubscribe", values)
+}
+
+func (s *RawSubscription) Close() error {
+	if s == nil || s.inner == nil {
+		return nil
+	}
+	s.inner.close()
+	return nil
+}
+
+func (s *RawSubscription) Stop() <-chan struct{} {
+	if s == nil || s.inner == nil {
+		closed := make(chan struct{})
+		close(closed)
+		return closed
+	}
+	return s.inner.stopC
+}
+
 // codeString normalizes the raw code token to a string ("" when absent).
 func (h wsHeader) codeString() string {
 	return strings.Trim(string(h.Code), `"`)
@@ -141,8 +222,24 @@ func SubscribeRawArg(ctx context.Context, client WsClient, private bool, arg any
 }
 
 func subscribeBytes(ctx context.Context, client WsClient, private bool, args []any, cb func(message []byte, err error)) (done chan<- struct{}, stop <-chan struct{}, err error) {
+	sub, err := openRawSubscription(ctx, client, private, args, cb)
+	if err != nil {
+		return nil, nil, err
+	}
+	doneC := make(chan struct{})
+	go func() {
+		select {
+		case <-doneC:
+			sub.close()
+		case <-sub.stopC:
+		}
+	}()
+	return doneC, sub.stopC, nil
+}
+
+func openRawSubscription(ctx context.Context, client WsClient, private bool, args []any, cb func(message []byte, err error)) (*rawSubscription, error) {
 	if len(args) == 0 {
-		return nil, nil, errors.New("ws subscribe: no args")
+		return nil, errors.New("ws subscribe: no args")
 	}
 	endpoint := client.GetPublicURL()
 	if private {
@@ -150,46 +247,58 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, args []a
 	}
 	conn, _, err := client.GetDialer().DialContext(ctx, endpoint, nil)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	conn.SetReadLimit(10 << 20)
 
 	if private {
 		if err := wsLogin(client, conn); err != nil {
 			conn.Close()
-			return nil, nil, err
+			return nil, err
 		}
 	}
 
 	sub := wsOp{Op: "subscribe", Args: args}
 	data, _ := common.JSONMarshal(sub)
+	_ = conn.SetWriteDeadline(time.Now().Add(5 * time.Second))
 	if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
 		conn.Close()
-		return nil, nil, err
+		return nil, err
 	}
+	_ = conn.SetWriteDeadline(time.Time{})
 
-	doneC := make(chan struct{})
-	stopC := make(chan struct{})
-	// silent suppresses callback delivery on the deliberate-shutdown path: once the caller
-	// closes doneC to stop, the ReadMessage error from the watcher closing the conn must not
-	// reach the callback. atomic because the watcher and reader run on different goroutines.
-	var silent atomic.Bool
-	var writeMu sync.Mutex
+	active := make(map[string]any, len(args))
+	for _, arg := range args {
+		key, err := wsArgKey(arg)
+		if err != nil {
+			conn.Close()
+			return nil, err
+		}
+		active[key] = arg
+	}
+	s := &rawSubscription{conn: conn, cb: cb, active: active, closeC: make(chan struct{}), stopC: make(chan struct{}), lastWrite: time.Now()}
 
-	go keepAlive(conn, &writeMu, common.DEFAULT_KEEP_ALIVE_INTERVAL)
+	go keepAlive(s, common.DEFAULT_KEEP_ALIVE_INTERVAL)
 	go func() {
 		select {
-		case <-stopC:
-			silent.Store(true)
-		case <-doneC:
-			silent.Store(true)
+		case <-s.stopC:
+		case <-s.closeC:
+		case <-ctx.Done():
 		}
+		s.silent.Store(true)
 		// Best-effort unsubscribe before closing.
-		unsub := wsOp{Op: "unsubscribe", Args: args}
-		if b, e := common.JSONMarshal(unsub); e == nil && writeMu.TryLock() {
-			_ = conn.SetWriteDeadline(time.Now().Add(time.Second))
-			_ = conn.WriteMessage(websocket.TextMessage, b)
-			writeMu.Unlock()
+		if s.opMu.TryLock() {
+			remaining := make([]any, 0, len(s.active))
+			for _, arg := range s.active {
+				remaining = append(remaining, arg)
+			}
+			unsub := wsOp{Op: "unsubscribe", Args: remaining}
+			if b, e := common.JSONMarshal(unsub); e == nil && len(remaining) > 0 && s.writeMu.TryLock() {
+				_ = conn.SetWriteDeadline(time.Now().Add(time.Second))
+				_ = conn.WriteMessage(websocket.TextMessage, b)
+				s.writeMu.Unlock()
+			}
+			s.opMu.Unlock()
 		}
 		conn.Close()
 	}()
@@ -197,10 +306,10 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, args []a
 		for {
 			_, message, err := conn.ReadMessage()
 			if err != nil {
-				if !silent.Load() {
+				if !s.silent.Load() {
 					cb(nil, err)
 				}
-				close(stopC)
+				s.stopOnce.Do(func() { close(s.stopC) })
 				return
 			}
 			if common.BytesToString(message) == "pong" {
@@ -222,10 +331,10 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, args []a
 				// Deliver the error, then close(stopC)+return to terminate the reader, matching the
 				// transport-level ReadMessage error path so the caller drives reconnect/resubscribe
 				// off the stop-close (the documented done/stop contract).
-				if !silent.Load() {
+				if !s.silent.Load() {
 					cb(nil, &WsError{Code: hdr.codeString(), Message: hdr.Msg})
 				}
-				close(stopC)
+				s.stopOnce.Do(func() { close(s.stopC) })
 				return
 			case hdr.Action != "":
 				cb(message, nil)
@@ -234,7 +343,65 @@ func subscribeBytes(ctx context.Context, client WsClient, private bool, args []a
 			}
 		}
 	}()
-	return doneC, stopC, nil
+	return s, nil
+}
+
+func (s *rawSubscription) update(op string, args []any) error {
+	if len(args) == 0 {
+		return nil
+	}
+	s.opMu.Lock()
+	defer s.opMu.Unlock()
+	select {
+	case <-s.closeC:
+		return errors.New("ws subscription closed")
+	case <-s.stopC:
+		return errors.New("ws subscription stopped")
+	default:
+	}
+	filtered := make([]any, 0, len(args))
+	keys := make([]string, 0, len(args))
+	for _, arg := range args {
+		key, err := wsArgKey(arg)
+		if err != nil {
+			return err
+		}
+		_, exists := s.active[key]
+		if (op == "subscribe" && exists) || (op == "unsubscribe" && !exists) {
+			continue
+		}
+		filtered = append(filtered, arg)
+		keys = append(keys, key)
+	}
+	if len(filtered) == 0 {
+		return nil
+	}
+	data, err := common.JSONMarshal(wsOp{Op: op, Args: filtered})
+	if err != nil {
+		return err
+	}
+	if err := s.writeText(data); err != nil {
+		s.conn.Close()
+		return err
+	}
+	for i, key := range keys {
+		if op == "subscribe" {
+			s.active[key] = filtered[i]
+		} else {
+			delete(s.active, key)
+		}
+	}
+	return nil
+}
+
+func (s *rawSubscription) close() {
+	s.silent.Store(true)
+	s.closeOnce.Do(func() { close(s.closeC) })
+}
+
+func wsArgKey(arg any) (string, error) {
+	data, err := common.JSONMarshal(arg)
+	return common.BytesToString(data), err
 }
 
 // DialPrivateLoggedIn dials the private WebSocket gateway and completes the
@@ -317,20 +484,36 @@ func wsLogin(client WsClient, conn *websocket.Conn) error {
 
 // keepAlive sends Bitget's literal "ping" text frame on an interval; the server
 // replies "pong" (handled in the read loop).
-func keepAlive(conn *websocket.Conn, writeMu *sync.Mutex, interval time.Duration) {
+func keepAlive(sub *rawSubscription, interval time.Duration) {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 	for range ticker.C {
-		if err := writeText(conn, writeMu, []byte("ping")); err != nil {
+		if err := sub.writeText([]byte("ping")); err != nil {
+			sub.conn.Close()
 			return
 		}
 	}
 }
 
-func writeText(conn *websocket.Conn, mu *sync.Mutex, data []byte) error {
-	mu.Lock()
-	defer mu.Unlock()
-	return conn.WriteMessage(websocket.TextMessage, data)
+func (s *rawSubscription) writeText(data []byte) error {
+	s.writeMu.Lock()
+	defer s.writeMu.Unlock()
+	// Bitget permits 10 client messages/second/connection, including ping and
+	// subscription updates. Serialize at a slightly lower rate so bursts queue.
+	if wait := 110*time.Millisecond - time.Since(s.lastWrite); wait > 0 {
+		timer := time.NewTimer(wait)
+		select {
+		case <-timer.C:
+		case <-s.closeC:
+			timer.Stop()
+			return errors.New("ws subscription closed")
+		}
+	}
+	_ = s.conn.SetWriteDeadline(time.Now().Add(5 * time.Second))
+	err := s.conn.WriteMessage(websocket.TextMessage, data)
+	s.lastWrite = time.Now()
+	_ = s.conn.SetWriteDeadline(time.Time{})
+	return err
 }
 
 // WsError is a Bitget WebSocket control-frame error.

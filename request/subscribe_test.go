@@ -2,6 +2,7 @@ package request
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -171,6 +172,128 @@ func TestSubscribeRawArgsUsesOneConnection(t *testing.T) {
 				t.Fatal("timed out waiting for stop")
 			}
 		})
+	}
+}
+
+func TestRawSubscriptionUpdatesOneConnection(t *testing.T) {
+	type operation struct {
+		Op   string  `json:"op"`
+		Args []WsArg `json:"args"`
+	}
+	operations := make(chan operation, 3)
+	var connections atomic.Int32
+	upgrader := websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		connections.Add(1)
+		defer conn.Close()
+		for {
+			_, message, err := conn.ReadMessage()
+			if err != nil {
+				return
+			}
+			var op operation
+			if common.JSONUnmarshal(message, &op) == nil && (op.Op == "subscribe" || op.Op == "unsubscribe") {
+				operations <- op
+			}
+		}
+	}))
+	defer server.Close()
+
+	client := &testWSClient{url: "ws" + strings.TrimPrefix(server.URL, "http")}
+	initial := WsArg{InstType: "spot", Topic: "ticker", Symbol: "BTCUSDT"}
+	sub, err := OpenRawSubscription(context.Background(), client, false, []WsArg{initial}, func([]byte, error) {})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer sub.Close()
+
+	added := []WsArg{
+		{InstType: "spot", Topic: "ticker", Symbol: "ETHUSDT"},
+		{InstType: "usdt-futures", Topic: "ticker", Symbol: "ETHUSDT"},
+	}
+	if err := sub.Subscribe(added); err != nil {
+		t.Fatal(err)
+	}
+	if err := sub.Unsubscribe([]WsArg{initial}); err != nil {
+		t.Fatal(err)
+	}
+
+	want := []operation{{Op: "subscribe", Args: []WsArg{initial}}, {Op: "subscribe", Args: added}, {Op: "unsubscribe", Args: []WsArg{initial}}}
+	for i := range want {
+		select {
+		case got := <-operations:
+			if got.Op != want[i].Op || fmt.Sprint(got.Args) != fmt.Sprint(want[i].Args) {
+				t.Fatalf("operation %d = %+v, want %+v", i, got, want[i])
+			}
+		case <-time.After(time.Second):
+			t.Fatalf("timed out waiting for operation %d", i)
+		}
+	}
+	if got := connections.Load(); got != 1 {
+		t.Fatalf("connections = %d, want 1", got)
+	}
+}
+
+func TestRawSubscriptionConcurrentSubscribeFrames(t *testing.T) {
+	const updates = 20
+	received := make(chan struct{}, updates+1)
+	var connections atomic.Int32
+	upgrader := websocket.Upgrader{CheckOrigin: func(*http.Request) bool { return true }}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		connections.Add(1)
+		defer conn.Close()
+		for {
+			_, message, err := conn.ReadMessage()
+			if err != nil {
+				return
+			}
+			var op struct {
+				Op   string  `json:"op"`
+				Args []WsArg `json:"args"`
+			}
+			if common.JSONUnmarshal(message, &op) != nil || op.Op != "subscribe" || len(op.Args) == 0 {
+				continue
+			}
+			received <- struct{}{}
+		}
+	}))
+	defer server.Close()
+
+	client := &testWSClient{url: "ws" + strings.TrimPrefix(server.URL, "http")}
+	sub, err := OpenRawSubscription(context.Background(), client, false, []WsArg{{InstType: "spot", Topic: "ticker", Symbol: "BTCUSDT"}}, func([]byte, error) {})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer sub.Close()
+
+	var wg sync.WaitGroup
+	for i := 0; i < updates; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			if err := sub.Subscribe([]WsArg{{InstType: "spot", Topic: "ticker", Symbol: fmt.Sprintf("COIN%dUSDT", i)}}); err != nil {
+				t.Errorf("subscribe %d: %v", i, err)
+			}
+		}(i)
+	}
+	wg.Wait()
+	for i := 0; i < updates+1; i++ {
+		select {
+		case <-received:
+		case <-time.After(time.Second):
+			t.Fatalf("received %d/%d subscribe frames", i, updates+1)
+		}
+	}
+	if got := connections.Load(); got != 1 {
+		t.Fatalf("connections = %d, want 1", got)
 	}
 }
 
