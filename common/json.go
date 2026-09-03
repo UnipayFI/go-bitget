@@ -69,7 +69,7 @@ func decodeTimestamp(dec *jsontext.Decoder, unit string) (n int64, set bool, err
 		return 0, false, fmt.Errorf("bitget: cannot decode %v token into %s timestamp", tok.Kind(), unit)
 	}
 	switch s {
-	case "", "0", "-1": // "not set" sentinels
+	case "", "0", "-1", "null": // "not set" sentinels
 		return 0, false, nil
 	}
 	n, err = strconv.ParseInt(s, 10, 64)

@@ -56,3 +56,15 @@ func TestMicrosTimeNotSet(t *testing.T) {
 		}
 	}
 }
+
+func TestMillisTimeStringNullIsNotSet(t *testing.T) {
+	var v struct {
+		T time.Time `json:"t"`
+	}
+	if err := JSONUnmarshal([]byte(`{"t":"null"}`), &v); err != nil {
+		t.Fatalf("unmarshal string null: %v", err)
+	}
+	if !v.T.IsZero() {
+		t.Fatalf("unmarshal string null = %v, want zero time", v.T)
+	}
+}
