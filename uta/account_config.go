@@ -67,7 +67,7 @@ func (s *GetAccountInfoService) Do(ctx context.Context) (*AccountInfo, error) {
 type AccountInfo struct {
 	UserID      string    `json:"userId"`
 	InviterID   string    `json:"inviterId"`
-	ParentID    string    `json:"parentId"`
+	ParentID    int64     `json:"parentId"`
 	ChannelCode string    `json:"channelCode"`
 	Channel     string    `json:"channel"`
 	Ips         string    `json:"ips"`

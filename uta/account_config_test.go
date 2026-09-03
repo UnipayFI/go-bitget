@@ -4,7 +4,19 @@ import (
 	"testing"
 
 	"github.com/UnipayFI/go-bitget/client"
+	"github.com/UnipayFI/go-bitget/common"
 )
+
+func TestAccountInfoParentIDNumber(t *testing.T) {
+	const payload = `{"userId":"1820302139","inviterId":null,"channelCode":"g92f","channel":"lr5r","ips":"57.180.38.42","permType":"read_and_write","permissions":["uta_mgt","uta_trade"],"parentId":8338085973,"regisTime":"1788336175000"}`
+	var info AccountInfo
+	if err := common.JSONUnmarshal([]byte(payload), &info); err != nil {
+		t.Fatal(err)
+	}
+	if info.ParentID != 8338085973 {
+		t.Fatalf("parentId = %v, want 8338085973", info.ParentID)
+	}
+}
 
 func TestAccountConfig(t *testing.T) {
 	c := testClient(t)
