@@ -66,6 +66,41 @@ const (
 	GridBotStatusTerminated  GridBotStatus = "terminated"
 )
 
+// GridTerminationReason is why a terminated grid bot stopped running.
+type GridTerminationReason string
+
+const (
+	GridTerminationReasonManual                 GridTerminationReason = "MANUAL_END"
+	GridTerminationReasonNewWait                GridTerminationReason = "NEW_WAIT"
+	GridTerminationReasonAccountBalanceLacking  GridTerminationReason = "ACCOUNT_BALANCE_LACKING_END"
+	GridTerminationReasonStopProfit             GridTerminationReason = "STOP_PROFIT_END"
+	GridTerminationReasonStopLoss               GridTerminationReason = "STOP_LOSS_END"
+	GridTerminationReasonCancel                 GridTerminationReason = "CANCEL_END"
+	GridTerminationReasonSystem                 GridTerminationReason = "SYSTEM_END"
+	GridTerminationReasonFollow                 GridTerminationReason = "FOLLOW_END"
+	GridTerminationReasonSubscribeStopProfit    GridTerminationReason = "SUBSCRIBE_STOP_PROFIT_END"
+	GridTerminationReasonSubscribeStopLoss      GridTerminationReason = "SUBSCRIBE_STOP_LOSS_END"
+	GridTerminationReasonPlaceOrderFail         GridTerminationReason = "PLACE_ORDER_FAIL_END"
+	GridTerminationReasonSymbolDown             GridTerminationReason = "SYMBOL_DOWN_END"
+	GridTerminationReasonSubAccountTransferFail GridTerminationReason = "SUB_ACCOUNT_TRANSFER_FAIL"
+	GridTerminationReasonHighestPrice           GridTerminationReason = "HIGHEST_PRICE_END"
+	GridTerminationReasonBottomPrice            GridTerminationReason = "BOTTOM_PRICE_END"
+	GridTerminationReasonBurst                  GridTerminationReason = "BURST_END"
+	GridTerminationReasonMoveGridFail           GridTerminationReason = "MOVE_GRID_FAIL"
+	GridTerminationReasonExpireTime             GridTerminationReason = "EXPIRE_TIME_END"
+	GridTerminationReasonHandleSubPosition      GridTerminationReason = "HANDLE_SUB_POSITION_END"
+	GridTerminationReasonStopPriceAchieve       GridTerminationReason = "STOP_PRICE_ACHIEVE"
+	GridTerminationReasonADL                    GridTerminationReason = "ADL_END"
+	GridTerminationReasonAutoConvert            GridTerminationReason = "AUTO_CONVERT_END"
+	GridTerminationReasonConditionTrigger       GridTerminationReason = "CONDITION_TRIGGER_END"
+	GridTerminationReasonADLConvert             GridTerminationReason = "ADL_CONVERT_END"
+	GridTerminationReasonCancelDeliveryOrder    GridTerminationReason = "CANCEL_DELIVERY_ORDER"
+	GridTerminationReasonBasisRateTrigger       GridTerminationReason = "BASIS_RATE_TRIGGER"
+	GridTerminationReasonEarnRedeemFail         GridTerminationReason = "EARN_REDEEM_FAIL"
+	GridTerminationReasonSystemCancel           GridTerminationReason = "SYSTEM_CANCEL"
+	GridTerminationReasonSymbolRStockSplit      GridTerminationReason = "SYMBOL_RSTOCK_SPLIT"
+)
+
 // GridAdjustType is the direction of a futures grid investment adjustment.
 type GridAdjustType string
 
@@ -599,6 +634,10 @@ type GridBotDetail struct {
 	TakeProfit              decimal.Decimal          `json:"takeProfit"`
 	HodlMode                string                   `json:"hodlMode"`            // yes, no
 	AutoTransferProfits     string                   `json:"autoTransferProfits"` // yes, no
+	// ArbitrageCount is how many grid arbitrages the bot has completed.
+	ArbitrageCount string `json:"arbitrageCount"`
+	// TerminationReason is set once the bot has stopped, empty while it runs.
+	TerminationReason GridTerminationReason `json:"terminationReason"`
 }
 
 // GetGridBotOrderDetailsService -- GET /api/v3/trade/grid/list-details (UTA trade read)
