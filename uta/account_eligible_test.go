@@ -43,4 +43,15 @@ func TestAccountEligible(t *testing.T) {
 		raw := fetchRawGet(t, c, cx, "/api/v3/account/eligible-loan-info", nil, true)
 		assertCovers(t, "account/eligible-loan-info", raw, loans)
 	}
+
+	// Eligible discount rate.
+	if rates, err := c.NewGetEligibleDiscountRateService().Do(cx); err != nil {
+		if !tolerable(t, "account/eligible-discount-rate", err) {
+			t.Fatalf("eligible discount rate: %v", err)
+		}
+	} else {
+		t.Logf("eligible discount rates: %d", len(rates))
+		raw := fetchRawGet(t, c, cx, "/api/v3/account/eligible-discount-rate", nil, true)
+		assertCovers(t, "account/eligible-discount-rate", raw, rates)
+	}
 }

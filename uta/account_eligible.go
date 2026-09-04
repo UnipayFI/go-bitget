@@ -125,3 +125,31 @@ type EligibleLoanInfo struct {
 	MasterSubLimit       decimal.Decimal `json:"masterSubLimit"`       // master/sub account borrow limit
 	PlatformRemaingQuota decimal.Decimal `json:"platformRemaingQuota"` // platform remaining quota (Bitget's spelling)
 }
+
+// GetEligibleDiscountRateService -- GET /api/v3/account/eligible-discount-rate (UTA mgt. read)
+//
+// Returns the collateral discount-rate tiers the account is eligible for under
+// its whitelist, per coin. Unlike GET /api/v3/market/discount-rate, which
+// quotes the platform-wide ladder, this one is account-specific.
+type GetEligibleDiscountRateService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetEligibleDiscountRateService() *GetEligibleDiscountRateService {
+	return &GetEligibleDiscountRateService{c: c, params: map[string]string{}}
+}
+
+func (s *GetEligibleDiscountRateService) SetCoin(coin string) *GetEligibleDiscountRateService {
+	s.params["coin"] = coin
+	return s
+}
+
+func (s *GetEligibleDiscountRateService) Do(ctx context.Context) ([]DiscountRate, error) {
+	req := request.Get(ctx, s.c, "/api/v3/account/eligible-discount-rate", s.params).WithSign()
+	resp, err := request.Do[[]DiscountRate](req)
+	if err != nil {
+		return nil, err
+	}
+	return *resp, nil
+}
