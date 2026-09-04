@@ -8,8 +8,8 @@ A Go SDK for the [Bitget](https://www.bitget.com/api-doc/uta/intro) exchange, co
 
 | Account system | API | Aligned to |
 |---|---|---|
-| **UTA** — Unified Trading Account | `/api/v3` REST + v3 WebSocket | [2026-08-31](https://www.bitget.com/api-doc/uta/changelog) |
-| **Classic** — per-product account | `/api/v2` REST + v2 WebSocket | [2026-08-18](https://www.bitget.com/api-doc/classic/changelog) |
+| **UTA** — Unified Trading Account | `/api/v3` REST + v3 WebSocket | [2026-09-03](https://www.bitget.com/api-doc/uta/changelog) |
+| **Classic** — per-product account | `/api/v2` REST + v2 WebSocket | [2026-09-03](https://www.bitget.com/api-doc/classic/changelog) |
 
 Response structs are reconciled against the live API (not just the docs), so endpoints stay in sync with the dates above.
 
