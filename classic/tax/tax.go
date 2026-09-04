@@ -10,7 +10,8 @@ import (
 )
 
 // SpotTaxType is the spot transaction-record category (Bitget returns dozens of
-// values, e.g. Deposit, Withdrawal, Buy, Sell, Interest, Airdrop Reward-A).
+// values, e.g. Deposit, Withdrawal, Buy, Sell, Interest, Airdrop Reward-A,
+// un_delegate_user_out).
 type SpotTaxType string
 
 // FutureTaxType is the futures transaction-record category, e.g. TRANSFER_IN,
