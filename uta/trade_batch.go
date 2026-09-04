@@ -82,7 +82,7 @@ type BatchModifyItem struct {
 //
 // Modifies up to 20 orders in a single request. The request body is a raw JSON
 // array of modification objects and the response is an array of per-order
-// results.
+// results. From 2026-09-30 each item's symbol and category become required.
 type BatchModifyOrderService struct {
 	c     *UTAClient
 	items []BatchModifyItem

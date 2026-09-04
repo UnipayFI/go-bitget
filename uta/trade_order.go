@@ -12,6 +12,9 @@ import (
 // Submits a single order. category, symbol, qty, side and orderType are
 // required; price is required for limit orders. The reply data carries the new
 // order's identifiers.
+//
+// Reality stock pairs (rtoken, e.g. rAAPLUSDT) are supported and rate-limited
+// on their own budget: 5 req/sec/UID, or 30 req/sec/UID once whitelisted.
 type PlaceOrderService struct {
 	c    *UTAClient
 	body map[string]any
@@ -141,7 +144,7 @@ type OrderRef struct {
 //
 // Amends an open order's quantity and/or price. Identify the order by orderId
 // or clientOid (orderId wins if both are set); at least one of qty or price
-// must be provided.
+// must be provided. From 2026-09-30 symbol and category become required.
 type ModifyOrderService struct {
 	c    *UTAClient
 	body map[string]any
@@ -259,6 +262,9 @@ func (s *ModifyOrderService) Do(ctx context.Context) (*OrderRef, error) {
 //
 // Cancels a single open order. Identify the order by orderId or clientOid
 // (orderId wins if both are set).
+//
+// Reality stock pairs (rtoken, e.g. rAAPLUSDT) are supported and rate-limited
+// on their own budget: 5 req/sec/UID, or 30 req/sec/UID once whitelisted.
 type CancelOrderService struct {
 	c    *UTAClient
 	body map[string]any

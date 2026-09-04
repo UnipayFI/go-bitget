@@ -77,6 +77,7 @@ type WsNewOrder struct {
 }
 
 // WsModifyOrder amends an open order. Identify it by OrderID or ClientOid.
+// From 2026-09-30 Symbol (and the request's category) become required.
 type WsModifyOrder struct {
 	Symbol        string `json:"symbol,omitempty"`
 	OrderID       string `json:"orderId,omitempty"`
@@ -96,7 +97,9 @@ type WsCancelOrder struct {
 	ClientOrderID string `json:"clientOid,omitempty"`
 }
 
-// PlaceOrder places a single order over the stream.
+// PlaceOrder places a single order over the stream. Reality stock pairs (rtoken,
+// e.g. rAAPLUSDT) are supported and rate-limited on their own budget:
+// 5 req/sec/UID, or 30 req/sec/UID once whitelisted.
 func (t *UTATradeConn) PlaceOrder(ctx context.Context, category Category, order WsNewOrder) (*WsOrderAck, error) {
 	return t.single(ctx, category, "place-order", order)
 }
@@ -124,7 +127,9 @@ func (t *UTATradeConn) BatchModifyOrders(ctx context.Context, category Category,
 	return t.batch(ctx, category, "batch-modify-order", args)
 }
 
-// CancelOrder cancels a single order.
+// CancelOrder cancels a single order. Reality stock pairs (rtoken, e.g.
+// rAAPLUSDT) are supported and rate-limited on their own budget:
+// 5 req/sec/UID, or 30 req/sec/UID once whitelisted.
 func (t *UTATradeConn) CancelOrder(ctx context.Context, category Category, cancel WsCancelOrder) (*WsOrderAck, error) {
 	return t.single(ctx, category, "cancel-order", cancel)
 }
