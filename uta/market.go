@@ -68,20 +68,21 @@ type Instrument struct {
 	IsReality  string   `json:"isReality"`  // spot RWA flag (no/yes)
 	IsRwa      string   `json:"isRwa"`      // futures RWA flag (NO/YES)
 
-	BuyLimitPriceRatio  decimal.Decimal  `json:"buyLimitPriceRatio"`
-	SellLimitPriceRatio decimal.Decimal  `json:"sellLimitPriceRatio"`
-	MinOrderQty         decimal.Decimal  `json:"minOrderQty"`
-	MaxOrderQty         decimal.Decimal  `json:"maxOrderQty"`
-	MinOrderAmount      decimal.Decimal  `json:"minOrderAmount"`
-	PricePrecision      decimal.Decimal  `json:"pricePrecision"`
-	QuantityPrecision   decimal.Decimal  `json:"quantityPrecision"`
-	QuotePrecision      decimal.Decimal  `json:"quotePrecision"`
-	MaxSymbolOrderNum   string           `json:"maxSymbolOrderNum"`
-	MaxProductOrderNum  string           `json:"maxProductOrderNum"`
-	MaxPositionNum      string           `json:"maxPositionNum"`
-	Status              InstrumentStatus `json:"status"`
-	MaintainTime        string           `json:"maintainTime"`
-	LaunchTime          time.Time        `json:"launchTime"`
+	BuyLimitPriceRatio   decimal.Decimal  `json:"buyLimitPriceRatio"`
+	SellLimitPriceRatio  decimal.Decimal  `json:"sellLimitPriceRatio"`
+	MinOrderQty          decimal.Decimal  `json:"minOrderQty"`
+	MaxOrderQty          decimal.Decimal  `json:"maxOrderQty"`
+	MinOrderAmount       decimal.Decimal  `json:"minOrderAmount"`
+	MaxMarketOrderAmount decimal.Decimal  `json:"maxMarketOrderAmount"` // spot only -- max single market order amount in quote coin
+	PricePrecision       decimal.Decimal  `json:"pricePrecision"`
+	QuantityPrecision    decimal.Decimal  `json:"quantityPrecision"`
+	QuotePrecision       decimal.Decimal  `json:"quotePrecision"`
+	MaxSymbolOrderNum    string           `json:"maxSymbolOrderNum"`
+	MaxProductOrderNum   string           `json:"maxProductOrderNum"`
+	MaxPositionNum       string           `json:"maxPositionNum"`
+	Status               InstrumentStatus `json:"status"`
+	MaintainTime         string           `json:"maintainTime"`
+	LaunchTime           time.Time        `json:"launchTime"`
 
 	// Futures-only fields.
 	Type               SymbolType      `json:"type"` // perpetual, delivery
