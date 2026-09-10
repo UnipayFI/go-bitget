@@ -31,7 +31,8 @@ type AccountSettings struct {
 	AssetMode        string                 `json:"assetMode"`    // multi_assets
 	AccountLevel     string                 `json:"accountLevel"` // basic, advanced, isolated, delta
 	HoldMode         HoldMode               `json:"holdMode"`
-	StpMode          string                 `json:"stpMode"` // none, cancel_taker, cancel_maker, cancel_both
+	StpMode          string                 `json:"stpMode"`     // none, cancel_taker, cancel_maker, cancel_both
+	DeltaSwitch      string                 `json:"deltaSwitch"` // delta-neutral mode switch (no/yes)
 	SymbolConfigList []SymbolLeverageConfig `json:"symbolConfigList"`
 	CoinConfigList   []CoinLeverageConfig   `json:"coinConfigList"`
 }
