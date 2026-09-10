@@ -14,7 +14,8 @@ import (
 // order's identifiers.
 //
 // Reality stock pairs (rtoken, e.g. rAAPLUSDT) are supported and rate-limited
-// on their own budget: 5 req/sec/UID, or 30 req/sec/UID once whitelisted.
+// on their own budget: 5 req/sec/UID, or 30 req/sec/UID once whitelisted. Their
+// preset TP/SL is market-only: tpOrderType and slOrderType accept only market.
 type PlaceOrderService struct {
 	c    *UTAClient
 	body map[string]any
@@ -104,13 +105,15 @@ func (s *PlaceOrderService) SetStopLoss(stopLoss decimal.Decimal) *PlaceOrderSer
 	return s
 }
 
-// SetTpOrderType sets the take-profit order type (limit or market).
+// SetTpOrderType sets the take-profit order type (limit or market). Reality
+// (rtoken) pairs currently accept only market.
 func (s *PlaceOrderService) SetTpOrderType(tpOrderType OrderType) *PlaceOrderService {
 	s.body["tpOrderType"] = string(tpOrderType)
 	return s
 }
 
-// SetSlOrderType sets the stop-loss order type (limit or market).
+// SetSlOrderType sets the stop-loss order type (limit or market). Reality
+// (rtoken) pairs currently accept only market.
 func (s *PlaceOrderService) SetSlOrderType(slOrderType OrderType) *PlaceOrderService {
 	s.body["slOrderType"] = string(slOrderType)
 	return s

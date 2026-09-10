@@ -99,7 +99,8 @@ type WsCancelOrder struct {
 
 // PlaceOrder places a single order over the stream. Reality stock pairs (rtoken,
 // e.g. rAAPLUSDT) are supported and rate-limited on their own budget:
-// 5 req/sec/UID, or 30 req/sec/UID once whitelisted.
+// 5 req/sec/UID, or 30 req/sec/UID once whitelisted. Their preset TP/SL is
+// market-only: tpOrderType and slOrderType accept only market.
 func (t *UTATradeConn) PlaceOrder(ctx context.Context, category Category, order WsNewOrder) (*WsOrderAck, error) {
 	return t.single(ctx, category, "place-order", order)
 }
