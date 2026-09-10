@@ -145,6 +145,7 @@ pos, _ := mx.NewGetAllPositionService(mix.ProductTypeUSDTFutures).Do(ctx)
 | Account | `account*.go` — assets, settings, leverage, fee rate, records, transfer, deposit, withdrawal, … |
 | Trade | `trade_*.go` — place/modify/cancel, batch, cancel-symbol, countdown-cancel, queries |
 | Position / Strategy | `position.go` `strategy.go` `grid.go` — positions, ADL rank, TPSL/trigger/OCO/trailing-stop/iceberg/TWAP plans, grid bots |
+| CFD | `cfd_*.go` — contracts for difference (gold, oil, forex indices): instruments, tickers, candles, orders, positions, account & transfers |
 | Copy / Earn / Loans / Tax | `copy.go` `earn.go` `crypto_loan.go` `ins_loan.go` `tax.go` |
 | Broker / P2P / Sub-account | `broker.go` `p2p.go` `sub_account.go` |
 | WebSocket | `ws_public.go` `ws_private.go` `ws_trade.go` |
