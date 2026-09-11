@@ -13,9 +13,13 @@ import (
 
 // CFD (contract for difference) trading covers non-crypto underlyings such as
 // gold, crude oil and forex indices. It runs on a separate account that must be
-// opened from the Bitget website or app before these endpoints work, and pairs
-// are named after the underlying with an optional contract suffix (XAUUSD,
-// XAUUSD.s, XAUUSD.pro). Every CFD endpoint is signed.
+// opened from the Bitget website or app before these endpoints work -- there is
+// no API for opening one. Every CFD endpoint is signed.
+//
+// A pair is named after the underlying plus a suffix that encodes the trading
+// mode: ECN carries no suffix (XAUUSD), zero-fee ends in ".s" (XAUUSD.s) and
+// Pro ends in ".pro" (XAUUSD.pro). An account is in exactly one mode at a time,
+// and requests must spell the symbol the way that mode does.
 
 // GetCFDTickersService -- GET /api/v3/cfd/market/tickers (UTA trade read)
 //

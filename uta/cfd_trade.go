@@ -12,8 +12,10 @@ import (
 // PlaceCFDOrderService -- POST /api/v3/cfd/trade/place-order (UTA trade read & write)
 //
 // Submits a single CFD order. price is required for limit orders. Prices must
-// be an integer multiple of the pair's tick size. The reply carries only the
-// request id; poll the unfilled/history order endpoints for the order id.
+// be an integer multiple of the pair's tick size. symbol must match the trading
+// mode the account is currently in -- spelling it for another mode is rejected.
+// The reply carries only the request id; poll the unfilled/history order
+// endpoints for the order id.
 type PlaceCFDOrderService struct {
 	c    *UTAClient
 	body map[string]any
