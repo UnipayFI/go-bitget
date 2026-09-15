@@ -123,6 +123,13 @@ func (c *UTAClient) NewGetAccountFeeRateService(category Category, symbol string
 	}}
 }
 
+// SetRPIFlag requests the RPI fee rate ("yes" or "no", default "no"). Only
+// effective for market makers on RPI-enabled symbols.
+func (s *GetAccountFeeRateService) SetRPIFlag(rpiFlag string) *GetAccountFeeRateService {
+	s.params["rpiFlag"] = rpiFlag
+	return s
+}
+
 func (s *GetAccountFeeRateService) Do(ctx context.Context) (*AccountFeeRate, error) {
 	req := request.Get(ctx, s.c, "/api/v3/account/fee-rate", s.params).WithSign()
 	return request.Do[AccountFeeRate](req)
