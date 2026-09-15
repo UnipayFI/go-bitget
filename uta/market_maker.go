@@ -96,10 +96,12 @@ type FeeGroupLabel struct {
 // FeeGroupTier is one maker-fee tier within a group. Level is the tier label
 // ("MM1" through "MM5", or "PRO1" through "PRO6"); a negative MakerFeeRate is a
 // maker rebate. TakerFeeRate is only returned for the PRO levels.
+// RPIMakerFeeRate is the maker rate for market makers on RPI-enabled symbols.
 type FeeGroupTier struct {
-	Level        string          `json:"level"`
-	MakerFeeRate decimal.Decimal `json:"makerFeeRate"`
-	TakerFeeRate decimal.Decimal `json:"takerFeeRate"`
+	Level           string          `json:"level"`
+	MakerFeeRate    decimal.Decimal `json:"makerFeeRate"`
+	TakerFeeRate    decimal.Decimal `json:"takerFeeRate"`
+	RPIMakerFeeRate decimal.Decimal `json:"rpiMakerFeeRate"`
 }
 
 // GetCashDividendRecordsService -- GET /api/v3/market/cash-dividend-records
