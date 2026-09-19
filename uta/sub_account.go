@@ -174,9 +174,9 @@ type SubAccountInfo struct {
 
 // CreateSubAccountAPIKeyService -- POST /api/v3/user/create-sub-api (UTA mgt. read & write)
 //
-// Creates an API key for a sub-account. type is "read_write" or "read_only";
-// permissions are "uta_mgt"/"uta_trade"; ips is the IPv4 whitelist (max 30).
-// Main account only.
+// Creates an API key for a virtual or Copper custody sub-account. type is
+// "read_write" or "read_only"; permissions are "uta_mgt"/"uta_trade"; ips is the
+// IPv4 whitelist (max 30). Main account only.
 type CreateSubAccountAPIKeyService struct {
 	c    *UTAClient
 	body map[string]any
