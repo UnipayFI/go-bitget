@@ -51,12 +51,15 @@ func (s *GetCFDTickersService) Do(ctx context.Context) ([]CFDTicker, error) {
 
 type CFDTicker struct {
 	Symbol string `json:"symbol"`
-	// OpenPriceChange is the change since the opening price as a decimal
-	// fraction (0.1 means 10%), computed from the bid price by default.
-	OpenPriceChange decimal.Decimal `json:"openPriceChange"`
-	HighPrice       decimal.Decimal `json:"highPrice"`
-	LowPrice        decimal.Decimal `json:"lowPrice"`
-	QuoteTime       time.Time       `json:"quoteTime"`
+	// AskOpenPriceChange and BidOpenPriceChange are the changes since the ask
+	// and bid opening prices as decimal fractions (0.1 means 10%).
+	AskOpenPriceChange decimal.Decimal `json:"askOpenPriceChange"`
+	BidOpenPriceChange decimal.Decimal `json:"bidOpenPriceChange"`
+	HighPrice          decimal.Decimal `json:"highPrice"`
+	LowPrice           decimal.Decimal `json:"lowPrice"`
+	Ask1               decimal.Decimal `json:"ask1"` // best ask price
+	Bid1               decimal.Decimal `json:"bid1"` // best bid price
+	QuoteTime          time.Time       `json:"quoteTime"`
 }
 
 // CFDCandle is one CFD candlestick row. Bitget returns each candle as a
