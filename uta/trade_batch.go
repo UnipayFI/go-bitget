@@ -31,6 +31,9 @@ type BatchOrderItem struct {
 	PosSide       PosSide         `json:"posSide,omitempty"`
 	ClientOrderID string          `json:"clientOid,omitempty"`
 	StpMode       string          `json:"stpMode,omitempty"`
+	// PxAmendType is "no" (default: reject an out-of-band limit price) or "yes"
+	// (adjust it to the best value within the price limit range).
+	PxAmendType string `json:"pxAmendType,omitempty"`
 }
 
 // PlaceBatchService -- POST /api/v3/trade/place-batch
@@ -76,6 +79,9 @@ type BatchModifyItem struct {
 	AutoCancel string          `json:"autoCancel,omitempty"` // yes, no (default)
 	Symbol     string          `json:"symbol,omitempty"`
 	Category   Category        `json:"category,omitempty"`
+	// PxAmendType is "no" (default: reject an out-of-band limit price) or "yes"
+	// (adjust it to the best value within the price limit range).
+	PxAmendType string `json:"pxAmendType,omitempty"`
 }
 
 // BatchModifyOrderService -- POST /api/v3/trade/batch-modify-order

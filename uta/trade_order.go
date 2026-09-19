@@ -68,6 +68,14 @@ func (s *PlaceOrderService) SetStpMode(stpMode string) *PlaceOrderService {
 	return s
 }
 
+// SetPxAmendType sets how an out-of-band limit price is handled: "no" (default)
+// rejects the order, "yes" adjusts the price to the best value within the price
+// limit range and places it. Limit orders only.
+func (s *PlaceOrderService) SetPxAmendType(pxAmendType string) *PlaceOrderService {
+	s.body["pxAmendType"] = pxAmendType
+	return s
+}
+
 // SetMarginMode sets the margin mode (defaults to crossed).
 func (s *PlaceOrderService) SetMarginMode(marginMode MarginMode) *PlaceOrderService {
 	s.body["marginMode"] = string(marginMode)
@@ -193,6 +201,14 @@ func (s *ModifyOrderService) SetPrice(price decimal.Decimal) *ModifyOrderService
 // modification fails ("yes" to cancel, "no" not to cancel; defaults to "no").
 func (s *ModifyOrderService) SetAutoCancel(autoCancel string) *ModifyOrderService {
 	s.body["autoCancel"] = autoCancel
+	return s
+}
+
+// SetPxAmendType sets how an out-of-band limit price is handled: "no" (default)
+// rejects the modification, "yes" adjusts the price to the best value within
+// the price limit range. Limit orders only.
+func (s *ModifyOrderService) SetPxAmendType(pxAmendType string) *ModifyOrderService {
+	s.body["pxAmendType"] = pxAmendType
 	return s
 }
 

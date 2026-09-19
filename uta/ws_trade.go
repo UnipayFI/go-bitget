@@ -64,6 +64,9 @@ type WsNewOrder struct {
 	ReduceOnly    ReduceOnly       `json:"reduceOnly,omitempty"`
 	MarginMode    MarginMode       `json:"marginMode,omitempty"`
 	StpMode       string           `json:"stpMode,omitempty"`
+	// PxAmendType is "no" (default: reject an out-of-band limit price) or "yes"
+	// (adjust it to the best value within the price limit range).
+	PxAmendType string `json:"pxAmendType,omitempty"`
 	// AutoBorrow enables auto-borrowing of the spent coin (spot orders only).
 	AutoBorrow AutoBorrow `json:"autoBorrow,omitempty"`
 	// ReceiveWindow is the order's validity window in ms ([10, 60000]); the
@@ -88,6 +91,9 @@ type WsModifyOrder struct {
 	RequestID string           `json:"requestId,omitempty"`
 	Qty       *decimal.Decimal `json:"qty,omitempty"`
 	Price     *decimal.Decimal `json:"price,omitempty"`
+	// PxAmendType is "no" (default: reject an out-of-band limit price) or "yes"
+	// (adjust it to the best value within the price limit range).
+	PxAmendType string `json:"pxAmendType,omitempty"`
 }
 
 // WsCancelOrder identifies an order to cancel by OrderID or ClientOid.
