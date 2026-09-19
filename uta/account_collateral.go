@@ -57,6 +57,12 @@ func (s *SetCollateralTypeService) SetCollateralCoins(collateralCoins string) *S
 	return s
 }
 
+// SetAllowCashplus sets whether Cash+ counts as collateral ("yes" or "no").
+func (s *SetCollateralTypeService) SetAllowCashplus(allowCashplus string) *SetCollateralTypeService {
+	s.body["allowCashplus"] = allowCashplus
+	return s
+}
+
 func (s *SetCollateralTypeService) Do(ctx context.Context) (*string, error) {
 	req := request.Post(ctx, s.c, "/api/v3/account/set-collateral-type", s.body).WithSign()
 	return request.Do[string](req)
