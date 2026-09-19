@@ -359,3 +359,30 @@ type CopyProfitDetail struct {
 	Reason       string          `json:"reason"` // period, unfollow
 	SettleTime   time.Time       `json:"settleTime"`
 }
+
+// GetCopyPortfolioOverviewService -- GET /api/v3/copy/futures/portfolio-overview (Elite trading read)
+//
+// Returns the elite (lead) trader's project overview over period: 7D, 30D, 90D
+// or 180D.
+type GetCopyPortfolioOverviewService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetCopyPortfolioOverviewService(period string) *GetCopyPortfolioOverviewService {
+	return &GetCopyPortfolioOverviewService{c: c, params: map[string]string{"period": period}}
+}
+
+func (s *GetCopyPortfolioOverviewService) Do(ctx context.Context) (*CopyPortfolioOverview, error) {
+	req := request.Get(ctx, s.c, "/api/v3/copy/futures/portfolio-overview", s.params).WithSign()
+	return request.Do[CopyPortfolioOverview](req)
+}
+
+type CopyPortfolioOverview struct {
+	ProjectID      string          `json:"projectId"`
+	Asset          decimal.Decimal `json:"asset"` // assets under management
+	ROI            decimal.Decimal `json:"roi"`
+	TotalProfit    decimal.Decimal `json:"totalProfit"`
+	FollowerProfit decimal.Decimal `json:"followerProfit"`
+	MaxDrawdown    decimal.Decimal `json:"maxDrawdown"`
+}

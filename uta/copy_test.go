@@ -89,4 +89,14 @@ func TestCopy(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/copy/futures/profit-details",
 		map[string]string{"limit": "20"}, true)
 	assertCovers(t, "copy/futures/profit-details", raw, details)
+
+	// Portfolio overview.
+	overview, err := c.NewGetCopyPortfolioOverviewService("30D").Do(cx)
+	if err != nil {
+		t.Fatalf("portfolio overview: %v", err)
+	}
+	t.Logf("portfolio overview: %+v", overview)
+	raw = fetchRawGet(t, c, cx, "/api/v3/copy/futures/portfolio-overview",
+		map[string]string{"period": "30D"}, true)
+	assertCovers(t, "copy/futures/portfolio-overview", raw, overview)
 }
