@@ -318,3 +318,77 @@ type RepayResult struct {
 	Result      string          `json:"result"`
 	RepayAmount decimal.Decimal `json:"repayAmount"`
 }
+
+// ManualBorrowService -- POST /api/v3/account/borrow (UTA trade)
+//
+// Manually borrows an amount of a coin. Only available in advanced or
+// delta-neutral mode with the manual repayment mode enabled (see
+// SetRepayModeService).
+type ManualBorrowService struct {
+	c    *UTAClient
+	body map[string]any
+}
+
+func (c *UTAClient) NewManualBorrowService(coin string, amount decimal.Decimal) *ManualBorrowService {
+	return &ManualBorrowService{c: c, body: map[string]any{
+		"coin":   coin,
+		"amount": amount.String(),
+	}}
+}
+
+func (s *ManualBorrowService) SetClientOrderID(clientOid string) *ManualBorrowService {
+	s.body["clientOid"] = clientOid
+	return s
+}
+
+func (s *ManualBorrowService) Do(ctx context.Context) (*ManualBorrowResult, error) {
+	req := request.Post(ctx, s.c, "/api/v3/account/borrow", s.body).WithSign()
+	return request.Do[ManualBorrowResult](req)
+}
+
+type ManualBorrowResult struct {
+	OrderID       string `json:"orderId"`
+	ClientOrderID string `json:"clientOid"`
+}
+
+// GetMaxBorrowableService -- GET /api/v3/account/max-borrowable (UTA mgt. read)
+//
+// Returns the maximum amount of a coin that can be manually borrowed.
+type GetMaxBorrowableService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetMaxBorrowableService(coin string) *GetMaxBorrowableService {
+	return &GetMaxBorrowableService{c: c, params: map[string]string{"coin": coin}}
+}
+
+func (s *GetMaxBorrowableService) Do(ctx context.Context) (*MaxBorrowable, error) {
+	req := request.Get(ctx, s.c, "/api/v3/account/max-borrowable", s.params).WithSign()
+	return request.Do[MaxBorrowable](req)
+}
+
+type MaxBorrowable struct {
+	MaxBorrowable decimal.Decimal `json:"maxBorrowable"`
+}
+
+// SetRepayModeService -- POST /api/v3/account/set-repay-mode (UTA mgt. read & write)
+//
+// Sets the account's manual-borrow repayment mode ("auto" or "manual"). The
+// setting is per UID: the main account and each sub-account keep their own. The
+// reply data is an empty object.
+type SetRepayModeService struct {
+	c    *UTAClient
+	body map[string]any
+}
+
+func (c *UTAClient) NewSetRepayModeService(repayMode string) *SetRepayModeService {
+	return &SetRepayModeService{c: c, body: map[string]any{
+		"repayMode": repayMode,
+	}}
+}
+
+func (s *SetRepayModeService) Do(ctx context.Context) (*any, error) {
+	req := request.Post(ctx, s.c, "/api/v3/account/set-repay-mode", s.body).WithSign()
+	return request.Do[any](req)
+}

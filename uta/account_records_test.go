@@ -57,3 +57,20 @@ func TestAccountRecords(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/account/payment-coins", nil, true)
 	assertCovers(t, "account/payment-coins", raw, payment)
 }
+
+func TestMaxBorrowable(t *testing.T) {
+	c := testClient(t)
+	if err := c.SyncServerTime(ctx(t)); err != nil {
+		t.Fatalf("sync time: %v", err)
+	}
+	cx := ctx(t)
+
+	got, err := c.NewGetMaxBorrowableService("USDT").Do(cx)
+	if err != nil {
+		t.Fatalf("max borrowable: %v", err)
+	}
+	t.Logf("max borrowable USDT: %s", got.MaxBorrowable)
+	raw := fetchRawGet(t, c, cx, "/api/v3/account/max-borrowable",
+		map[string]string{"coin": "USDT"}, true)
+	assertCovers(t, "account/max-borrowable", raw, got)
+}

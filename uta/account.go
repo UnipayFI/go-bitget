@@ -50,6 +50,7 @@ type CoinAsset struct {
 	Available       decimal.Decimal `json:"available"`
 	Debt            decimal.Decimal `json:"debt"`
 	Locked          decimal.Decimal `json:"locked"`
+	InterestBase    decimal.Decimal `json:"interestBase"` // debt + abs(min(0, balance + unrealised PnL))
 }
 
 // GetAllFeeRateService -- GET /api/v3/account/all-fee-rate (UTA mgt. read)

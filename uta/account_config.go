@@ -33,6 +33,7 @@ type AccountSettings struct {
 	HoldMode         HoldMode               `json:"holdMode"`
 	StpMode          string                 `json:"stpMode"`     // none, cancel_taker, cancel_maker, cancel_both
 	DeltaSwitch      string                 `json:"deltaSwitch"` // delta-neutral mode switch (no/yes)
+	RepayMode        string                 `json:"repayMode"`   // manual-borrow repayment mode (auto/manual)
 	SymbolConfigList []SymbolLeverageConfig `json:"symbolConfigList"`
 	CoinConfigList   []CoinLeverageConfig   `json:"coinConfigList"`
 }
