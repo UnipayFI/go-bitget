@@ -35,14 +35,15 @@ type WsAccount struct {
 }
 
 type WsAccountCoin struct {
-	Coin      string          `json:"coin"`
-	Equity    decimal.Decimal `json:"equity"`
-	Balance   decimal.Decimal `json:"balance"`
-	Available decimal.Decimal `json:"available"`
-	Locked    decimal.Decimal `json:"locked"`
-	Borrow    decimal.Decimal `json:"borrow"`
-	Debts     decimal.Decimal `json:"debts"`
-	USDValue  decimal.Decimal `json:"usdValue"`
+	Coin            string          `json:"coin"`
+	Equity          decimal.Decimal `json:"equity"`
+	Balance         decimal.Decimal `json:"balance"`
+	BalanceOriginal decimal.Decimal `json:"balanceOriginal"` // balance without deducting borrowing-related amounts
+	Available       decimal.Decimal `json:"available"`
+	Locked          decimal.Decimal `json:"locked"`
+	Borrow          decimal.Decimal `json:"borrow"`
+	Debts           decimal.Decimal `json:"debts"`
+	USDValue        decimal.Decimal `json:"usdValue"`
 }
 
 // SubscribePositionService -- private "position" channel.
