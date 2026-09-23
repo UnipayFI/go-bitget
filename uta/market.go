@@ -72,7 +72,7 @@ type Instrument struct {
 	SellLimitPriceRatio  decimal.Decimal  `json:"sellLimitPriceRatio"`
 	MinOrderQty          decimal.Decimal  `json:"minOrderQty"`
 	MaxOrderQty          decimal.Decimal  `json:"maxOrderQty"`
-	MinOrderAmount       decimal.Decimal  `json:"minOrderAmount"`
+	MinOrderAmount       decimal.Decimal  `json:"minOrderAmount"`       // in USDT
 	MaxMarketOrderAmount decimal.Decimal  `json:"maxMarketOrderAmount"` // spot only -- max single market order amount in quote coin
 	PricePrecision       decimal.Decimal  `json:"pricePrecision"`
 	QuantityPrecision    decimal.Decimal  `json:"quantityPrecision"`
