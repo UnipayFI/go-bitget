@@ -71,6 +71,27 @@ func (s *FreezeSubAccountService) Do(ctx context.Context) (*any, error) {
 	return request.Do[any](req)
 }
 
+// DeleteSubAccountService -- POST /api/v3/user/delete-sub (UTA mgt. read & write)
+//
+// Deletes a virtual or normal sub-account. The sub-account must hold at most 10
+// USDT across all business lines, have no MT5 account and no in-progress
+// orders. The reply data is an empty object. Main account only.
+type DeleteSubAccountService struct {
+	c    *UTAClient
+	body map[string]any
+}
+
+func (c *UTAClient) NewDeleteSubAccountService(subUid string) *DeleteSubAccountService {
+	return &DeleteSubAccountService{c: c, body: map[string]any{
+		"subUid": subUid,
+	}}
+}
+
+func (s *DeleteSubAccountService) Do(ctx context.Context) (*any, error) {
+	req := request.Post(ctx, s.c, "/api/v3/user/delete-sub", s.body).WithSign()
+	return request.Do[any](req)
+}
+
 // GetSubAccountUnifiedAssetsService -- GET /api/v3/account/sub-unified-assets (UTA mgt. read)
 //
 // Returns the unified-account asset holdings of one sub-account, or of all
