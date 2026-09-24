@@ -224,6 +224,7 @@ type EliteRecord struct {
 	PaymentAccount         []string        `json:"paymentAccount"`         // spot, unified (subscribe only)
 	SettlePoints           string          `json:"settlePoints"`           // BGBTC (interest only)
 	Fee                    decimal.Decimal `json:"fee"`                    // subscribe/redeem only
+	BizTime                time.Time       `json:"bizTime"`
 }
 
 // EliteSubscribeService -- POST /api/v3/earn/elite-subscribe (UTA mgt. read & write)
