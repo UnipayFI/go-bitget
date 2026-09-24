@@ -67,4 +67,17 @@ func TestBrokerCommission(t *testing.T) {
 			apitest.AssertCovers(t, "rebate-info", raw, resp)
 		}
 	}
+
+	// Get Sub-affiliate Info -- GET /api/v2/broker/sub-affiliate-info
+	{
+		resp, err := c.NewGetSubAffiliateInfoService().SetStartTime(start).SetEndTime(end).Do(cx)
+		if err != nil {
+			if !apitest.Tolerable(t, "sub-affiliate-info", err, okCodes...) {
+				t.Fatalf("sub-affiliate-info: %v", err)
+			}
+		} else {
+			raw := apitest.FetchRawGet(t, c, cx, "/api/v2/broker/sub-affiliate-info", window, true)
+			apitest.AssertCovers(t, "sub-affiliate-info", raw, resp)
+		}
+	}
 }

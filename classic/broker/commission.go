@@ -201,3 +201,128 @@ type RebateInfo struct {
 	ClientSpotRebateRatio    decimal.Decimal       `json:"clientSpotRebateRatio"`
 	ClientFuturesRebateRatio decimal.Decimal       `json:"clientFuturesRebateRatio"`
 }
+
+// SubAffiliateRebateType is the product line (and regular/API/trading-expert
+// variant) a sub-affiliate rebate rate applies to (sub-affiliate-info endpoint).
+type SubAffiliateRebateType string
+
+const (
+	SubAffiliateRebateTypeFutures          SubAffiliateRebateType = "futures"
+	SubAffiliateRebateTypeFuturesAPI       SubAffiliateRebateType = "futures_api"
+	SubAffiliateRebateTypeFuturesTrader    SubAffiliateRebateType = "futures_trader"
+	SubAffiliateRebateTypeFuturesTraderAPI SubAffiliateRebateType = "futures_trader_api"
+	SubAffiliateRebateTypeSpot             SubAffiliateRebateType = "spot"
+	SubAffiliateRebateTypeSpotAPI          SubAffiliateRebateType = "spot_api"
+	SubAffiliateRebateTypeSpotTrader       SubAffiliateRebateType = "spot_trader"
+	SubAffiliateRebateTypeSpotTraderAPI    SubAffiliateRebateType = "spot_trader_api"
+	SubAffiliateRebateTypeOnchain          SubAffiliateRebateType = "onchain"
+	SubAffiliateRebateTypeOnchainAPI       SubAffiliateRebateType = "onchain_api"
+	SubAffiliateRebateTypeOnchainTrader    SubAffiliateRebateType = "onchain_trader"
+	SubAffiliateRebateTypeOnchainTraderAPI SubAffiliateRebateType = "onchain_trader_api"
+	SubAffiliateRebateTypeCFD              SubAffiliateRebateType = "cfd"
+	SubAffiliateRebateTypeCFDAPI           SubAffiliateRebateType = "cfd_api"
+	SubAffiliateRebateTypeCFDTrader        SubAffiliateRebateType = "cfd_trader"
+	SubAffiliateRebateTypeCFDTraderAPI     SubAffiliateRebateType = "cfd_trader_api"
+	SubAffiliateRebateTypeStock            SubAffiliateRebateType = "stock"
+	SubAffiliateRebateTypeStockAPI         SubAffiliateRebateType = "stock_api"
+	SubAffiliateRebateTypeStockTrader      SubAffiliateRebateType = "stock_trader"
+	SubAffiliateRebateTypeStockTraderAPI   SubAffiliateRebateType = "stock_trader_api"
+)
+
+// SubAffiliateVerificationStatus is a sub-affiliate's identity verification
+// state; passing either KYC or KYB counts as verified.
+type SubAffiliateVerificationStatus string
+
+const (
+	SubAffiliateVerificationStatusVerified    SubAffiliateVerificationStatus = "verified"
+	SubAffiliateVerificationStatusNotVerified SubAffiliateVerificationStatus = "not_verified"
+)
+
+// GetSubAffiliateInfoService -- GET /api/v2/broker/sub-affiliate-info (private; broker-gated)
+//
+// Returns the broker's sub-affiliates with their rebate rates, referral counts
+// and USDT-denominated volume/deposit/fee/rebate totals (the fields shown on the
+// affiliate dashboard), with cursor pagination.
+type GetSubAffiliateInfoService struct {
+	c      *BrokerClient
+	params map[string]string
+}
+
+func (c *BrokerClient) NewGetSubAffiliateInfoService() *GetSubAffiliateInfoService {
+	return &GetSubAffiliateInfoService{c: c, params: map[string]string{}}
+}
+
+// SetUID filters to a single sub-affiliate.
+func (s *GetSubAffiliateInfoService) SetUID(uid string) *GetSubAffiliateInfoService {
+	s.params["uid"] = uid
+	return s
+}
+
+// SetStartTime sets the window start (defaults to the last 7 days when unset).
+func (s *GetSubAffiliateInfoService) SetStartTime(t time.Time) *GetSubAffiliateInfoService {
+	s.params["startTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetEndTime sets the window end (max range 30 days).
+func (s *GetSubAffiliateInfoService) SetEndTime(t time.Time) *GetSubAffiliateInfoService {
+	s.params["endTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetIDLessThan sets the pagination cursor (the previous response's endId).
+func (s *GetSubAffiliateInfoService) SetIDLessThan(idLessThan string) *GetSubAffiliateInfoService {
+	s.params["idLessThan"] = idLessThan
+	return s
+}
+
+// SetLimit sets the page size (max 100, default 100).
+func (s *GetSubAffiliateInfoService) SetLimit(limit int) *GetSubAffiliateInfoService {
+	s.params["limit"] = strconv.Itoa(limit)
+	return s
+}
+
+// SetIncludeDownLine sets whether downline users are included (default yes).
+func (s *GetSubAffiliateInfoService) SetIncludeDownLine(include bool) *GetSubAffiliateInfoService {
+	if include {
+		s.params["includeDownLine"] = "yes"
+	} else {
+		s.params["includeDownLine"] = "no"
+	}
+	return s
+}
+
+func (s *GetSubAffiliateInfoService) Do(ctx context.Context) (*SubAffiliateInfo, error) {
+	req := request.Get(ctx, s.c, "/api/v2/broker/sub-affiliate-info", s.params).WithSign()
+	return request.Do[SubAffiliateInfo](req)
+}
+
+// SubAffiliateInfo is the paginated sub-affiliate list.
+type SubAffiliateInfo struct {
+	List  []SubAffiliate `json:"list"`
+	EndID string         `json:"endId"`
+}
+
+// SubAffiliate is one sub-affiliate's dashboard summary. Volume, Deposit,
+// TransactionFee and Rebate are in USDT; Rebate is what the sub-affiliate paid
+// back to the channel.
+type SubAffiliate struct {
+	UID                         string                         `json:"uid"`
+	UplineName                  string                         `json:"uplineName"`
+	RebateRateList              []SubAffiliateRebateRate       `json:"rebateRateList"`
+	VerificationStatus          SubAffiliateVerificationStatus `json:"verificationStatus"`
+	DirectReferrals             string                         `json:"directReferrals"`
+	SubAffiliates               string                         `json:"subAffiliates"`
+	SubAffiliateDirectReferrals string                         `json:"subAffiliateDirectReferrals"`
+	Volume                      decimal.Decimal                `json:"volume"`
+	Deposit                     decimal.Decimal                `json:"deposit"`
+	TransactionFee              decimal.Decimal                `json:"transactionFee"`
+	Rebate                      decimal.Decimal                `json:"rebate"`
+}
+
+// SubAffiliateRebateRate is a sub-affiliate's rebate rate for one product line;
+// RebateRate is a percentage (5 means 5%).
+type SubAffiliateRebateRate struct {
+	RebateType SubAffiliateRebateType `json:"rebateType"`
+	RebateRate decimal.Decimal        `json:"rebateRate"`
+}
