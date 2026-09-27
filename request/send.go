@@ -49,7 +49,7 @@ func Do[T any](r *Request) (resp *T, err error) {
 		if apiErr := parseAPIError(r, body); apiErr != nil {
 			return nil, apiErr
 		}
-		return nil, fmt.Errorf("request failed (status %d): %s", response.StatusCode(), common.BytesToString(body))
+		return nil, fmt.Errorf("request failed (status %d): %s: %w", response.StatusCode(), common.BytesToString(body), uerr)
 	}
 	if out.Code != "00000" {
 		return nil, &client.APIError{Code: out.Code, Message: out.Msg, RequestTime: out.RequestTime}
@@ -79,7 +79,7 @@ func DoRawData(r *Request) ([]byte, error) {
 		Data        jsontext.Value `json:"data"`
 	}
 	if uerr := r.client.GetHttpClient().JSONUnmarshal(body, &env); uerr != nil {
-		return nil, fmt.Errorf("request failed (status %d): %s", response.StatusCode(), common.BytesToString(body))
+		return nil, fmt.Errorf("request failed (status %d): %s: %w", response.StatusCode(), common.BytesToString(body), uerr)
 	}
 	if env.Code != "00000" {
 		return nil, &client.APIError{Code: env.Code, Message: env.Msg, RequestTime: env.RequestTime}
