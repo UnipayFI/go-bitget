@@ -93,7 +93,7 @@ func (k *SpotWsCandle) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return fmt.Errorf("ws: spot candle timestamp %q: %w", row[0], err)
 	}
-	k.Ts = time.UnixMilli(ms)
+	k.Ts = time.UnixMilli(ms).UTC()
 	for i, dst := range []*decimal.Decimal{&k.Open, &k.High, &k.Low, &k.Close, &k.BaseVolume, &k.QuoteVolume, &k.USDTVolume} {
 		d, err := decimal.NewFromString(row[i+1])
 		if err != nil {

@@ -110,7 +110,7 @@ func (k *MixWsCandle) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return fmt.Errorf("mix: candle timestamp %q: %w", row[0], err)
 	}
-	k.Ts = time.UnixMilli(ms)
+	k.Ts = time.UnixMilli(ms).UTC()
 	cols := []*decimal.Decimal{&k.Open, &k.High, &k.Low, &k.Close, &k.BaseVolume, &k.QuoteVolume, &k.USDTVolume}
 	for i, dst := range cols {
 		idx := i + 1
