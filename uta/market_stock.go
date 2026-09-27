@@ -42,8 +42,8 @@ type SplitRecord struct {
 	// (e.g. "20260715"), not the yyyy-MM-dd shown in the docs.
 	ExDividendDate         string    `json:"exDividendDate"`
 	ExDividendDateTimezone string    `json:"exDividendDateTimezone"` // ET
-	TradingHaltStartTime   time.Time `json:"tradingHaltStartTime"`
-	TradingHaltEndTime     time.Time `json:"tradingHaltEndTime"`
+	TradingHaltStartTime   time.Time `json:"tradingHaltStartTime,format:unixmilli"`
+	TradingHaltEndTime     time.Time `json:"tradingHaltEndTime,format:unixmilli"`
 }
 
 // GetStockInfoService -- GET /api/v3/reality/market/stock-info

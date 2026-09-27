@@ -2,6 +2,7 @@ package ws
 
 import (
 	"context"
+	"encoding/json/jsontext"
 	"errors"
 	"strconv"
 	"strings"
@@ -12,7 +13,6 @@ import (
 	"github.com/UnipayFI/go-bitget/common"
 	"github.com/UnipayFI/go-bitget/pkg/log"
 	"github.com/UnipayFI/go-bitget/request"
-	"github.com/go-json-experiment/json/jsontext"
 	"github.com/gorilla/websocket"
 )
 
@@ -71,7 +71,7 @@ type TradeResponse struct {
 	Arg   []TradeResponseArg `json:"arg"`
 	Code  jsontext.Value     `json:"code"` // number (0) or string
 	Msg   string             `json:"msg"`
-	Ts    time.Time          `json:"ts"`
+	Ts    time.Time          `json:"ts,format:unixmilli"`
 }
 
 // TradeResponseArg is one echoed order acknowledgement.

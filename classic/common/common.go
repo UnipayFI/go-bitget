@@ -37,7 +37,7 @@ func (s *GetServerTimeService) Do(ctx context.Context) (*ServerTimeResponse, err
 }
 
 type ServerTimeResponse struct {
-	ServerTime time.Time `json:"serverTime"`
+	ServerTime time.Time `json:"serverTime,format:unixmilli"`
 }
 
 // GetTradeRateService -- GET /api/v2/common/trade-rate (private)

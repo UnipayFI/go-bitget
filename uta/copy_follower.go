@@ -282,7 +282,7 @@ type CopyFollowerTransferRecord struct {
 	Amount      decimal.Decimal `json:"amount"`
 	Coin        string          `json:"coin"`
 	Status      string          `json:"status"` // successful, failed, processing
-	CreatedTime time.Time       `json:"createdTime"`
+	CreatedTime time.Time       `json:"createdTime,format:unixmilli"`
 }
 
 // GetCurrentCopyService -- GET /api/v3/copy/futures/current-copy (UTA trade read)
@@ -359,7 +359,7 @@ type CopyFollowerProfitDetails struct {
 }
 
 type CopyFollowerProfitDetail struct {
-	SettleTime   time.Time       `json:"settleTime"`
+	SettleTime   time.Time       `json:"settleTime,format:unixmilli"`
 	Profit       decimal.Decimal `json:"profit"`       // follower PnL
 	AllocatedPnL decimal.Decimal `json:"allocatedPnl"` // settled PnL
 	PendingPnL   decimal.Decimal `json:"pendingPnl"`   // unsettled PnL
@@ -454,7 +454,7 @@ type CopyCurrentPosition struct {
 	AvgPrice    decimal.Decimal `json:"avgPrice"`
 	MarginMode  MarginMode      `json:"marginMode"`
 	HoldMode    HoldMode        `json:"holdMode"`
-	CreatedTime time.Time       `json:"createdTime"`
+	CreatedTime time.Time       `json:"createdTime,format:unixmilli"`
 	PositionID  string          `json:"positionId"`
 }
 

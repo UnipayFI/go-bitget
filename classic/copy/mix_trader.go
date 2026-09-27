@@ -73,7 +73,7 @@ type MixTraderCurrentTrack struct {
 	PosSide                PosSide         `json:"posSide"`
 	OpenLeverage           string          `json:"openLeverage"`
 	OpenPriceAvg           decimal.Decimal `json:"openPriceAvg"`
-	OpenTime               time.Time       `json:"openTime"`
+	OpenTime               time.Time       `json:"openTime,format:unixmilli"`
 	OpenSize               decimal.Decimal `json:"openSize"`
 	PresetStopSurplusPrice decimal.Decimal `json:"presetStopSurplusPrice"`
 	PresetStopLossPrice    decimal.Decimal `json:"presetStopLossPrice"`
@@ -152,16 +152,16 @@ type MixTraderHistoryTrack struct {
 	PosSide       PosSide         `json:"posSide"`
 	OpenLeverage  string          `json:"openLeverage"`
 	OpenPriceAvg  decimal.Decimal `json:"openPriceAvg"`
-	OpenTime      time.Time       `json:"openTime"`
+	OpenTime      time.Time       `json:"openTime,format:unixmilli"`
 	OpenSize      decimal.Decimal `json:"openSize"`
 	CloseSize     decimal.Decimal `json:"closeSize"`
-	CloseTime     time.Time       `json:"closeTime"`
+	CloseTime     time.Time       `json:"closeTime,format:unixmilli"`
 	ClosePriceAvg decimal.Decimal `json:"closePriceAvg"`
 	StopType      TraceStatus     `json:"stopType"`
 	AchievedPL    decimal.Decimal `json:"achievedPL"`
 	OpenFee       decimal.Decimal `json:"openFee"`
 	CloseFee      decimal.Decimal `json:"closeFee"`
-	CTime         time.Time       `json:"cTime"`
+	CTime         time.Time       `json:"cTime,format:unixmilli"`
 }
 
 // CreateMixTraderCopyAPIService -- POST /api/v2/copy/mix-trader/create-copy-api (signed, state-changing)
@@ -266,13 +266,13 @@ type MixTraderOrderTotalDetail struct {
 // MixTraderRoiPoint is one point on a rolling ROI series.
 type MixTraderROIPoint struct {
 	Rate  decimal.Decimal `json:"rate"`
-	Ctime time.Time       `json:"ctime"`
+	Ctime time.Time       `json:"ctime,format:unixmilli"`
 }
 
 // MixTraderProfitPoint is one point on a rolling profit series.
 type MixTraderProfitPoint struct {
 	Amount decimal.Decimal `json:"amount"`
-	Ctime  time.Time       `json:"ctime"`
+	Ctime  time.Time       `json:"ctime,format:unixmilli"`
 }
 
 // GetMixTraderProfitHistorySummarysService -- GET /api/v2/copy/mix-trader/profit-history-summarys (signed)
@@ -301,7 +301,7 @@ type MixTraderProfitHistorySummary struct {
 // MixTraderProfitOverview is the high-level profit-share rollup.
 type MixTraderProfitOverview struct {
 	YesterdayProfit decimal.Decimal `json:"yesterdayProfit"`
-	YesterdayTime   time.Time       `json:"yesterdayTime"`
+	YesterdayTime   time.Time       `json:"yesterdayTime,format:unixmilli"`
 	SumProfit       decimal.Decimal `json:"sumProfit"`
 	WaitProfit      decimal.Decimal `json:"waitProfit"`
 }
@@ -310,7 +310,7 @@ type MixTraderProfitOverview struct {
 type MixTraderProfitHistoryItem struct {
 	Coin           string          `json:"coin"`
 	ProfitCount    decimal.Decimal `json:"profitCount"`
-	LastProfitTime time.Time       `json:"lastProfitTime"`
+	LastProfitTime time.Time       `json:"lastProfitTime,format:unixmilli"`
 }
 
 // GetMixTraderProfitHistoryDetailsService -- GET /api/v2/copy/mix-trader/profit-history-details (signed)
@@ -374,7 +374,7 @@ type MixTraderProfitHistoryDetail struct {
 	Coin       string          `json:"coin"`
 	Profit     decimal.Decimal `json:"profit"`
 	NickName   string          `json:"nickName"`
-	ProfitTime time.Time       `json:"profitTime"`
+	ProfitTime time.Time       `json:"profitTime,format:unixmilli"`
 }
 
 // CloseMixTraderPositionsService -- POST /api/v2/copy/mix-trader/order-close-positions (signed, state-changing)
@@ -494,7 +494,7 @@ func (s *GetMixTraderProfitsGroupCoinDateService) Do(ctx context.Context) ([]Mix
 type MixTraderProfitGroup struct {
 	Coin       string          `json:"coin"`
 	Profit     decimal.Decimal `json:"profit"`
-	ProfitTime time.Time       `json:"profitTime"`
+	ProfitTime time.Time       `json:"profitTime,format:unixmilli"`
 }
 
 // GetMixTraderConfigQuerySymbolsService -- GET /api/v2/copy/mix-trader/config-query-symbols (signed)
@@ -647,7 +647,7 @@ type MixTraderFollower struct {
 	FollowerHeadPic string          `json:"followerHeadPic"`
 	FollowerName    string          `json:"followerName"`
 	FollowerUID     string          `json:"followerUid"`
-	FollowerTime    time.Time       `json:"followerTime"`
+	FollowerTime    time.Time       `json:"followerTime,format:unixmilli"`
 }
 
 // RemoveMixTraderFollowerService -- POST /api/v2/copy/mix-trader/config-remove-follower (signed, state-changing)

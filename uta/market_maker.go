@@ -148,5 +148,5 @@ type CashDividendRecords struct {
 type CashDividendRecord struct {
 	ExDividendDate        string          `json:"exDividendDate"`
 	CashDividendPerShare  decimal.Decimal `json:"cashDividendPerShare"`
-	CashDividendTimestamp time.Time       `json:"cashDividendTimestamp"`
+	CashDividendTimestamp time.Time       `json:"cashDividendTimestamp,format:unixmilli"`
 }

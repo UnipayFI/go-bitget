@@ -296,8 +296,8 @@ type PlanOrder struct {
 	Side             Side            `json:"side"`
 	TriggerType      TriggerType     `json:"triggerType"`
 	EnterPointSource OrderSource     `json:"enterPointSource"`
-	CTime            time.Time       `json:"cTime"`
-	UTime            time.Time       `json:"uTime"`
+	CTime            time.Time       `json:"cTime,format:unixmilli"`
+	UTime            time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetPlanSubOrderService -- GET /api/v2/spot/trade/plan-sub-order (spot trade)

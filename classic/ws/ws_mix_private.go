@@ -90,31 +90,31 @@ func (s *SubscribeMixPositionsService) Do(ctx context.Context, cb WsHandler[MixW
 }
 
 type MixWsPosition struct {
-	PosID            string          `json:"posId"`            // position ID
-	InstID           string          `json:"instId"`           // product ID
-	MarginCoin       string          `json:"marginCoin"`       // currency of occupied margin
-	MarginSize       decimal.Decimal `json:"marginSize"`       // occupied margin (amount)
-	MarginMode       string          `json:"marginMode"`       // margin mode (crossed / isolated)
-	HoldSide         string          `json:"holdSide"`         // position direction (long / short)
-	PosMode          string          `json:"posMode"`          // position mode (one_way_mode / hedge_mode)
-	Total            decimal.Decimal `json:"total"`            // open position size
-	Available        decimal.Decimal `json:"available"`        // size of positions that can be closed
-	Frozen           decimal.Decimal `json:"frozen"`           // amount of frozen margin
-	OpenPriceAvg     decimal.Decimal `json:"openPriceAvg"`     // average entry price
-	Leverage         decimal.Decimal `json:"leverage"`         // leverage
-	AchievedProfits  decimal.Decimal `json:"achievedProfits"`  // realized PnL
-	UnrealizedPL     decimal.Decimal `json:"unrealizedPL"`     // unrealized PnL
-	UnrealizedPLR    decimal.Decimal `json:"unrealizedPLR"`    // unrealized ROI
-	LiquidationPrice decimal.Decimal `json:"liquidationPrice"` // estimated liquidation price
-	KeepMarginRate   decimal.Decimal `json:"keepMarginRate"`   // maintenance margin rate
-	MarginRate       decimal.Decimal `json:"marginRate"`       // occupancy rate of margin
-	BreakEvenPrice   decimal.Decimal `json:"breakEvenPrice"`   // position breakeven price
-	TotalFee         decimal.Decimal `json:"totalFee"`         // accumulated funding fee during position
-	DeductedFee      decimal.Decimal `json:"deductedFee"`      // deducted transaction fees
-	MarkPrice        decimal.Decimal `json:"markPrice"`        // mark price
-	AssetMode        string          `json:"assetMode"`        // account mode (union / single)
-	CTime            time.Time       `json:"cTime"`            // position creation time
-	UTime            time.Time       `json:"uTime"`            // latest position update time
+	PosID            string          `json:"posId"`                  // position ID
+	InstID           string          `json:"instId"`                 // product ID
+	MarginCoin       string          `json:"marginCoin"`             // currency of occupied margin
+	MarginSize       decimal.Decimal `json:"marginSize"`             // occupied margin (amount)
+	MarginMode       string          `json:"marginMode"`             // margin mode (crossed / isolated)
+	HoldSide         string          `json:"holdSide"`               // position direction (long / short)
+	PosMode          string          `json:"posMode"`                // position mode (one_way_mode / hedge_mode)
+	Total            decimal.Decimal `json:"total"`                  // open position size
+	Available        decimal.Decimal `json:"available"`              // size of positions that can be closed
+	Frozen           decimal.Decimal `json:"frozen"`                 // amount of frozen margin
+	OpenPriceAvg     decimal.Decimal `json:"openPriceAvg"`           // average entry price
+	Leverage         decimal.Decimal `json:"leverage"`               // leverage
+	AchievedProfits  decimal.Decimal `json:"achievedProfits"`        // realized PnL
+	UnrealizedPL     decimal.Decimal `json:"unrealizedPL"`           // unrealized PnL
+	UnrealizedPLR    decimal.Decimal `json:"unrealizedPLR"`          // unrealized ROI
+	LiquidationPrice decimal.Decimal `json:"liquidationPrice"`       // estimated liquidation price
+	KeepMarginRate   decimal.Decimal `json:"keepMarginRate"`         // maintenance margin rate
+	MarginRate       decimal.Decimal `json:"marginRate"`             // occupancy rate of margin
+	BreakEvenPrice   decimal.Decimal `json:"breakEvenPrice"`         // position breakeven price
+	TotalFee         decimal.Decimal `json:"totalFee"`               // accumulated funding fee during position
+	DeductedFee      decimal.Decimal `json:"deductedFee"`            // deducted transaction fees
+	MarkPrice        decimal.Decimal `json:"markPrice"`              // mark price
+	AssetMode        string          `json:"assetMode"`              // account mode (union / single)
+	CTime            time.Time       `json:"cTime,format:unixmilli"` // position creation time
+	UTime            time.Time       `json:"uTime,format:unixmilli"` // latest position update time
 }
 
 // SubscribeMixPositionsHistoryService -- private "positions-history" channel
@@ -134,22 +134,22 @@ func (s *SubscribeMixPositionsHistoryService) Do(ctx context.Context, cb WsHandl
 }
 
 type MixWsPositionHistory struct {
-	PosID           string          `json:"posId"`           // position identifier
-	InstID          string          `json:"instId"`          // product ID
-	MarginCoin      string          `json:"marginCoin"`      // margin currency
-	MarginMode      string          `json:"marginMode"`      // fixed (isolated) or crossed
-	HoldSide        string          `json:"holdSide"`        // direction of position
-	PosMode         string          `json:"posMode"`         // position mode
-	OpenPriceAvg    decimal.Decimal `json:"openPriceAvg"`    // average entry price
-	ClosePriceAvg   decimal.Decimal `json:"closePriceAvg"`   // average close price
-	OpenSize        decimal.Decimal `json:"openSize"`        // quantity opened
-	CloseSize       decimal.Decimal `json:"closeSize"`       // quantity closed
-	AchievedProfits decimal.Decimal `json:"achievedProfits"` // realized PnL
-	SettleFee       decimal.Decimal `json:"settleFee"`       // settlement fees
-	OpenFee         decimal.Decimal `json:"openFee"`         // total opening fees
-	CloseFee        decimal.Decimal `json:"closeFee"`        // total closing fees
-	CTime           time.Time       `json:"cTime"`           // position creation time
-	UTime           time.Time       `json:"uTime"`           // latest position update time
+	PosID           string          `json:"posId"`                  // position identifier
+	InstID          string          `json:"instId"`                 // product ID
+	MarginCoin      string          `json:"marginCoin"`             // margin currency
+	MarginMode      string          `json:"marginMode"`             // fixed (isolated) or crossed
+	HoldSide        string          `json:"holdSide"`               // direction of position
+	PosMode         string          `json:"posMode"`                // position mode
+	OpenPriceAvg    decimal.Decimal `json:"openPriceAvg"`           // average entry price
+	ClosePriceAvg   decimal.Decimal `json:"closePriceAvg"`          // average close price
+	OpenSize        decimal.Decimal `json:"openSize"`               // quantity opened
+	CloseSize       decimal.Decimal `json:"closeSize"`              // quantity closed
+	AchievedProfits decimal.Decimal `json:"achievedProfits"`        // realized PnL
+	SettleFee       decimal.Decimal `json:"settleFee"`              // settlement fees
+	OpenFee         decimal.Decimal `json:"openFee"`                // total opening fees
+	CloseFee        decimal.Decimal `json:"closeFee"`               // total closing fees
+	CTime           time.Time       `json:"cTime,format:unixmilli"` // position creation time
+	UTime           time.Time       `json:"uTime,format:unixmilli"` // latest position update time
 }
 
 // SubscribeMixFillService -- private "fill" channel (real-time executions).
@@ -169,22 +169,22 @@ func (s *SubscribeMixFillService) Do(ctx context.Context, cb WsHandler[MixWsFill
 }
 
 type MixWsFill struct {
-	OrderID       string          `json:"orderId"`     // order identifier
-	ClientOrderID string          `json:"clientOid"`   // user-defined order ID
-	TradeID       string          `json:"tradeId"`     // trade identifier
-	Symbol        string          `json:"symbol"`      // trading pair name
-	Side          string          `json:"side"`        // buy / sell
-	OrderType     string          `json:"orderType"`   // limit / market
-	PosMode       string          `json:"posMode"`     // one_way_mode / hedge_mode
-	Price         decimal.Decimal `json:"price"`       // execution price
-	BaseVolume    decimal.Decimal `json:"baseVolume"`  // base asset quantity traded
-	QuoteVolume   decimal.Decimal `json:"quoteVolume"` // quote asset quantity traded
-	Profit        decimal.Decimal `json:"profit"`      // realized PnL
-	TradeSide     string          `json:"tradeSide"`   // trade classification (open/close/...)
-	TradeScope    string          `json:"tradeScope"`  // taker / maker
-	FeeDetail     []MixWsFillFee  `json:"feeDetail"`   // transaction fee breakdown
-	CTime         time.Time       `json:"cTime"`       // creation time
-	UTime         time.Time       `json:"uTime"`       // update time
+	OrderID       string          `json:"orderId"`                // order identifier
+	ClientOrderID string          `json:"clientOid"`              // user-defined order ID
+	TradeID       string          `json:"tradeId"`                // trade identifier
+	Symbol        string          `json:"symbol"`                 // trading pair name
+	Side          string          `json:"side"`                   // buy / sell
+	OrderType     string          `json:"orderType"`              // limit / market
+	PosMode       string          `json:"posMode"`                // one_way_mode / hedge_mode
+	Price         decimal.Decimal `json:"price"`                  // execution price
+	BaseVolume    decimal.Decimal `json:"baseVolume"`             // base asset quantity traded
+	QuoteVolume   decimal.Decimal `json:"quoteVolume"`            // quote asset quantity traded
+	Profit        decimal.Decimal `json:"profit"`                 // realized PnL
+	TradeSide     string          `json:"tradeSide"`              // trade classification (open/close/...)
+	TradeScope    string          `json:"tradeScope"`             // taker / maker
+	FeeDetail     []MixWsFillFee  `json:"feeDetail"`              // transaction fee breakdown
+	CTime         time.Time       `json:"cTime,format:unixmilli"` // creation time
+	UTime         time.Time       `json:"uTime,format:unixmilli"` // update time
 }
 
 type MixWsFillFee struct {
@@ -211,39 +211,39 @@ func (s *SubscribeMixOrdersService) Do(ctx context.Context, cb WsHandler[MixWsOr
 }
 
 type MixWsOrder struct {
-	InstID           string          `json:"instId"`           // product ID, e.g. ETHUSDT
-	OrderID          string          `json:"orderId"`          // order ID
-	ClientOrderID    string          `json:"clientOid"`        // customized order ID
-	Price            decimal.Decimal `json:"price"`            // order price
-	Size             decimal.Decimal `json:"size"`             // original order amount in coin
-	PosMode          string          `json:"posMode"`          // one_way_mode / hedge_mode
-	EnterPointSource string          `json:"enterPointSource"` // order source (WEB, API, SYS, ANDROID, IOS)
-	TradeSide        string          `json:"tradeSide"`        // direction (open, close, reduce_close_long, ...)
-	NotionalUSD      decimal.Decimal `json:"notionalUsd"`      // estimated USD value of orders
-	OrderType        string          `json:"orderType"`        // limit / market
-	Force            string          `json:"force"`            // order validity period
-	Side             string          `json:"side"`             // order direction
-	PosSide          string          `json:"posSide"`          // position direction (long, short, net)
-	MarginMode       string          `json:"marginMode"`       // crossed / isolated
-	MarginCoin       string          `json:"marginCoin"`       // margin coin
-	FillPrice        decimal.Decimal `json:"fillPrice"`        // latest filled price
-	TradeID          string          `json:"tradeId"`          // latest transaction ID
-	BaseVolume       decimal.Decimal `json:"baseVolume"`       // number of latest filled orders
-	FillTime         time.Time       `json:"fillTime"`         // latest transaction time
-	FillFee          decimal.Decimal `json:"fillFee"`          // transaction fee of latest transaction
-	FillFeeCoin      string          `json:"fillFeeCoin"`      // currency of transaction fee
-	TradeScope       string          `json:"tradeScope"`       // liquidity direction (T: taker, M: maker)
-	AccBaseVolume    decimal.Decimal `json:"accBaseVolume"`    // total filled quantity
-	FillNotionalUSD  decimal.Decimal `json:"fillNotionalUsd"`  // USD value of filled orders
-	PriceAvg         decimal.Decimal `json:"priceAvg"`         // average filled price
-	Status           string          `json:"status"`           // live, partially_filled, filled, canceled
-	CancelReason     string          `json:"cancelReason"`     // cancellation reason
-	Leverage         decimal.Decimal `json:"leverage"`         // leverage
-	FeeDetail        []MixWsOrderFee `json:"feeDetail"`        // transaction fee details
+	InstID           string          `json:"instId"`                    // product ID, e.g. ETHUSDT
+	OrderID          string          `json:"orderId"`                   // order ID
+	ClientOrderID    string          `json:"clientOid"`                 // customized order ID
+	Price            decimal.Decimal `json:"price"`                     // order price
+	Size             decimal.Decimal `json:"size"`                      // original order amount in coin
+	PosMode          string          `json:"posMode"`                   // one_way_mode / hedge_mode
+	EnterPointSource string          `json:"enterPointSource"`          // order source (WEB, API, SYS, ANDROID, IOS)
+	TradeSide        string          `json:"tradeSide"`                 // direction (open, close, reduce_close_long, ...)
+	NotionalUSD      decimal.Decimal `json:"notionalUsd"`               // estimated USD value of orders
+	OrderType        string          `json:"orderType"`                 // limit / market
+	Force            string          `json:"force"`                     // order validity period
+	Side             string          `json:"side"`                      // order direction
+	PosSide          string          `json:"posSide"`                   // position direction (long, short, net)
+	MarginMode       string          `json:"marginMode"`                // crossed / isolated
+	MarginCoin       string          `json:"marginCoin"`                // margin coin
+	FillPrice        decimal.Decimal `json:"fillPrice"`                 // latest filled price
+	TradeID          string          `json:"tradeId"`                   // latest transaction ID
+	BaseVolume       decimal.Decimal `json:"baseVolume"`                // number of latest filled orders
+	FillTime         time.Time       `json:"fillTime,format:unixmilli"` // latest transaction time
+	FillFee          decimal.Decimal `json:"fillFee"`                   // transaction fee of latest transaction
+	FillFeeCoin      string          `json:"fillFeeCoin"`               // currency of transaction fee
+	TradeScope       string          `json:"tradeScope"`                // liquidity direction (T: taker, M: maker)
+	AccBaseVolume    decimal.Decimal `json:"accBaseVolume"`             // total filled quantity
+	FillNotionalUSD  decimal.Decimal `json:"fillNotionalUsd"`           // USD value of filled orders
+	PriceAvg         decimal.Decimal `json:"priceAvg"`                  // average filled price
+	Status           string          `json:"status"`                    // live, partially_filled, filled, canceled
+	CancelReason     string          `json:"cancelReason"`              // cancellation reason
+	Leverage         decimal.Decimal `json:"leverage"`                  // leverage
+	FeeDetail        []MixWsOrderFee `json:"feeDetail"`                 // transaction fee details
 
 	PnL                           decimal.Decimal `json:"pnl"`                           // profit
-	UTime                         time.Time       `json:"uTime"`                         // order update time
-	CTime                         time.Time       `json:"cTime"`                         // order creation time
+	UTime                         time.Time       `json:"uTime,format:unixmilli"`        // order update time
+	CTime                         time.Time       `json:"cTime,format:unixmilli"`        // order creation time
 	ReduceOnly                    mix.ReduceOnly  `json:"reduceOnly"`                    // reduce-only status (yes / no)
 	PresetStopSurplusPrice        decimal.Decimal `json:"presetStopSurplusPrice"`        // take-profit price
 	PresetStopLossPrice           decimal.Decimal `json:"presetStopLossPrice"`           // stop-loss price
@@ -275,25 +275,25 @@ func (s *SubscribeMixOrdersAlgoService) Do(ctx context.Context, cb WsHandler[Mix
 }
 
 type MixWsOrderAlgo struct {
-	InstID           string          `json:"instId"`           // product ID
-	OrderID          string          `json:"orderId"`          // bot order identifier
-	ClientOrderID    string          `json:"clientOid"`        // custom bot order identifier
-	TriggerPrice     decimal.Decimal `json:"triggerPrice"`     // price level that activates the order
-	TriggerType      string          `json:"triggerType"`      // fill_price / mark_price
-	TriggerTime      time.Time       `json:"triggerTime"`      // activation timestamp
-	PlanType         string          `json:"planType"`         // pl, tp, sl, ptp, psl, track, mtpsl
-	Price            decimal.Decimal `json:"price"`            // order execution price
-	ExecutePrice     decimal.Decimal `json:"executePrice"`     // actual execution price
-	Size             decimal.Decimal `json:"size"`             // original order amount in coin
-	ActualSize       decimal.Decimal `json:"actualSize"`       // actual filled amount in coin
-	OrderType        string          `json:"orderType"`        // limit / market
-	Side             string          `json:"side"`             // order direction
-	TradeSide        string          `json:"tradeSide"`        // trading direction
-	PosSide          string          `json:"posSide"`          // position direction
-	MarginCoin       string          `json:"marginCoin"`       // collateral currency
-	Status           string          `json:"status"`           // live, executed, fail_execute, cancelled, executing
-	PosMode          string          `json:"posMode"`          // one_way_mode / hedge_mode
-	EnterPointSource string          `json:"enterPointSource"` // origin: WEB, API, SYS, ANDROID, IOS
+	InstID           string          `json:"instId"`                       // product ID
+	OrderID          string          `json:"orderId"`                      // bot order identifier
+	ClientOrderID    string          `json:"clientOid"`                    // custom bot order identifier
+	TriggerPrice     decimal.Decimal `json:"triggerPrice"`                 // price level that activates the order
+	TriggerType      string          `json:"triggerType"`                  // fill_price / mark_price
+	TriggerTime      time.Time       `json:"triggerTime,format:unixmilli"` // activation timestamp
+	PlanType         string          `json:"planType"`                     // pl, tp, sl, ptp, psl, track, mtpsl
+	Price            decimal.Decimal `json:"price"`                        // order execution price
+	ExecutePrice     decimal.Decimal `json:"executePrice"`                 // actual execution price
+	Size             decimal.Decimal `json:"size"`                         // original order amount in coin
+	ActualSize       decimal.Decimal `json:"actualSize"`                   // actual filled amount in coin
+	OrderType        string          `json:"orderType"`                    // limit / market
+	Side             string          `json:"side"`                         // order direction
+	TradeSide        string          `json:"tradeSide"`                    // trading direction
+	PosSide          string          `json:"posSide"`                      // position direction
+	MarginCoin       string          `json:"marginCoin"`                   // collateral currency
+	Status           string          `json:"status"`                       // live, executed, fail_execute, cancelled, executing
+	PosMode          string          `json:"posMode"`                      // one_way_mode / hedge_mode
+	EnterPointSource string          `json:"enterPointSource"`             // origin: WEB, API, SYS, ANDROID, IOS
 
 	StopSurplusTriggerPrice decimal.Decimal `json:"stopSurplusTriggerPrice"` // take-profit trigger price
 	StopSurplusPrice        decimal.Decimal `json:"stopSurplusPrice"`        // take-profit execution price
@@ -302,8 +302,8 @@ type MixWsOrderAlgo struct {
 	StopLossPrice           decimal.Decimal `json:"stopLossPrice"`           // stop-loss execution price
 	StopLossTriggerType     string          `json:"stopLossTriggerType"`     // stop-loss trigger type
 	StpMode                 string          `json:"stpMode"`                 // self-trade prevention mode
-	CTime                   time.Time       `json:"cTime"`                   // creation timestamp
-	UTime                   time.Time       `json:"uTime"`                   // last update timestamp
+	CTime                   time.Time       `json:"cTime,format:unixmilli"`  // creation timestamp
+	UTime                   time.Time       `json:"uTime,format:unixmilli"`  // last update timestamp
 }
 
 // SubscribeMixADLNotificationService -- private "adl-noti" channel (auto-
@@ -323,10 +323,10 @@ func (s *SubscribeMixADLNotificationService) Do(ctx context.Context, cb WsHandle
 }
 
 type MixWsADLNotification struct {
-	Symbol string          `json:"symbol"` // symbol name
-	Side   string          `json:"side"`   // position side: buy / sell
-	Status string          `json:"status"` // ADL status; currently "triggered"
-	Price  decimal.Decimal `json:"price"`  // price at which ADL was executed
-	Amount decimal.Decimal `json:"amount"` // execution quantity in quote coin units
-	Ts     time.Time       `json:"ts"`     // start timestamp
+	Symbol string          `json:"symbol"`              // symbol name
+	Side   string          `json:"side"`                // position side: buy / sell
+	Status string          `json:"status"`              // ADL status; currently "triggered"
+	Price  decimal.Decimal `json:"price"`               // price at which ADL was executed
+	Amount decimal.Decimal `json:"amount"`              // execution quantity in quote coin units
+	Ts     time.Time       `json:"ts,format:unixmilli"` // start timestamp
 }

@@ -178,8 +178,8 @@ type WithdrawalRecord struct {
 	Fee           decimal.Decimal `json:"fee"`
 	Confirm       string          `json:"confirm"`
 	Tag           string          `json:"tag"`
-	CreatedTime   time.Time       `json:"createdTime"`
-	UpdatedTime   time.Time       `json:"updatedTime"`
+	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // GetWithdrawAddressService -- GET /api/v3/account/withdraw-address (UTA mgt. read)
@@ -235,7 +235,7 @@ type WithdrawAddress struct {
 	Memo         string    `json:"memo"`
 	Type         string    `json:"type"`
 	InternalType string    `json:"internalType"`
-	CreatedTime  time.Time `json:"createdTime"`
+	CreatedTime  time.Time `json:"createdTime,format:unixmilli"`
 }
 
 // CancelWithdrawalService -- POST /api/v3/account/cancel-withdrawal (UTA withdrawal)

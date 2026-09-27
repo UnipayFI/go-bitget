@@ -36,7 +36,7 @@ type SpotTraderProfitSummary struct {
 // SpotTraderProfitSummaryOverview is the aggregate profit-sharing snapshot.
 type SpotTraderProfitSummaryOverview struct {
 	YesterdayProfit decimal.Decimal `json:"yesterdayProfit"`
-	YesterdayTime   time.Time       `json:"yesterdayTime"`
+	YesterdayTime   time.Time       `json:"yesterdayTime,format:unixmilli"`
 	SumProfit       decimal.Decimal `json:"sumProfit"`
 	WaitProfit      decimal.Decimal `json:"waitProfit"`
 }
@@ -45,14 +45,14 @@ type SpotTraderProfitSummaryOverview struct {
 type SpotTraderProfitHistory struct {
 	Coin               string                          `json:"coin"`
 	ProfitCount        decimal.Decimal                 `json:"profitCount"`
-	LastProfitTime     time.Time                       `json:"lastProfitTime"`
+	LastProfitTime     time.Time                       `json:"lastProfitTime,format:unixmilli"`
 	HistorysByDateList []SpotTraderProfitHistoryByDate `json:"historysByDateList"`
 }
 
 // SpotTraderProfitHistoryByDate is a single dated profit-distribution entry.
 type SpotTraderProfitHistoryByDate struct {
 	Profit     decimal.Decimal `json:"profit"`
-	ProfitTime time.Time       `json:"profitTime"`
+	ProfitTime time.Time       `json:"profitTime,format:unixmilli"`
 }
 
 // GetSpotTraderProfitHistoryDetailsService -- GET /api/v2/copy/spot-trader/profit-history-details (private)
@@ -115,7 +115,7 @@ type SpotTraderProfitHistoryDetail struct {
 	DistributeRatio decimal.Decimal `json:"distributeRatio"`
 	Profit          decimal.Decimal `json:"profit"`
 	FollowerName    string          `json:"followerName"`
-	ProfitTime      time.Time       `json:"profitTime"`
+	ProfitTime      time.Time       `json:"profitTime,format:unixmilli"`
 }
 
 // GetSpotTraderProfitDetailsService -- GET /api/v2/copy/spot-trader/profit-details (private)
@@ -199,14 +199,14 @@ type SpotTraderOrderTotalDetail struct {
 // SpotTraderRoiPoint is a single timestamped ROI sample in a rolling series.
 type SpotTraderROIPoint struct {
 	Rate  decimal.Decimal `json:"rate"`
-	Ctime time.Time       `json:"ctime"`
+	Ctime time.Time       `json:"ctime,format:unixmilli"`
 }
 
 // SpotTraderProfitPoint is a single timestamped profit sample in a rolling
 // series.
 type SpotTraderProfitPoint struct {
 	Amount decimal.Decimal `json:"amount"`
-	Ctime  time.Time       `json:"ctime"`
+	Ctime  time.Time       `json:"ctime,format:unixmilli"`
 }
 
 // ModifySpotTraderOrderTpslService -- POST /api/v2/copy/spot-trader/order-modify-tpsl (private, state-changing)
@@ -300,8 +300,8 @@ type SpotTraderHistoryTrackingOrder struct {
 	BuyPrice    decimal.Decimal `json:"buyPrice"`
 	SellPrice   decimal.Decimal `json:"sellPrice"`
 	AchievedPL  decimal.Decimal `json:"achievedPL"`
-	BuyTime     time.Time       `json:"buyTime"`
-	SellTime    time.Time       `json:"sellTime"`
+	BuyTime     time.Time       `json:"buyTime,format:unixmilli"`
+	SellTime    time.Time       `json:"sellTime,format:unixmilli"`
 	BuyFee      decimal.Decimal `json:"buyFee"`
 	SellFee     decimal.Decimal `json:"sellFee"`
 	AchievedPLR decimal.Decimal `json:"achievedPLR"`
@@ -371,7 +371,7 @@ type SpotTraderCurrentTrackingOrder struct {
 	BuyDelegateSize  decimal.Decimal `json:"buyDelegateSize"`
 	BuyPrice         decimal.Decimal `json:"buyPrice"`
 	UnrealizedPL     decimal.Decimal `json:"unrealizedPL"`
-	BuyTime          time.Time       `json:"buyTime"`
+	BuyTime          time.Time       `json:"buyTime,format:unixmilli"`
 	BuyFee           decimal.Decimal `json:"buyFee"`
 	UnrealizedPLR    decimal.Decimal `json:"unrealizedPLR"`
 	Symbol           string          `json:"symbol"`
@@ -556,5 +556,5 @@ type SpotTraderFollower struct {
 	FollowerHeadPic string          `json:"followerHeadPic"`
 	FollowerName    string          `json:"followerName"`
 	FollowerUID     string          `json:"followerUid"`
-	FollowerTime    time.Time       `json:"followerTime"`
+	FollowerTime    time.Time       `json:"followerTime,format:unixmilli"`
 }

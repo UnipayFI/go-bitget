@@ -139,7 +139,7 @@ type CustomerCommissions struct {
 // CustomerCommissionRecord is one direct-commission row for a referred customer.
 type CustomerCommissionRecord struct {
 	UID                    string          `json:"uid"`
-	Date                   time.Time       `json:"date"` // commission date, UTC+8 (ms)
+	Date                   time.Time       `json:"date,format:unixmilli"` // commission date, UTC+8 (ms)
 	Coin                   string          `json:"coin"`
 	Symbol                 string          `json:"symbol"`
 	ProductType            string          `json:"productType"` // SPOT, MARGIN, USDT-FUTURES, COIN-FUTURES, USDC-FUTURES
@@ -212,8 +212,8 @@ func (s *GetCustomerTradeVolumeService) Do(ctx context.Context) ([]CustomerTrade
 // CustomerTradeVolume is one customer's trade volume on a given day.
 type CustomerTradeVolume struct {
 	UID    string          `json:"uid"`
-	Volumn decimal.Decimal `json:"volumn"` // trade volume (spelled "volumn" on the wire)
-	Time   time.Time       `json:"time"`   // timestamp (ms)
+	Volumn decimal.Decimal `json:"volumn"`                // trade volume (spelled "volumn" on the wire)
+	Time   time.Time       `json:"time,format:unixmilli"` // timestamp (ms)
 }
 
 // GetCustomerListService -- POST /api/v2/broker/customer-list (affiliate/agent)
@@ -283,7 +283,7 @@ func (s *GetCustomerListService) Do(ctx context.Context) ([]CustomerListEntry, e
 // JSON number (not a quoted string), so it is typed int64.
 type CustomerListEntry struct {
 	UID          int64     `json:"uid"`
-	RegisterTime time.Time `json:"registerTime"` // registration time (ms)
+	RegisterTime time.Time `json:"registerTime,format:unixmilli"` // registration time (ms)
 }
 
 // GetCustomerKycResultService -- GET /api/v2/broker/customer-kyc-result (affiliate/agent)
@@ -407,7 +407,7 @@ func (s *GetCustomerDepositService) Do(ctx context.Context) ([]CustomerDeposit, 
 type CustomerDeposit struct {
 	OrderID       string          `json:"orderId"`
 	UID           string          `json:"uid"`
-	DepositTime   time.Time       `json:"depositTime"` // deposit time (ms)
+	DepositTime   time.Time       `json:"depositTime,format:unixmilli"` // deposit time (ms)
 	DepositCoin   string          `json:"depositCoin"`
 	DepositAmount decimal.Decimal `json:"depositAmount"`
 }
@@ -456,8 +456,8 @@ func (s *GetCustomerAssetService) Do(ctx context.Context) ([]CustomerAsset, erro
 type CustomerAsset struct {
 	UID     string          `json:"uid"`
 	Balance decimal.Decimal `json:"balance"`
-	UTime   time.Time       `json:"uTime"`  // last update time (ms)
-	Remark  string          `json:"remark"` // e.g. "sub account exceed 5"
+	UTime   time.Time       `json:"uTime,format:unixmilli"` // last update time (ms)
+	Remark  string          `json:"remark"`                 // e.g. "sub account exceed 5"
 }
 
 // GetAgentCommissionService -- GET /api/v2/broker/agent-commission (affiliate/agent)
@@ -529,6 +529,6 @@ type AgentCommissionRecord struct {
 	TraderType              CommissionTraderType `json:"traderType"` // user, trader
 	APIType                 CommissionAPIType    `json:"apiType"`    // api, non_api
 	Status                  CommissionStatus     `json:"status"`     // settled, unsettled, notIssued
-	StartCalculationTime    time.Time            `json:"startCalculationTime"`
-	EndCalculationTime      time.Time            `json:"endCalculationTime"`
+	StartCalculationTime    time.Time            `json:"startCalculationTime,format:unixmilli"`
+	EndCalculationTime      time.Time            `json:"endCalculationTime,format:unixmilli"`
 }

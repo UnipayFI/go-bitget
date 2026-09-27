@@ -106,7 +106,7 @@ type MixBrokerTrader struct {
 	ProfitRate24hList   []MixBrokerTraderProfitRate `json:"profitRate24hList"`   // 24h win rate
 	Profit24hList       []MixBrokerTraderProfit     `json:"profit24hList"`       // 24h profit
 	FollowerTotalProfit decimal.Decimal             `json:"followerTotalProfit"`
-	LastTradeTime       time.Time                   `json:"lastTradeTime"`
+	LastTradeTime       time.Time                   `json:"lastTradeTime,format:unixmilli"`
 	TradeDays           string                      `json:"tradeDays"`
 }
 
@@ -121,13 +121,13 @@ type MixBrokerTraderColumn struct {
 // series.
 type MixBrokerTraderProfitRate struct {
 	Rate  decimal.Decimal `json:"rate"`
-	CTime time.Time       `json:"cTime"`
+	CTime time.Time       `json:"cTime,format:unixmilli"`
 }
 
 // MixBrokerTraderProfit is one (amount, time) point in a trader's profit series.
 type MixBrokerTraderProfit struct {
 	Amount decimal.Decimal `json:"amount"`
-	CTime  time.Time       `json:"cTime"`
+	CTime  time.Time       `json:"cTime,format:unixmilli"`
 }
 
 // GetMixBrokerHistoryTracesService -- GET /api/v2/copy/mix-broker/query-history-traces (broker)
@@ -205,16 +205,16 @@ type MixBrokerHistoryTrace struct {
 	Symbol        string          `json:"symbol"`
 	OpenLeverage  string          `json:"openLeverage"`
 	OpenPriceAvg  decimal.Decimal `json:"openPriceAvg"`
-	OpenTime      time.Time       `json:"openTime"`
+	OpenTime      time.Time       `json:"openTime,format:unixmilli"`
 	OpenSize      decimal.Decimal `json:"openSize"`
 	ClosePriceAvg decimal.Decimal `json:"closePriceAvg"`
-	CloseTime     time.Time       `json:"closeTime"`
+	CloseTime     time.Time       `json:"closeTime,format:unixmilli"`
 	CloseSize     decimal.Decimal `json:"closeSize"`
 	OpenFee       decimal.Decimal `json:"openFee"`  // excludes discounts
 	CloseFee      decimal.Decimal `json:"closeFee"` // excludes discounts
 	MarginAmount  decimal.Decimal `json:"marginAmount"`
-	FollowCount   string          `json:"followCount"` // followers on this order
-	CTime         time.Time       `json:"cTime"`       // trace creation time
+	FollowCount   string          `json:"followCount"`            // followers on this order
+	CTime         time.Time       `json:"cTime,format:unixmilli"` // trace creation time
 }
 
 // GetMixBrokerCurrentTracesService -- GET /api/v2/copy/mix-broker/query-current-traces (broker)
@@ -287,12 +287,12 @@ type MixBrokerCurrentTrace struct {
 	Symbol           string          `json:"symbol"`
 	OpenLeverage     string          `json:"openLeverage"`
 	OpenPriceAvg     decimal.Decimal `json:"openPriceAvg"`
-	OpenTime         time.Time       `json:"openTime"`
+	OpenTime         time.Time       `json:"openTime,format:unixmilli"`
 	OpenSize         decimal.Decimal `json:"openSize"`
 	OpenFee          decimal.Decimal `json:"openFee"` // USDT only, excludes discounts
 	MarginAmount     decimal.Decimal `json:"marginAmount"`
-	FollowCount      string          `json:"followCount"`      // followers on this order
-	StopSurplusPrice decimal.Decimal `json:"stopSurplusPrice"` // take-profit price
-	StopLossPrice    decimal.Decimal `json:"stopLossPrice"`    // stop-loss price
-	CTime            time.Time       `json:"cTime"`            // trace creation time
+	FollowCount      string          `json:"followCount"`            // followers on this order
+	StopSurplusPrice decimal.Decimal `json:"stopSurplusPrice"`       // take-profit price
+	StopLossPrice    decimal.Decimal `json:"stopLossPrice"`          // stop-loss price
+	CTime            time.Time       `json:"cTime,format:unixmilli"` // trace creation time
 }

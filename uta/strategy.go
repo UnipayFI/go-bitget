@@ -533,8 +533,8 @@ type StrategyOrder struct {
 	TrailingStopParams []StrategyTrailingStopParams `json:"trailingStopParams"`
 	IcebergParams      []StrategyIcebergParams      `json:"icebergParams"`
 	TWAPParams         []StrategyTWAPParams         `json:"twapParams"`
-	CreatedTime        time.Time                    `json:"createdTime"`
-	UpdatedTime        time.Time                    `json:"updatedTime"`
+	CreatedTime        time.Time                    `json:"createdTime,format:unixmilli"`
+	UpdatedTime        time.Time                    `json:"updatedTime,format:unixmilli"`
 }
 
 // GetHistoryStrategyOrdersService -- GET /api/v3/trade/history-strategy-orders (UTA trade read)
@@ -640,6 +640,6 @@ type StrategySubOrder struct {
 	Side             Side            `json:"side"`
 	PosSide          PosSide         `json:"posSide"` // futures only
 	Status           string          `json:"status"`  // filled, cancelled, failed
-	CreatedTime      time.Time       `json:"createdTime"`
-	UpdatedTime      time.Time       `json:"updatedTime"`
+	CreatedTime      time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime      time.Time       `json:"updatedTime,format:unixmilli"`
 }

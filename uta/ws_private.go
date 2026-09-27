@@ -84,8 +84,8 @@ type WsPosition struct {
 	CloseFeeTotal   decimal.Decimal `json:"closeFeeTotal"`
 	CashDividend    decimal.Decimal `json:"cashDividend"` // cash dividend, in USDT
 	PositionStatus  string          `json:"positionStatus"`
-	CreatedTime     time.Time       `json:"createdTime"`
-	UpdatedTime     time.Time       `json:"updatedTime"`
+	CreatedTime     time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime     time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // SubscribeOrderService -- private "order" channel (order lifecycle updates).
@@ -130,8 +130,8 @@ type WsOrder struct {
 	Leverage      decimal.Decimal `json:"leverage"`
 	StpMode       string          `json:"stpMode"`
 	FeeDetail     []FeeDetail     `json:"feeDetail"`
-	CreatedTime   time.Time       `json:"createdTime"`
-	UpdatedTime   time.Time       `json:"updatedTime"`
+	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // SubscribeFillService -- private "fill" channel (real-time executions).
@@ -166,8 +166,8 @@ type WsFill struct {
 	ExecPnL       decimal.Decimal `json:"execPnl"`
 	FeeDetail     []FeeDetail     `json:"feeDetail"`
 	IsRPI         string          `json:"isRPI"`
-	ExecTime      time.Time       `json:"execTime"`
-	UpdatedTime   time.Time       `json:"updatedTime"`
+	ExecTime      time.Time       `json:"execTime,format:unixmilli"`
+	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // SubscribeFastFillService -- private "fast-fill" channel (low-latency fills).
@@ -195,8 +195,8 @@ type WsFastFill struct {
 	TradeScope    TradeScope      `json:"tradeScope"`
 	ExecPrice     decimal.Decimal `json:"execPrice"`
 	ExecQty       decimal.Decimal `json:"execQty"`
-	ExecTime      time.Time       `json:"execTime"`
-	UpdatedTime   time.Time       `json:"updatedTime"`
+	ExecTime      time.Time       `json:"execTime,format:unixmilli"`
+	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // SubscribeStrategyOrderService -- private "strategy-order" channel.
@@ -229,8 +229,8 @@ type WsStrategyOrder struct {
 	TpOrderType   OrderType       `json:"tpOrderType"`
 	SlOrderType   OrderType       `json:"slOrderType"`
 	TriggerPrice  decimal.Decimal `json:"triggerPrice"`
-	CreatedTime   time.Time       `json:"createdTime"`
-	UpdatedTime   time.Time       `json:"updatedTime"`
+	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // SubscribeADLNotificationService -- private "adl-notification" channel.
@@ -253,5 +253,5 @@ type WsADLNotification struct {
 	Status string          `json:"status"`
 	Price  decimal.Decimal `json:"price"`
 	Amount decimal.Decimal `json:"amount"`
-	Ts     time.Time       `json:"ts"`
+	Ts     time.Time       `json:"ts,format:unixmilli"`
 }

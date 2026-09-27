@@ -145,7 +145,7 @@ type SpotRecord struct {
 	Fee         decimal.Decimal `json:"fee"`
 	Balance     decimal.Decimal `json:"balance"`
 	BizOrderID  string          `json:"bizOrderId"`
-	Ts          time.Time       `json:"ts"`
+	Ts          time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetFutureRecordService -- GET /api/v2/tax/future-record (signed; tax read)
@@ -201,7 +201,7 @@ type FutureRecord struct {
 	FutureTaxType FutureTaxType   `json:"futureTaxType"`
 	Amount        decimal.Decimal `json:"amount"`
 	Fee           decimal.Decimal `json:"fee"`
-	Ts            time.Time       `json:"ts"`
+	Ts            time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetMarginRecordService -- GET /api/v2/tax/margin-record (signed; tax read)
@@ -258,7 +258,7 @@ type MarginRecord struct {
 	Amount        decimal.Decimal `json:"amount"`
 	Fee           decimal.Decimal `json:"fee"`
 	Total         decimal.Decimal `json:"total"`
-	Ts            time.Time       `json:"ts"`
+	Ts            time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetP2PRecordService -- GET /api/v2/tax/p2p-record (signed; tax read)
@@ -307,5 +307,5 @@ type P2PRecord struct {
 	Coin       string          `json:"coin"`
 	P2PTaxType P2PTaxType      `json:"p2pTaxType"`
 	Balance    decimal.Decimal `json:"balance"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 }

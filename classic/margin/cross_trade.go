@@ -282,8 +282,8 @@ type CrossOrder struct {
 	Size             decimal.Decimal  `json:"size"`
 	Amount           decimal.Decimal  `json:"amount"`
 	Force            Force            `json:"force"`
-	CTime            time.Time        `json:"cTime"`
-	UTime            time.Time        `json:"uTime"`
+	CTime            time.Time        `json:"cTime,format:unixmilli"`
+	UTime            time.Time        `json:"uTime,format:unixmilli"`
 }
 
 // GetCrossHistoryOrdersService -- GET /api/v2/margin/crossed/history-orders (cross-margin trade)
@@ -419,8 +419,8 @@ type CrossFill struct {
 	Amount     decimal.Decimal    `json:"amount"`
 	TradeScope string             `json:"tradeScope"` // taker, maker
 	FeeDetail  CrossFillFeeDetail `json:"feeDetail"`
-	CTime      time.Time          `json:"cTime"`
-	UTime      time.Time          `json:"uTime"`
+	CTime      time.Time          `json:"cTime,format:unixmilli"`
+	UTime      time.Time          `json:"uTime,format:unixmilli"`
 }
 
 // CrossFillFeeDetail breaks down the fees charged on a cross-margin fill.
@@ -520,6 +520,6 @@ type CrossLiquidationOrder struct {
 	FromSize  decimal.Decimal `json:"fromSize"`
 	ToCoin    string          `json:"toCoin"`
 	ToSize    decimal.Decimal `json:"toSize"`
-	CTime     time.Time       `json:"cTime"`
-	UTime     time.Time       `json:"uTime"`
+	CTime     time.Time       `json:"cTime,format:unixmilli"`
+	UTime     time.Time       `json:"uTime,format:unixmilli"`
 }

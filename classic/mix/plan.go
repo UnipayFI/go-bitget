@@ -762,8 +762,8 @@ type PlanOrder struct {
 	PosMode                 PositionMode    `json:"posMode"`
 	OrderType               OrderType       `json:"orderType"`
 	OrderSource             string          `json:"orderSource"`
-	CTime                   time.Time       `json:"cTime"`
-	UTime                   time.Time       `json:"uTime"`
+	CTime                   time.Time       `json:"cTime,format:unixmilli"`
+	UTime                   time.Time       `json:"uTime,format:unixmilli"`
 	StopSurplusExecutePrice decimal.Decimal `json:"stopSurplusExecutePrice"`
 	StopSurplusTriggerPrice decimal.Decimal `json:"stopSurplusTriggerPrice"`
 	StopSurplusTriggerType  TriggerType     `json:"stopSurplusTriggerType"`

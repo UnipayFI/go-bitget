@@ -92,19 +92,19 @@ type SharkFinProduct struct {
 	ProductName       string                `json:"productName"`
 	ProductCoin       string                `json:"productCoin"`
 	SubscribeCoin     string                `json:"subscribeCoin"`
-	FarmingStartTime  time.Time             `json:"farmingStartTime"`
-	FarmingEndTime    time.Time             `json:"farmingEndTime"`
+	FarmingStartTime  time.Time             `json:"farmingStartTime,format:unixmilli"`
+	FarmingEndTime    time.Time             `json:"farmingEndTime,format:unixmilli"`
 	LowerRate         decimal.Decimal       `json:"lowerRate"`
 	DefaultRate       decimal.Decimal       `json:"defaultRate"`
 	UpperRate         decimal.Decimal       `json:"upperRate"`
 	Period            string                `json:"period"`
-	InterestStartTime time.Time             `json:"interestStartTime"`
+	InterestStartTime time.Time             `json:"interestStartTime,format:unixmilli"`
 	Status            SharkFinProductStatus `json:"status"`
 	MinAmount         decimal.Decimal       `json:"minAmount"`
 	LimitAmount       string                `json:"limitAmount"` // numeric amount or "unlimited"
 	SoldAmount        decimal.Decimal       `json:"soldAmount"`
-	StartTime         time.Time             `json:"startTime"`
-	EndTime           time.Time             `json:"endTime"`
+	StartTime         time.Time             `json:"startTime,format:unixmilli"`
+	EndTime           time.Time             `json:"endTime,format:unixmilli"`
 }
 
 // GetSharkFinAccountService -- GET /api/v2/earn/sharkfin/account (earn read)
@@ -179,12 +179,12 @@ type SharkFinAssetsResult struct {
 // SharkFinAsset is a single held SharkFin position.
 type SharkFinAsset struct {
 	ProductID         string                     `json:"productId"`
-	InterestStartTime time.Time                  `json:"interestStartTime"`
-	InterestEndTime   time.Time                  `json:"interestEndTime"`
+	InterestStartTime time.Time                  `json:"interestStartTime,format:unixmilli"`
+	InterestEndTime   time.Time                  `json:"interestEndTime,format:unixmilli"`
 	ProductCoin       string                     `json:"productCoin"`
 	SubscribeCoin     string                     `json:"subscribeCoin"`
 	Trend             string                     `json:"trend"` // up, down
-	SettleTime        time.Time                  `json:"settleTime"`
+	SettleTime        time.Time                  `json:"settleTime,format:unixmilli"`
 	InterestAmount    decimal.Decimal            `json:"interestAmount"`
 	ProductStatus     SharkFinAssetProductStatus `json:"productStatus"`
 }
@@ -243,7 +243,7 @@ type SharkFinRecord struct {
 	Product string             `json:"product"`
 	Period  string             `json:"period"`
 	Amount  decimal.Decimal    `json:"amount"`
-	Ts      time.Time          `json:"ts"`
+	Ts      time.Time          `json:"ts,format:unixmilli"`
 	Type    SharkFinRecordType `json:"type"`
 }
 
@@ -268,8 +268,8 @@ func (s *GetSharkFinSubscribeInfoService) Do(ctx context.Context) (*SharkFinSubs
 type SharkFinSubscribeInfo struct {
 	ProductCoin        string          `json:"productCoin"`
 	SubscribeCoin      string          `json:"subscribeCoin"`
-	InterestTime       time.Time       `json:"interestTime"`
-	ExpirationTime     time.Time       `json:"expirationTime"`
+	InterestTime       time.Time       `json:"interestTime,format:unixmilli"`
+	ExpirationTime     time.Time       `json:"expirationTime,format:unixmilli"`
 	MinPrice           decimal.Decimal `json:"minPrice"`
 	CurrentPrice       decimal.Decimal `json:"currentPrice"`
 	MaxPrice           decimal.Decimal `json:"maxPrice"`

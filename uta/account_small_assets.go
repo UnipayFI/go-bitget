@@ -37,7 +37,7 @@ type SmallAsset struct {
 	EstimatedCoin   string          `json:"estimatedCoin"` // conversion target, BGB
 	EstimatedAmount decimal.Decimal `json:"estimatedAmount"`
 	FeeDetail       SmallAssetFee   `json:"feeDetail"`
-	CTime           time.Time       `json:"cTime"`
+	CTime           time.Time       `json:"cTime,format:unixmilli"`
 }
 
 // SmallAssetFee is the fee quoted for converting one small asset.
@@ -138,5 +138,5 @@ type SmallAssetConversion struct {
 	ToCoinPrice   decimal.Decimal `json:"toCoinPrice"`
 	FeeDetail     FeeDetail       `json:"feeDetail"`
 	Status        string          `json:"status"` // success
-	CreatedTime   time.Time       `json:"createdTime"`
+	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
 }

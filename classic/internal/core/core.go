@@ -52,5 +52,5 @@ func (c *Client) SyncServerTime(ctx context.Context) error {
 // SyncServerTime. The public Service that exposes server time to users lives in
 // classic/common.
 type serverTime struct {
-	ServerTime time.Time `json:"serverTime"`
+	ServerTime time.Time `json:"serverTime,format:unixmilli"`
 }

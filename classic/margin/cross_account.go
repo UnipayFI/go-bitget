@@ -37,16 +37,16 @@ func (s *GetCrossAccountAssetsService) Do(ctx context.Context) ([]CrossAccountAs
 
 // CrossAccountAsset is one coin's cross-margin balance snapshot.
 type CrossAccountAsset struct {
-	Coin        string          `json:"coin"`        // token name
-	TotalAmount decimal.Decimal `json:"totalAmount"` // total amount
-	Available   decimal.Decimal `json:"available"`   // available amount
-	Frozen      decimal.Decimal `json:"frozen"`      // assets frozen
-	Borrow      decimal.Decimal `json:"borrow"`      // borrowed amount
-	Interest    decimal.Decimal `json:"interest"`    // accrued interest
-	Net         decimal.Decimal `json:"net"`         // net assets = available + frozen - borrow - interest
-	Coupon      decimal.Decimal `json:"coupon"`      // trading bonus
-	CTime       time.Time       `json:"cTime"`       // creation time
-	UTime       time.Time       `json:"uTime"`       // update time
+	Coin        string          `json:"coin"`                   // token name
+	TotalAmount decimal.Decimal `json:"totalAmount"`            // total amount
+	Available   decimal.Decimal `json:"available"`              // available amount
+	Frozen      decimal.Decimal `json:"frozen"`                 // assets frozen
+	Borrow      decimal.Decimal `json:"borrow"`                 // borrowed amount
+	Interest    decimal.Decimal `json:"interest"`               // accrued interest
+	Net         decimal.Decimal `json:"net"`                    // net assets = available + frozen - borrow - interest
+	Coupon      decimal.Decimal `json:"coupon"`                 // trading bonus
+	CTime       time.Time       `json:"cTime,format:unixmilli"` // creation time
+	UTime       time.Time       `json:"uTime,format:unixmilli"` // update time
 }
 
 // CrossBorrowService -- POST /api/v2/margin/crossed/account/borrow (margin write)

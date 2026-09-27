@@ -88,5 +88,5 @@ type Announcement struct {
 	AnnSubType string           `json:"annSubType"`
 	AnnURL     string           `json:"annUrl"`
 	Language   string           `json:"language"`
-	CTime      time.Time        `json:"cTime"`
+	CTime      time.Time        `json:"cTime,format:unixmilli"`
 }

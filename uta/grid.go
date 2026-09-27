@@ -604,7 +604,7 @@ type GridBotDetail struct {
 	// for less than a day is annualized as if it had run one full day.
 	ArbitrageAPR decimal.Decimal `json:"arbitrageAPR"`
 	TotalAPR     decimal.Decimal `json:"totalAPR"`
-	CreatedTime  time.Time       `json:"createdTime"`
+	CreatedTime  time.Time       `json:"createdTime,format:unixmilli"`
 	// RunningTime is the running duration in milliseconds, not a timestamp.
 	RunningTime             decimal.Decimal          `json:"runningTime"`
 	CurrentBaseBalance      decimal.Decimal          `json:"currentBaseBalance"`
@@ -900,7 +900,7 @@ type NeutralGridBotDetail struct {
 	// for less than a day is annualized as if it had run one full day.
 	ArbitrageAPR decimal.Decimal `json:"arbitrageAPR"`
 	TotalAPR     decimal.Decimal `json:"totalAPR"`
-	CreatedTime  time.Time       `json:"createdTime"`
+	CreatedTime  time.Time       `json:"createdTime,format:unixmilli"`
 	// RunningTime is the running duration in milliseconds, not a timestamp.
 	RunningTime         decimal.Decimal `json:"runningTime"`
 	GridStartPrice      decimal.Decimal `json:"gridStartPrice"`

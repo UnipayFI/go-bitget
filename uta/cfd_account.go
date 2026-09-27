@@ -41,7 +41,7 @@ func (s *GetCFDInstrumentsService) Do(ctx context.Context) ([]CFDInstrument, err
 // this shares no fields with Instrument.
 type CFDInstrument struct {
 	Symbol     string    `json:"symbol"`
-	OnlineTime time.Time `json:"onlineTime"`
+	OnlineTime time.Time `json:"onlineTime,format:unixmilli"`
 	Currency   string    `json:"currency"` // base currency
 	// Digits is the number of price decimal places.
 	Digits       decimal.Decimal `json:"digits"`
@@ -229,8 +229,8 @@ type CFDTransferRecord struct {
 	Direction   CFDTransferDirection `json:"direction"`
 	Status      string               `json:"status"`
 	AccountType string               `json:"accountType"` // funding, uta
-	CreatedTime time.Time            `json:"createdTime"`
-	UpdatedTime time.Time            `json:"updatedTime"`
+	CreatedTime time.Time            `json:"createdTime,format:unixmilli"`
+	UpdatedTime time.Time            `json:"updatedTime,format:unixmilli"`
 }
 
 // GetCFDFinancialRecordsService -- GET /api/v3/cfd/account/financial-records (UTA account read)
@@ -311,5 +311,5 @@ type CFDFinancialRecord struct {
 	OpenPrice     decimal.Decimal `json:"openPrice"`
 	ClosePrice    decimal.Decimal `json:"closePrice"`
 	OrderID       int64           `json:"orderId"`
-	Ts            time.Time       `json:"ts"`
+	Ts            time.Time       `json:"ts,format:unixmilli"`
 }

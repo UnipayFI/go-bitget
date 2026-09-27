@@ -128,12 +128,12 @@ type MixFollowerCurrentOrder struct {
 	PosSide       PosSide         `json:"posSide"`
 	OpenLeverage  string          `json:"openLeverage"`
 	OpenAvgPrice  decimal.Decimal `json:"openAvgPrice"`
-	OpenTime      time.Time       `json:"openTime"`
+	OpenTime      time.Time       `json:"openTime,format:unixmilli"`
 	OpenSize      decimal.Decimal `json:"openSize"`
 	OpenMarginSz  decimal.Decimal `json:"openMarginSz"`
 	CloseAvgPrice decimal.Decimal `json:"closeAvgPrice"`
 	CloseSize     decimal.Decimal `json:"closeSize"`
-	CloseTime     time.Time       `json:"closeTime"`
+	CloseTime     time.Time       `json:"closeTime,format:unixmilli"`
 }
 
 // GetMixFollowerHistoryOrdersService -- GET /api/v2/copy/mix-follower/query-history-orders (copy-trading follower read)
@@ -209,13 +209,13 @@ type MixFollowerHistoryOrder struct {
 	PosSide       PosSide         `json:"posSide"`
 	OpenLeverage  string          `json:"openLeverage"`
 	OpenPriceAvg  decimal.Decimal `json:"openPriceAvg"`
-	OpenTime      time.Time       `json:"openTime"`
+	OpenTime      time.Time       `json:"openTime,format:unixmilli"`
 	OpenSize      decimal.Decimal `json:"openSize"`
 	ClosePriceAvg decimal.Decimal `json:"closePriceAvg"`
 	CloseFee      decimal.Decimal `json:"closeFee"`
 	OpenFee       decimal.Decimal `json:"openFee"`
 	CloseSize     decimal.Decimal `json:"closeSize"`
-	CloseTime     time.Time       `json:"closeTime"`
+	CloseTime     time.Time       `json:"closeTime,format:unixmilli"`
 	ProfitRate    decimal.Decimal `json:"profitRate"`
 	NetProfit     decimal.Decimal `json:"netProfit"`
 	AchievedPL    decimal.Decimal `json:"achievedPL"`
@@ -414,7 +414,7 @@ type MixFollowerTrader struct {
 	TraceTotalNetProfit    decimal.Decimal `json:"traceTotalNetProfit"`
 	TraceTotalProfit       decimal.Decimal `json:"traceTotalProfit"`
 	CurrentTradingPairs    []string        `json:"currentTradingPairs"`
-	FollowerTime           time.Time       `json:"followerTime"`
+	FollowerTime           time.Time       `json:"followerTime,format:unixmilli"`
 }
 
 // CloseMixFollowerPositionsService -- POST /api/v2/copy/mix-follower/close-positions (copy-trading follower, state-changing)

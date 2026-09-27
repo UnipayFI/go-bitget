@@ -32,7 +32,7 @@ func (s *GetSpotWhaleNetFlowService) Do(ctx context.Context) ([]SpotWhaleNetFlow
 
 type SpotWhaleNetFlow struct {
 	Volume decimal.Decimal `json:"volume"`
-	Date   time.Time       `json:"date"`
+	Date   time.Time       `json:"date,format:unixmilli"`
 }
 
 // GetSpotFundFlowService -- GET /api/v3/market/spot-fund-flow
@@ -97,7 +97,7 @@ func (s *GetSpotNetFlowService) Do(ctx context.Context) ([]SpotNetFlow, error) {
 
 type SpotNetFlow struct {
 	NetFlow decimal.Decimal `json:"netFlow"`
-	Ts      time.Time       `json:"ts"`
+	Ts      time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetMarginLongShortService -- GET /api/v3/market/margin-long-short
@@ -135,7 +135,7 @@ func (s *GetMarginLongShortService) Do(ctx context.Context) ([]MarginLongShort, 
 
 type MarginLongShort struct {
 	LongShortRatio decimal.Decimal `json:"longShortRatio"`
-	Ts             time.Time       `json:"ts"`
+	Ts             time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetMarginLoanGrowthService -- GET /api/v3/market/margin-loan-growth
@@ -173,7 +173,7 @@ func (s *GetMarginLoanGrowthService) Do(ctx context.Context) ([]MarginLoanGrowth
 
 type MarginLoanGrowth struct {
 	GrowthRate decimal.Decimal `json:"growthRate"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetMarginIsolatedBorrowService -- GET /api/v3/market/margin-isolated-borrow
@@ -205,7 +205,7 @@ func (s *GetMarginIsolatedBorrowService) Do(ctx context.Context) ([]MarginIsolat
 
 type MarginIsolatedBorrow struct {
 	BorrowRate decimal.Decimal `json:"borrowRate"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetFuturesActiveBuySellService -- GET /api/v3/market/futures-active-buy-sell
@@ -240,7 +240,7 @@ func (s *GetFuturesActiveBuySellService) Do(ctx context.Context) ([]FuturesActiv
 type FuturesActiveBuySell struct {
 	BuyVolume  decimal.Decimal `json:"buyVolume"`
 	SellVolume decimal.Decimal `json:"sellVolume"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetFuturesLongShortService -- GET /api/v3/market/futures-long-short
@@ -275,7 +275,7 @@ type FuturesLongShort struct {
 	LongRatio      decimal.Decimal `json:"longRatio"`
 	ShortRatio     decimal.Decimal `json:"shortRatio"`
 	LongShortRatio decimal.Decimal `json:"longShortRatio"`
-	Ts             time.Time       `json:"ts"`
+	Ts             time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetFuturesPositionLongShortService -- GET /api/v3/market/futures-position-long-short
@@ -311,7 +311,7 @@ type FuturesPositionLongShort struct {
 	LongPositionRatio      decimal.Decimal `json:"longPositionRatio"`
 	ShortPositionRatio     decimal.Decimal `json:"shortPositionRatio"`
 	LongShortPositionRatio decimal.Decimal `json:"longShortPositionRatio"`
-	Ts                     time.Time       `json:"ts"`
+	Ts                     time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetFuturesAccountLongShortService -- GET /api/v3/market/futures-account-long-short
@@ -347,5 +347,5 @@ type FuturesAccountLongShort struct {
 	LongAccountRatio      decimal.Decimal `json:"longAccountRatio"`
 	ShortAccountRatio     decimal.Decimal `json:"shortAccountRatio"`
 	LongShortAccountRatio decimal.Decimal `json:"longShortAccountRatio"`
-	Ts                    time.Time       `json:"ts"`
+	Ts                    time.Time       `json:"ts,format:unixmilli"`
 }

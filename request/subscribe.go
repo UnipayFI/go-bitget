@@ -2,6 +2,7 @@ package request
 
 import (
 	"context"
+	"encoding/json/jsontext"
 	"errors"
 	"strconv"
 	"strings"
@@ -11,7 +12,6 @@ import (
 
 	"github.com/UnipayFI/go-bitget/common"
 	"github.com/UnipayFI/go-bitget/pkg/log"
-	"github.com/go-json-experiment/json/jsontext"
 	"github.com/gorilla/websocket"
 )
 
@@ -51,7 +51,7 @@ type WsPush[T any] struct {
 	Action WsAction  `json:"action"`
 	Arg    WsArg     `json:"arg"`
 	Data   T         `json:"data"`
-	Ts     time.Time `json:"ts"`
+	Ts     time.Time `json:"ts,format:unixmilli"`
 }
 
 type wsOp struct {

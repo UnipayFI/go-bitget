@@ -59,18 +59,18 @@ type CFDTicker struct {
 	LowPrice           decimal.Decimal `json:"lowPrice"`
 	Ask1               decimal.Decimal `json:"ask1"` // best ask price
 	Bid1               decimal.Decimal `json:"bid1"` // best bid price
-	QuoteTime          time.Time       `json:"quoteTime"`
+	QuoteTime          time.Time       `json:"quoteTime,format:unixmilli"`
 }
 
 // CFDCandle is one CFD candlestick row. Bitget returns each candle as a
 // fixed-position JSON array ([ts, open, high, low, close]) -- five columns, with
 // no volume or turnover, unlike the spot/futures Candle.
 type CFDCandle struct {
-	Ts    time.Time       `json:"ts"`    // array[0] -- candle start time (ms)
-	Open  decimal.Decimal `json:"open"`  // array[1]
-	High  decimal.Decimal `json:"high"`  // array[2]
-	Low   decimal.Decimal `json:"low"`   // array[3]
-	Close decimal.Decimal `json:"close"` // array[4]
+	Ts    time.Time       `json:"ts,format:unixmilli"` // array[0] -- candle start time (ms)
+	Open  decimal.Decimal `json:"open"`                // array[1]
+	High  decimal.Decimal `json:"high"`                // array[2]
+	Low   decimal.Decimal `json:"low"`                 // array[3]
+	Close decimal.Decimal `json:"close"`               // array[4]
 }
 
 // UnmarshalJSON decodes the 5-element positional array into named fields.

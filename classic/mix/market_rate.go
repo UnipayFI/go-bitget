@@ -85,7 +85,7 @@ type InterestRateHistory struct {
 
 // HistoryInterestRate is one interest-rate history snapshot.
 type HistoryInterestRate struct {
-	Ts                 time.Time       `json:"ts"`
+	Ts                 time.Time       `json:"ts,format:unixmilli"`
 	AnnualInterestRate decimal.Decimal `json:"annualInterestRate"`
 	DailyInterestRate  decimal.Decimal `json:"dailyInterestRate"`
 }
@@ -211,7 +211,7 @@ func (s *GetHistoryFundRateService) Do(ctx context.Context) ([]HistoryFundRate, 
 type HistoryFundRate struct {
 	Symbol      string          `json:"symbol"`
 	FundingRate decimal.Decimal `json:"fundingRate"`
-	FundingTime time.Time       `json:"fundingTime"`
+	FundingTime time.Time       `json:"fundingTime,format:unixmilli"`
 }
 
 // GetCurrentFundRateService -- GET /api/v2/mix/market/current-fund-rate (public)
@@ -244,7 +244,7 @@ type CurrentFundRate struct {
 	Symbol              string          `json:"symbol"`
 	FundingRate         decimal.Decimal `json:"fundingRate"`
 	FundingRateInterval string          `json:"fundingRateInterval"` // hours between settlements
-	NextUpdate          time.Time       `json:"nextUpdate"`
+	NextUpdate          time.Time       `json:"nextUpdate,format:unixmilli"`
 	MinFundingRate      decimal.Decimal `json:"minFundingRate"`
 	MaxFundingRate      decimal.Decimal `json:"maxFundingRate"`
 }

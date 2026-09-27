@@ -41,7 +41,7 @@ func (s *GetTickersService) Do(ctx context.Context) ([]Ticker, error) {
 type Ticker struct {
 	Category     Category        `json:"category"`
 	Symbol       string          `json:"symbol"`
-	Ts           time.Time       `json:"ts"`
+	Ts           time.Time       `json:"ts,format:unixmilli"`
 	LastPrice    decimal.Decimal `json:"lastPrice"`
 	OpenPrice24h decimal.Decimal `json:"openPrice24h"`
 	HighPrice24h decimal.Decimal `json:"highPrice24h"`
@@ -61,8 +61,8 @@ type Ticker struct {
 	MarkPrice         decimal.Decimal `json:"markPrice"`
 	FundingRate       decimal.Decimal `json:"fundingRate"`
 	OpenInterest      decimal.Decimal `json:"openInterest"`
-	DeliveryStartTime time.Time       `json:"deliveryStartTime"`
-	DeliveryTime      time.Time       `json:"deliveryTime"`
+	DeliveryStartTime time.Time       `json:"deliveryStartTime,format:unixmilli"`
+	DeliveryTime      time.Time       `json:"deliveryTime,format:unixmilli"`
 	DeliveryStatus    string          `json:"deliveryStatus"`
 }
 
@@ -97,7 +97,7 @@ func (s *GetOrderBookService) Do(ctx context.Context) (*OrderBook, error) {
 type OrderBook struct {
 	Asks [][]decimal.Decimal `json:"a"`
 	Bids [][]decimal.Decimal `json:"b"`
-	Ts   time.Time           `json:"ts"`
+	Ts   time.Time           `json:"ts,format:unixmilli"`
 }
 
 // GetRPIOrderBookService -- GET /api/v3/market/rpi-orderbook
@@ -132,7 +132,7 @@ func (s *GetRPIOrderBookService) Do(ctx context.Context) (*RPIOrderBook, error) 
 type RPIOrderBook struct {
 	Asks [][]decimal.Decimal `json:"a"`
 	Bids [][]decimal.Decimal `json:"b"`
-	Ts   time.Time           `json:"ts"`
+	Ts   time.Time           `json:"ts,format:unixmilli"`
 }
 
 // GetRecentFillsService -- GET /api/v3/market/fills
@@ -170,7 +170,7 @@ type PublicFill struct {
 	Price      decimal.Decimal `json:"price"`
 	Size       decimal.Decimal `json:"size"`
 	Side       Side            `json:"side"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 	ExecLinkID string          `json:"execLinkId"`
 	IsRPI      string          `json:"isRPI"` // NO, YES
 }

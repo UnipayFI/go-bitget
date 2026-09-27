@@ -1,7 +1,7 @@
 # go-bitget
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/UnipayFI/go-bitget.svg)](https://pkg.go.dev/github.com/UnipayFI/go-bitget)
-[![Go 1.26+](https://img.shields.io/badge/Go-1.26%2B-00ADD8?logo=go)](go.mod)
+[![Go 1.27+](https://img.shields.io/badge/Go-1.27%2B-00ADD8?logo=go)](go.mod)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 A Go SDK for the [Bitget](https://www.bitget.com/api-doc/uta/intro) exchange, covering both account systems.
@@ -23,7 +23,7 @@ go get github.com/UnipayFI/go-bitget@latest
 
 - One signing/transport core shared by UTA (`uta`) and Classic (`classic/*`).
 - Fluent per-endpoint API: `NewXxxService(...).SetFoo(...).Do(ctx)`.
-- Amounts as `decimal.Decimal`, ms timestamps as `time.Time` — Bitget's string-encoded numbers and `""`/`"0"`/`"-1"` "not set" sentinels are decoded for you.
+- Amounts as `decimal.Decimal`, timestamps as `time.Time` whose wire unit is declared by the standard `format` tag option (`json:"cTime,format:unixmilli"`) — Bitget's string-encoded numbers and `""`/`"0"`/`"-1"` "not set" sentinels are decoded for you.
 - Every endpoint is tested against the live API, diffing real JSON keys against the struct.
 
 ## Quick start
@@ -135,6 +135,19 @@ mx := bitget.NewMixClient(client.WithAuth(apiKey, apiSecret, passphrase))
 pos, _ := mx.NewGetAllPositionService(mix.ProductTypeUSDTFutures).Do(ctx)
 ```
 
+## JSON and timestamps
+
+The SDK uses Go 1.27's `encoding/json/v2` (keep the default `jsonv2` GOEXPERIMENT enabled). Every `time.Time` field
+declares the unit Bitget actually sends with the standard `format` tag option, e.g. `json:"cTime,format:unixmilli"`;
+`common.JSONMarshal` / `common.JSONUnmarshal` apply the standard semantics of that option plus Bitget's quirks
+(quoted-or-bare numbers, `""`/`"0"`/`"-1"`/`"null"` → zero time). Decoded times are in UTC — use `.Equal` to compare
+and `.In(loc)` / `.Local()` to display.
+
+Go 1.27 only honours `format` tags when the experimental `ExperimentalSupportFormatTag` option is passed, so serialize
+SDK types with `common.JSONMarshal` / `common.JSONUnmarshal` (or pass
+`github.com/go-json-experiment/json.ExperimentalSupportFormatTag(true)` to `encoding/json/v2` yourself). Plain
+`encoding/json`, and `log/slog`'s JSON handler, reject structs with `format` tags.
+
 ## Packages
 
 **UTA** (`uta/`)
@@ -169,7 +182,7 @@ pos, _ := mx.NewGetAllPositionService(mix.ProductTypeUSDTFutures).Do(ctx)
 |---------|-------|
 | `bitget.go` | entry point: `NewUTAClient` + `NewSpotClient`/`NewMixClient`/… + WS clients |
 | `client/` `request/` | REST client, options, HMAC signer, envelope decode, WS subscribe |
-| `common/` | constants, global `time.Time` + `decimal.Decimal` JSON codec |
+| `common/` | constants, `encoding/json/v2` codec: `format`-tagged `time.Time` + `decimal.Decimal` |
 | `cmd/bgraw/` | dev tool: sign + dump any endpoint's raw response |
 
 ## Testing

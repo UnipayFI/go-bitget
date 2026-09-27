@@ -123,8 +123,8 @@ type Symbol struct {
 	SellLimitPriceRatio decimal.Decimal `json:"sellLimitPriceRatio"`
 	AreaSymbol          string          `json:"areaSymbol"`    // "yes"/"no": region-restricted pair
 	OrderQuantity       string          `json:"orderQuantity"` // max number of open orders per symbol
-	OpenTime            time.Time       `json:"openTime"`
-	OffTime             time.Time       `json:"offTime"`
+	OpenTime            time.Time       `json:"openTime,format:unixmilli"`
+	OffTime             time.Time       `json:"offTime,format:unixmilli"`
 	MaxLimitOrderValue  decimal.Decimal `json:"maxLimitOrderValue"`
 	MaxMarketOrderValue decimal.Decimal `json:"maxMarketOrderValue"`
 }
@@ -197,7 +197,7 @@ type Ticker struct {
 	QuoteVolume  decimal.Decimal `json:"quoteVolume"`
 	BaseVolume   decimal.Decimal `json:"baseVolume"`
 	USDTVolume   decimal.Decimal `json:"usdtVolume"`
-	Ts           time.Time       `json:"ts"`
+	Ts           time.Time       `json:"ts,format:unixmilli"`
 	BidPr        decimal.Decimal `json:"bidPr"`   // best bid price
 	AskPr        decimal.Decimal `json:"askPr"`   // best ask price
 	BidSz        decimal.Decimal `json:"bidSz"`   // best bid size
@@ -253,7 +253,7 @@ func (s *GetMergeDepthService) Do(ctx context.Context) (*MergeDepth, error) {
 type MergeDepth struct {
 	Asks           [][]decimal.Decimal `json:"asks"`
 	Bids           [][]decimal.Decimal `json:"bids"`
-	Ts             time.Time           `json:"ts"`
+	Ts             time.Time           `json:"ts,format:unixmilli"`
 	Scale          decimal.Decimal     `json:"scale"`          // numeric price step for the chosen precision
 	Precision      string              `json:"precision"`      // echoes the requested precision (scaleN)
 	IsMaxPrecision string              `json:"isMaxPrecision"` // "YES"/"NO"
@@ -305,7 +305,7 @@ func (s *GetOrderBookService) Do(ctx context.Context) (*OrderBook, error) {
 type OrderBook struct {
 	Asks [][]decimal.Decimal `json:"asks"`
 	Bids [][]decimal.Decimal `json:"bids"`
-	Ts   time.Time           `json:"ts"`
+	Ts   time.Time           `json:"ts,format:unixmilli"`
 }
 
 // Candle is one candlestick row. Bitget returns each candle as a fixed-position
@@ -313,14 +313,14 @@ type OrderBook struct {
 // usdtVolume]); Candle parses that array into named fields and re-emits the same
 // array shape on marshal.
 type Candle struct {
-	Ts          time.Time       `json:"ts"`          // array[0] -- candle start time (ms)
-	Open        decimal.Decimal `json:"open"`        // array[1]
-	High        decimal.Decimal `json:"high"`        // array[2]
-	Low         decimal.Decimal `json:"low"`         // array[3]
-	Close       decimal.Decimal `json:"close"`       // array[4]
-	BaseVolume  decimal.Decimal `json:"baseVolume"`  // array[5] -- base coin volume
-	QuoteVolume decimal.Decimal `json:"quoteVolume"` // array[6] -- quote coin turnover
-	USDTVolume  decimal.Decimal `json:"usdtVolume"`  // array[7] -- USDT-denominated volume
+	Ts          time.Time       `json:"ts,format:unixmilli"` // array[0] -- candle start time (ms)
+	Open        decimal.Decimal `json:"open"`                // array[1]
+	High        decimal.Decimal `json:"high"`                // array[2]
+	Low         decimal.Decimal `json:"low"`                 // array[3]
+	Close       decimal.Decimal `json:"close"`               // array[4]
+	BaseVolume  decimal.Decimal `json:"baseVolume"`          // array[5] -- base coin volume
+	QuoteVolume decimal.Decimal `json:"quoteVolume"`         // array[6] -- quote coin turnover
+	USDTVolume  decimal.Decimal `json:"usdtVolume"`          // array[7] -- USDT-denominated volume
 }
 
 // UnmarshalJSON decodes the 8-element positional array into named fields.
@@ -478,7 +478,7 @@ type MarketFill struct {
 	Side    string          `json:"side"`
 	Price   decimal.Decimal `json:"price"`
 	Size    decimal.Decimal `json:"size"`
-	Ts      time.Time       `json:"ts"`
+	Ts      time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetMarketTradesService -- GET /api/v2/spot/market/fills-history (public)
@@ -559,8 +559,8 @@ func (s *GetAuctionService) Do(ctx context.Context) (*Auction, error) {
 // Auction is the call-auction snapshot for a symbol.
 type Auction struct {
 	Stage          AuctionStage    `json:"stage"`
-	StageEndTime   time.Time       `json:"stageEndTime"`
+	StageEndTime   time.Time       `json:"stageEndTime,format:unixmilli"`
 	EstOpeningPr   decimal.Decimal `json:"estOpeningPrice"` // estimated opening price
 	MatchedVolume  decimal.Decimal `json:"matchedVolume"`
-	AuctionEndTime time.Time       `json:"auctionEndTime"`
+	AuctionEndTime time.Time       `json:"auctionEndTime,format:unixmilli"`
 }

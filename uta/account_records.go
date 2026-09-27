@@ -76,7 +76,7 @@ type FinancialRecord struct {
 	Amount          decimal.Decimal     `json:"amount"`
 	Fee             decimal.Decimal     `json:"fee"`
 	Balance         decimal.Decimal     `json:"balance"`
-	Ts              time.Time           `json:"ts"`
+	Ts              time.Time           `json:"ts,format:unixmilli"`
 }
 
 // FinancialRecordType classifies a financial-records entry. The constants below
@@ -168,7 +168,7 @@ type FundingFinancialRecord struct {
 	Type      string          `json:"type"`      // buy, sell, deposit, withdraw, transfer_in, interest, dividend, ...
 	Amount    decimal.Decimal `json:"amount"`
 	Balance   decimal.Decimal `json:"balance"`
-	Ts        time.Time       `json:"ts"`
+	Ts        time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetConvertRecordsService -- GET /api/v3/account/convert-records (UTA mgt. read)
@@ -234,7 +234,7 @@ type ConvertRecord struct {
 	ToCoin       string          `json:"toCoin"`
 	ToCoinSize   decimal.Decimal `json:"toCoinSize"`
 	Price        decimal.Decimal `json:"price"`
-	Ts           time.Time       `json:"ts"`
+	Ts           time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetRepayableCoinsService -- GET /api/v3/account/repayable-coins (UTA mgt. read)

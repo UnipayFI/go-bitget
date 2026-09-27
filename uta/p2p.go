@@ -59,7 +59,7 @@ type P2PAd struct {
 	CompletedOrderNum string           `json:"completedOrderNum"`
 	CompletedRate     decimal.Decimal  `json:"completedRate"`
 	AvgReleaseTime    string           `json:"avgReleaseTime"`
-	CreatedTime       time.Time        `json:"createdTime"`
+	CreatedTime       time.Time        `json:"createdTime,format:unixmilli"`
 }
 
 // P2PAdPayMethod is an accepted payment method on a public advertisement.
@@ -230,8 +230,8 @@ type P2PMyAd struct {
 	LastAmount  decimal.Decimal    `json:"lastAmount"`
 	PayMethods  []P2PMyAdPayMethod `json:"payMethods"`
 	Status      string             `json:"status"`
-	CreatedTime time.Time          `json:"createdTime"`
-	UpdatedTime time.Time          `json:"updatedTime"`
+	CreatedTime time.Time          `json:"createdTime,format:unixmilli"`
+	UpdatedTime time.Time          `json:"updatedTime,format:unixmilli"`
 }
 
 // P2PMyAdPayMethod is a payment method reference on the caller's advertisement.
@@ -278,8 +278,8 @@ type P2PAdInfo struct {
 	FiatPrecision  string               `json:"fiatPrecision"`
 	Market         string               `json:"market"`
 	AvgTime        string               `json:"avgTime"`
-	CreatedTime    time.Time            `json:"createdTime"`
-	UpdatedTime    time.Time            `json:"updatedTime"`
+	CreatedTime    time.Time            `json:"createdTime,format:unixmilli"`
+	UpdatedTime    time.Time            `json:"updatedTime,format:unixmilli"`
 }
 
 // P2PAdInfoPayMethod is a payment method reference on an advertisement detail.
@@ -505,8 +505,8 @@ type P2POrder struct {
 	Fee          decimal.Decimal `json:"fee"`
 	Counterparty string          `json:"counterparty"`
 	Status       string          `json:"status"`
-	CreatedTime  time.Time       `json:"createdTime"`
-	UpdatedTime  time.Time       `json:"updatedTime"`
+	CreatedTime  time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime  time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // GetP2PAllOrdersService -- GET /api/v3/p2p/all-orders (UTA P2P read)
@@ -601,8 +601,8 @@ type P2POrderInfo struct {
 	PayMethodDetail      P2POrderPayMethod `json:"payMethodDetail"`
 	SellUserInfo         P2POrderUserInfo  `json:"sellUserInfo"`
 	BuyUserInfo          P2POrderUserInfo  `json:"buyUserInfo"`
-	CreatedTime          time.Time         `json:"createdTime"`
-	UpdatedTime          time.Time         `json:"updatedTime"`
+	CreatedTime          time.Time         `json:"createdTime,format:unixmilli"`
+	UpdatedTime          time.Time         `json:"updatedTime,format:unixmilli"`
 }
 
 // P2POrderPayMethod is the payment method attached to an order (omitted for
@@ -685,7 +685,7 @@ type P2PUserInfo struct {
 	AvgPayTime30D        string              `json:"avgPayTime30D"`
 	AvgReleaseTime30D    string              `json:"avgReleaseTime30D"`
 	EquityDetail         P2PUserEquityDetail `json:"equityDetail"`
-	RegisterTime         time.Time           `json:"registerTime"`
+	RegisterTime         time.Time           `json:"registerTime,format:unixmilli"`
 }
 
 // P2PUserEquityDetail is the caller's advertisement and pending-order capacity.

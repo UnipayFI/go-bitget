@@ -122,8 +122,8 @@ type IsolatedRepayRecord struct {
 	RepayAmount    decimal.Decimal   `json:"repayAmount"`
 	RepayInterest  decimal.Decimal   `json:"repayInterest"`
 	RepayType      IsolatedRepayType `json:"repayType"`
-	CTime          time.Time         `json:"cTime"`
-	UTime          time.Time         `json:"uTime"`
+	CTime          time.Time         `json:"cTime,format:unixmilli"`
+	UTime          time.Time         `json:"uTime,format:unixmilli"`
 }
 
 // GetIsolatedBorrowHistoryService -- GET /api/v2/margin/isolated/borrow-history (private)
@@ -187,8 +187,8 @@ type IsolatedBorrowRecord struct {
 	BorrowAmount decimal.Decimal    `json:"borrowAmount"`
 	BorrowType   IsolatedBorrowType `json:"borrowType"`
 	Symbol       string             `json:"symbol"`
-	CTime        time.Time          `json:"cTime"`
-	UTime        time.Time          `json:"uTime"`
+	CTime        time.Time          `json:"cTime,format:unixmilli"`
+	UTime        time.Time          `json:"uTime,format:unixmilli"`
 }
 
 // GetIsolatedInterestHistoryService -- GET /api/v2/margin/isolated/interest-history (private)
@@ -250,8 +250,8 @@ type IsolatedInterestRecord struct {
 	InterstType       IsolatedInterestType `json:"interstType"`
 	InterestCoin      string               `json:"interestCoin"`
 	LoanCoin          string               `json:"loanCoin"`
-	CTime             time.Time            `json:"cTime"`
-	UTime             time.Time            `json:"uTime"`
+	CTime             time.Time            `json:"cTime,format:unixmilli"`
+	UTime             time.Time            `json:"uTime,format:unixmilli"`
 }
 
 // GetIsolatedLiquidationHistoryService -- GET /api/v2/margin/isolated/liquidation-history (private)
@@ -302,14 +302,14 @@ type IsolatedLiquidationHistory struct {
 type IsolatedLiquidationRecord struct {
 	LiqID        string          `json:"liqId"`
 	Symbol       string          `json:"symbol"`
-	LiqStartTime time.Time       `json:"liqStartTime"`
-	LiqEndTime   time.Time       `json:"liqEndTime"`
+	LiqStartTime time.Time       `json:"liqStartTime,format:unixmilli"`
+	LiqEndTime   time.Time       `json:"liqEndTime,format:unixmilli"`
 	LiqRiskRatio decimal.Decimal `json:"liqRiskRatio"`
 	TotalAssets  decimal.Decimal `json:"totalAssets"`
 	TotalDebt    decimal.Decimal `json:"totalDebt"`
 	LiqFee       decimal.Decimal `json:"liqFee"`
-	CTime        time.Time       `json:"cTime"`
-	UTime        time.Time       `json:"uTime"`
+	CTime        time.Time       `json:"cTime,format:unixmilli"`
+	UTime        time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetIsolatedFinancialRecordsService -- GET /api/v2/margin/isolated/financial-records (private)
@@ -375,6 +375,6 @@ type IsolatedFinancialRecord struct {
 	Amount     decimal.Decimal    `json:"amount"`
 	Balance    decimal.Decimal    `json:"balance"`
 	Fee        decimal.Decimal    `json:"fee"`
-	CTime      time.Time          `json:"cTime"`
-	UTime      time.Time          `json:"uTime"`
+	CTime      time.Time          `json:"cTime,format:unixmilli"`
+	UTime      time.Time          `json:"uTime,format:unixmilli"`
 }

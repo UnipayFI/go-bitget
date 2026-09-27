@@ -89,7 +89,7 @@ func (s *GetWhaleNetFlowService) Do(ctx context.Context) ([]WhaleNetFlow, error)
 // "date" key (millisecond string), not the usual "ts".
 type WhaleNetFlow struct {
 	Volume decimal.Decimal `json:"volume"`
-	Date   time.Time       `json:"date"`
+	Date   time.Time       `json:"date,format:unixmilli"`
 }
 
 // GetTakerBuySellService -- GET /api/v2/mix/market/taker-buy-sell (public)
@@ -124,7 +124,7 @@ func (s *GetTakerBuySellService) Do(ctx context.Context) ([]TakerBuySell, error)
 type TakerBuySell struct {
 	BuyVolume  decimal.Decimal `json:"buyVolume"`
 	SellVolume decimal.Decimal `json:"sellVolume"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetPositionLongShortService -- GET /api/v2/mix/market/position-long-short (public)
@@ -160,7 +160,7 @@ type PositionLongShort struct {
 	LongPositionRatio      decimal.Decimal `json:"longPositionRatio"`
 	ShortPositionRatio     decimal.Decimal `json:"shortPositionRatio"`
 	LongShortPositionRatio decimal.Decimal `json:"longShortPositionRatio"`
-	Ts                     time.Time       `json:"ts"`
+	Ts                     time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetMarginLongShortRatioService -- GET /api/v2/margin/market/long-short-ratio (public)
@@ -199,7 +199,7 @@ func (s *GetMarginLongShortRatioService) Do(ctx context.Context) ([]MarginLongSh
 // MarginLongShortRatio is one margin long-short ratio bucket.
 type MarginLongShortRatio struct {
 	LongShortRatio decimal.Decimal `json:"longShortRatio"`
-	Ts             time.Time       `json:"ts"`
+	Ts             time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetMarginLoanGrowthService -- GET /api/v2/margin/market/loan-growth (public)
@@ -238,7 +238,7 @@ func (s *GetMarginLoanGrowthService) Do(ctx context.Context) ([]MarginLoanGrowth
 // MarginLoanGrowth is one margin loan-growth-rate bucket.
 type MarginLoanGrowth struct {
 	GrowthRate decimal.Decimal `json:"growthRate"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetIsolatedBorrowRateService -- GET /api/v2/margin/market/isolated-borrow-rate (public)
@@ -271,7 +271,7 @@ func (s *GetIsolatedBorrowRateService) Do(ctx context.Context) ([]IsolatedBorrow
 // IsolatedBorrowRate is one isolated-margin borrow-ratio bucket.
 type IsolatedBorrowRate struct {
 	BorrowRate decimal.Decimal `json:"borrowRate"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetLongShortService -- GET /api/v2/mix/market/long-short (public)
@@ -306,7 +306,7 @@ type LongShort struct {
 	LongRatio      decimal.Decimal `json:"longRatio"`
 	ShortRatio     decimal.Decimal `json:"shortRatio"`
 	LongShortRatio decimal.Decimal `json:"longShortRatio"`
-	Ts             time.Time       `json:"ts"`
+	Ts             time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetSpotFundFlowService -- GET /api/v2/spot/market/fund-flow (public)
@@ -396,7 +396,7 @@ func (s *GetFundNetFlowService) Do(ctx context.Context) ([]FundNetFlow, error) {
 // FundNetFlow is one spot net-capital-inflow bucket.
 type FundNetFlow struct {
 	NetFlow decimal.Decimal `json:"netFlow"`
-	Ts      time.Time       `json:"ts"`
+	Ts      time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetAccountLongShortService -- GET /api/v2/mix/market/account-long-short (public)
@@ -432,5 +432,5 @@ type AccountLongShort struct {
 	LongAccountRatio      decimal.Decimal `json:"longAccountRatio"`
 	ShortAccountRatio     decimal.Decimal `json:"shortAccountRatio"`
 	LongShortAccountRatio decimal.Decimal `json:"longShortAccountRatio"`
-	Ts                    time.Time       `json:"ts"`
+	Ts                    time.Time       `json:"ts,format:unixmilli"`
 }

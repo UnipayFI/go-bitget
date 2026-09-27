@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/UnipayFI/go-bitget/common"
 	"github.com/UnipayFI/go-bitget/request"
 	"github.com/shopspring/decimal"
 )
@@ -41,13 +40,13 @@ type WsOrderAck struct {
 	Symbol        string    `json:"symbol"`
 	OrderID       string    `json:"orderId"`
 	ClientOrderID string    `json:"clientOid"`
-	CTime         time.Time `json:"cTime"`
+	CTime         time.Time `json:"cTime,format:unixmilli"`
 	Code          string    `json:"code"`
 	Msg           string    `json:"msg"`
 	// ReceiveTime and PushTime are the gateway's receive and push times for
 	// this op, in microseconds — subtract them to measure gateway latency.
-	ReceiveTime common.MicrosTime `json:"receiveTime"`
-	PushTime    common.MicrosTime `json:"pushTime"`
+	ReceiveTime time.Time `json:"receiveTime,format:unixmicro"`
+	PushTime    time.Time `json:"pushTime,format:unixmicro"`
 }
 
 // WsNewOrder describes an order to place over the stream. Price is a pointer so

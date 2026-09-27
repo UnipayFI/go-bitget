@@ -46,12 +46,12 @@ type WsTicker struct {
 	IndexPrice          decimal.Decimal `json:"indexPrice"`
 	MarkPrice           decimal.Decimal `json:"markPrice"`
 	FundingRate         decimal.Decimal `json:"fundingRate"`
-	NextFundingTime     time.Time       `json:"nextFundingTime"` // perp: next funding settlement time
+	NextFundingTime     time.Time       `json:"nextFundingTime,format:unixmilli"` // perp: next funding settlement time
 	OpenInterest        decimal.Decimal `json:"openInterest"`
-	DeliveryStart       time.Time       `json:"deliveryStartTime"`
-	DeliveryTime        time.Time       `json:"deliveryTime"`
+	DeliveryStart       time.Time       `json:"deliveryStartTime,format:unixmilli"`
+	DeliveryTime        time.Time       `json:"deliveryTime,format:unixmilli"`
 	DeliveryStatus      string          `json:"deliveryStatus"`
-	Ts                  time.Time       `json:"ts"`
+	Ts                  time.Time       `json:"ts,format:unixmilli"`
 }
 
 // SubscribeKlineService -- public "kline" candlestick channel. Reality stock
@@ -73,7 +73,7 @@ func (s *SubscribeKlineService) Do(ctx context.Context, cb WsHandler[WsKline]) (
 }
 
 type WsKline struct {
-	Start    time.Time       `json:"start"`
+	Start    time.Time       `json:"start,format:unixmilli"`
 	Open     decimal.Decimal `json:"open"`
 	Close    decimal.Decimal `json:"close"`
 	High     decimal.Decimal `json:"high"`
@@ -112,7 +112,7 @@ type WsOrderBook struct {
 	Seq      int64               `json:"seq"`
 	Pseq     int64               `json:"pseq"`
 	MaxDepth string              `json:"maxDepth"`
-	Ts       time.Time           `json:"ts"`
+	Ts       time.Time           `json:"ts,format:unixmilli"`
 }
 
 // SubscribeTradeService -- public "publicTrade" channel (tick-by-tick fills).
@@ -137,7 +137,7 @@ type WsTrade struct {
 	Price      decimal.Decimal `json:"p"`
 	Size       decimal.Decimal `json:"v"`
 	Side       Side            `json:"S"`
-	Ts         time.Time       `json:"T"`
+	Ts         time.Time       `json:"T,format:unixmilli"`
 	IsRPI      string          `json:"isRPI"`
 }
 
@@ -171,7 +171,7 @@ type WsRPIOrderBook struct {
 	Bids [][]decimal.Decimal `json:"b"`
 	Seq  int64               `json:"seq"`
 	Pseq int64               `json:"pseq"`
-	Ts   time.Time           `json:"ts"`
+	Ts   time.Time           `json:"ts,format:unixmilli"`
 }
 
 // SubscribeRealityOrderBookService -- "reality-orderbook" channel: raw
@@ -228,5 +228,5 @@ type WsLiquidation struct {
 	Side   Side            `json:"side"`
 	Price  decimal.Decimal `json:"price"`
 	Amount decimal.Decimal `json:"amount"`
-	Ts     time.Time       `json:"ts"`
+	Ts     time.Time       `json:"ts,format:unixmilli"`
 }

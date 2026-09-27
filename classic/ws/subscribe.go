@@ -40,7 +40,7 @@ type WsPush[T any] struct {
 	Action request.WsAction `json:"action"`
 	Arg    WsArg            `json:"arg"`
 	Data   T                `json:"data"`
-	Ts     time.Time        `json:"ts"`
+	Ts     time.Time        `json:"ts,format:unixmilli"`
 }
 
 // WsHandler is invoked for every push (or error) on a subscription. The push's

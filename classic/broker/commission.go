@@ -165,7 +165,7 @@ type OrderCommission struct {
 type OrderCommissionItem struct {
 	FillID        string               `json:"fillId"`
 	OrderID       string               `json:"orderId"`
-	Ts            time.Time            `json:"ts"`
+	Ts            time.Time            `json:"ts,format:unixmilli"`
 	ClientOrderID string               `json:"clientOid"`
 	BizType       CommissionBizType    `json:"bizType"`
 	SubBizType    CommissionSubBizType `json:"subBizType"`

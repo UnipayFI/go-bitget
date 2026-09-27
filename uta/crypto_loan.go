@@ -176,8 +176,8 @@ type BorrowOngoing struct {
 	PledgeRate       decimal.Decimal `json:"pledgeRate"`
 	SupRate          decimal.Decimal `json:"supRate"`
 	ForceRate        decimal.Decimal `json:"forceRate"`
-	BorrowTime       time.Time       `json:"borrowTime"`
-	ExpireTime       time.Time       `json:"expireTime"`
+	BorrowTime       time.Time       `json:"borrowTime,format:unixmilli"`
+	ExpireTime       time.Time       `json:"expireTime,format:unixmilli"`
 }
 
 // GetBorrowHistoryService -- GET /api/v3/loan/borrow-history (UTA mgt. read)
@@ -244,7 +244,7 @@ type BorrowHistory struct {
 	InitLoanAmount   decimal.Decimal `json:"initLoanAmount"`
 	HourRate         decimal.Decimal `json:"hourRate"`
 	PledgeDays       string          `json:"pledgeDays"`
-	BorrowTime       time.Time       `json:"borrowTime"`
+	BorrowTime       time.Time       `json:"borrowTime,format:unixmilli"`
 	Status           string          `json:"status"` // ROLLBACK, FORCE, REPAY
 	Daily            string          `json:"daily"`  // FLEXIBLE, SEVEN, THIRTY
 }
@@ -351,7 +351,7 @@ type RepayHistory struct {
 	PayInterest       decimal.Decimal `json:"payInterest"`
 	RepayLoanAmount   decimal.Decimal `json:"repayLoanAmount"`
 	RepayUnlockAmount decimal.Decimal `json:"repayUnlockAmount"`
-	RepayTime         time.Time       `json:"repayTime"`
+	RepayTime         time.Time       `json:"repayTime,format:unixmilli"`
 }
 
 // RevisePledgeService -- POST /api/v3/loan/revise-pledge (UTA mgt. read & write)
@@ -445,7 +445,7 @@ type PledgeRateHistory struct {
 	LoanCoin         string          `json:"loanCoin"`
 	PledgeCoin       string          `json:"pledgeCoin"`
 	OrderID          string          `json:"orderId"`
-	ReviseTime       time.Time       `json:"reviseTime"`
+	ReviseTime       time.Time       `json:"reviseTime,format:unixmilli"`
 	ReviseSide       string          `json:"reviseSide"` // down, up
 	ReviseAmount     decimal.Decimal `json:"reviseAmount"`
 	AfterPledgeRate  decimal.Decimal `json:"afterPledgeRate"`
@@ -541,7 +541,7 @@ type LoanReduce struct {
 	OrderID         string          `json:"orderId"`
 	LoanCoin        string          `json:"loanCoin"`
 	PledgeCoin      string          `json:"pledgeCoin"`
-	ReduceTime      time.Time       `json:"reduceTime"`
+	ReduceTime      time.Time       `json:"reduceTime,format:unixmilli"`
 	PledgeRate      decimal.Decimal `json:"pledgeRate"`
 	PledgePrice     decimal.Decimal `json:"pledgePrice"`
 	Status          string          `json:"status"` // COMPLETE, WAIT

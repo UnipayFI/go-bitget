@@ -46,8 +46,8 @@ type SubAccount struct {
 	SubUID      string    `json:"subUid"`
 	Status      string    `json:"status"` // normal
 	Note        string    `json:"note"`
-	CreatedTime time.Time `json:"createdTime"`
-	UpdatedTime time.Time `json:"updatedTime"`
+	CreatedTime time.Time `json:"createdTime,format:unixmilli"`
+	UpdatedTime time.Time `json:"updatedTime,format:unixmilli"`
 }
 
 // FreezeSubAccountService -- POST /api/v3/user/freeze-sub (UTA mgt. read & write)
@@ -189,8 +189,8 @@ type SubAccountInfo struct {
 	AccountMode string    `json:"accountMode"` // CLASSIC, UNIFIED
 	Type        string    `json:"type"`        // normal, virtual, custodian, agent, other
 	Note        string    `json:"note"`
-	CreatedTime time.Time `json:"createdTime"`
-	UpdatedTime time.Time `json:"updatedTime"`
+	CreatedTime time.Time `json:"createdTime,format:unixmilli"`
+	UpdatedTime time.Time `json:"updatedTime,format:unixmilli"`
 }
 
 // CreateSubAccountAPIKeyService -- POST /api/v3/user/create-sub-api (UTA mgt. read & write)
@@ -330,7 +330,7 @@ type SubAccountAPIKeyRow struct {
 	Note        string    `json:"note"`
 	Permissions []string  `json:"permissions"`
 	Ips         []string  `json:"ips"`
-	Ts          time.Time `json:"ts"`
+	Ts          time.Time `json:"ts,format:unixmilli"`
 }
 
 // CreateAgentSubAccountService -- POST /api/v3/user/sub-account/agent-create (UTA mgt. read & write)
@@ -367,5 +367,5 @@ type AgentSubAccount struct {
 	APIKey      string    `json:"apiKey"`
 	Secret      string    `json:"secret"`
 	Note        string    `json:"note"`
-	CreatedTime time.Time `json:"createdTime"`
+	CreatedTime time.Time `json:"createdTime,format:unixmilli"`
 }

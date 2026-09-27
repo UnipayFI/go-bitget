@@ -73,8 +73,8 @@ type Position struct {
 	OpenFeeTotal     decimal.Decimal `json:"openFeeTotal"`
 	CloseFeeTotal    decimal.Decimal `json:"closeFeeTotal"`
 	CashDividend     decimal.Decimal `json:"cashDividend"` // cash dividend, in USDT
-	CreatedTime      time.Time       `json:"createdTime"`
-	UpdatedTime      time.Time       `json:"updatedTime"`
+	CreatedTime      time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime      time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // GetPositionHistoryService -- GET /api/v3/position/history-position (UTA trade read)
@@ -146,8 +146,8 @@ type HistoryPosition struct {
 	OpenFeeTotal   decimal.Decimal `json:"openFeeTotal"`
 	CloseFeeTotal  decimal.Decimal `json:"closeFeeTotal"`
 	CashDividend   decimal.Decimal `json:"cashDividend"` // cash dividend, in USDT
-	CreatedTime    time.Time       `json:"createdTime"`
-	UpdatedTime    time.Time       `json:"updatedTime"`
+	CreatedTime    time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime    time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // GetMovePositionHistoryService -- GET /api/v3/account/move-position-history (UTA trade read)
@@ -213,8 +213,8 @@ type MovePosition struct {
 	Qty         decimal.Decimal `json:"qty"`
 	Price       decimal.Decimal `json:"price"`
 	Status      string          `json:"status"` // processing, completed, failed
-	CreatedTime time.Time       `json:"createdTime"`
-	UpdatedTime time.Time       `json:"updatedTime"`
+	CreatedTime time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // GetPositionADLRankService -- GET /api/v3/position/adlRank (UTA trade read)

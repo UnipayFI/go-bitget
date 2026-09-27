@@ -265,7 +265,7 @@ type SavingsRecord struct {
 	Period         string            `json:"period"` // not returned for flexible
 	ProductLevel   string            `json:"productLevel"`
 	Amount         decimal.Decimal   `json:"amount"`
-	Ts             time.Time         `json:"ts"`
+	Ts             time.Time         `json:"ts,format:unixmilli"`
 	OrderType      SavingsRecordType `json:"orderType"`
 }
 
@@ -297,11 +297,11 @@ type SavingsSubscribeInfo struct {
 	RemainingAmount    decimal.Decimal     `json:"remainingAmount"`
 	SubscribePrecision string              `json:"subscribePrecision"`
 	ProfitPrecision    string              `json:"profitPrecision"`
-	SubscribeTime      time.Time           `json:"subscribeTime"`
-	InterestTime       time.Time           `json:"interestTime"`
-	SettleTime         time.Time           `json:"settleTime"`
-	ExpireTime         time.Time           `json:"expireTime"`
-	RedeemTime         time.Time           `json:"redeemTime"`
+	SubscribeTime      time.Time           `json:"subscribeTime,format:unixmilli"`
+	InterestTime       time.Time           `json:"interestTime,format:unixmilli"`
+	SettleTime         time.Time           `json:"settleTime,format:unixmilli"`
+	ExpireTime         time.Time           `json:"expireTime,format:unixmilli"`
+	RedeemTime         time.Time           `json:"redeemTime,format:unixmilli"`
 	SettleMethod       string              `json:"settleMethod"`
 	APYList            []SavingsProductAPY `json:"apyList"`
 	RedeemDelay        string              `json:"redeemDelay"` // e.g. "D+1"

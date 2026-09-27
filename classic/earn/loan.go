@@ -213,18 +213,18 @@ func (s *GetLoanOngoingOrdersService) Do(ctx context.Context) ([]LoanOrder, erro
 
 // LoanOrder is one ongoing loan order.
 type LoanOrder struct {
-	OrderID          string          `json:"orderId"`          // order ID
-	LoanCoin         string          `json:"loanCoin"`         // borrowed coin
-	LoanAmount       decimal.Decimal `json:"loanAmount"`       // loan amount
-	InterestAmount   decimal.Decimal `json:"interestAmount"`   // accrued interest amount
-	HourInterestRate decimal.Decimal `json:"hourInterestRate"` // hourly interest rate
-	PledgeCoin       string          `json:"pledgeCoin"`       // collateral coin
-	PledgeAmount     decimal.Decimal `json:"pledgeAmount"`     // collateral amount
-	PledgeRate       decimal.Decimal `json:"pledgeRate"`       // collateral rate
-	SupRate          decimal.Decimal `json:"supRate"`          // supplementary collateral rate
-	ForceRate        decimal.Decimal `json:"forceRate"`        // forced-liquidation collateral rate
-	BorrowTime       time.Time       `json:"borrowTime"`       // borrow time
-	ExpireTime       time.Time       `json:"expireTime"`       // expiry time
+	OrderID          string          `json:"orderId"`                     // order ID
+	LoanCoin         string          `json:"loanCoin"`                    // borrowed coin
+	LoanAmount       decimal.Decimal `json:"loanAmount"`                  // loan amount
+	InterestAmount   decimal.Decimal `json:"interestAmount"`              // accrued interest amount
+	HourInterestRate decimal.Decimal `json:"hourInterestRate"`            // hourly interest rate
+	PledgeCoin       string          `json:"pledgeCoin"`                  // collateral coin
+	PledgeAmount     decimal.Decimal `json:"pledgeAmount"`                // collateral amount
+	PledgeRate       decimal.Decimal `json:"pledgeRate"`                  // collateral rate
+	SupRate          decimal.Decimal `json:"supRate"`                     // supplementary collateral rate
+	ForceRate        decimal.Decimal `json:"forceRate"`                   // forced-liquidation collateral rate
+	BorrowTime       time.Time       `json:"borrowTime,format:unixmilli"` // borrow time
+	ExpireTime       time.Time       `json:"expireTime,format:unixmilli"` // expiry time
 }
 
 // LoanRepayService -- POST /api/v2/earn/loan/repay (earn write)
@@ -334,14 +334,14 @@ func (s *GetLoanRepayHistoryService) Do(ctx context.Context) ([]LoanRepayRecord,
 
 // LoanRepayRecord is one repayment-history entry.
 type LoanRepayRecord struct {
-	OrderID           string          `json:"orderId"`           // order ID
-	LoanCoin          string          `json:"loanCoin"`          // borrowed coin
-	PledgeCoin        string          `json:"pledgeCoin"`        // collateral coin
-	RepayAmount       decimal.Decimal `json:"repayAmount"`       // repayment amount
-	PayInterest       decimal.Decimal `json:"payInterest"`       // interest paid
-	RepayLoanAmount   decimal.Decimal `json:"repayLoanAmount"`   // principal repaid
-	RepayUnlockAmount decimal.Decimal `json:"repayUnlockAmount"` // collateral released
-	RepayTime         time.Time       `json:"repayTime"`         // repayment time
+	OrderID           string          `json:"orderId"`                    // order ID
+	LoanCoin          string          `json:"loanCoin"`                   // borrowed coin
+	PledgeCoin        string          `json:"pledgeCoin"`                 // collateral coin
+	RepayAmount       decimal.Decimal `json:"repayAmount"`                // repayment amount
+	PayInterest       decimal.Decimal `json:"payInterest"`                // interest paid
+	RepayLoanAmount   decimal.Decimal `json:"repayLoanAmount"`            // principal repaid
+	RepayUnlockAmount decimal.Decimal `json:"repayUnlockAmount"`          // collateral released
+	RepayTime         time.Time       `json:"repayTime,format:unixmilli"` // repayment time
 }
 
 // LoanRevisePledgeService -- POST /api/v2/earn/loan/revise-pledge (earn write)
@@ -431,14 +431,14 @@ func (s *GetLoanReviseHistoryService) Do(ctx context.Context) ([]LoanReviseRecor
 
 // LoanReviseRecord is one pledge-rate adjustment record.
 type LoanReviseRecord struct {
-	LoanCoin         string          `json:"loanCoin"`         // borrowed coin
-	PledgeCoin       string          `json:"pledgeCoin"`       // collateral coin
-	OrderID          string          `json:"orderId"`          // loan order ID
-	ReviseTime       time.Time       `json:"reviseTime"`       // adjustment time
-	ReviseSide       LoanReviseSide  `json:"reviseSide"`       // adjustment direction
-	ReviseAmount     decimal.Decimal `json:"reviseAmount"`     // adjustment amount
-	AfterPledgeRate  decimal.Decimal `json:"afterPledgeRate"`  // collateral rate after adjustment
-	BeforePledgeRate decimal.Decimal `json:"beforePledgeRate"` // collateral rate before adjustment
+	LoanCoin         string          `json:"loanCoin"`                    // borrowed coin
+	PledgeCoin       string          `json:"pledgeCoin"`                  // collateral coin
+	OrderID          string          `json:"orderId"`                     // loan order ID
+	ReviseTime       time.Time       `json:"reviseTime,format:unixmilli"` // adjustment time
+	ReviseSide       LoanReviseSide  `json:"reviseSide"`                  // adjustment direction
+	ReviseAmount     decimal.Decimal `json:"reviseAmount"`                // adjustment amount
+	AfterPledgeRate  decimal.Decimal `json:"afterPledgeRate"`             // collateral rate after adjustment
+	BeforePledgeRate decimal.Decimal `json:"beforePledgeRate"`            // collateral rate before adjustment
 }
 
 // GetLoanBorrowHistoryService -- GET /api/v2/earn/loan/borrow-history (earn read)
@@ -504,15 +504,15 @@ func (s *GetLoanBorrowHistoryService) Do(ctx context.Context) ([]LoanBorrowRecor
 
 // LoanBorrowRecord is one loan-history entry.
 type LoanBorrowRecord struct {
-	OrderID          string           `json:"orderId"`          // order ID
-	LoanCoin         string           `json:"loanCoin"`         // borrowed coin
-	PledgeCoin       string           `json:"pledgeCoin"`       // collateral coin
-	InitPledgeAmount decimal.Decimal  `json:"initPledgeAmount"` // initial collateral amount
-	InitLoanAmount   decimal.Decimal  `json:"initLoanAmount"`   // initial loan amount
-	HourRate         decimal.Decimal  `json:"hourRate"`         // hourly interest rate
-	Daily            LoanDailyTerm    `json:"daily"`            // pledge duration term
-	BorrowTime       time.Time        `json:"borrowTime"`       // borrow time
-	Status           LoanBorrowStatus `json:"status"`           // terminal status
+	OrderID          string           `json:"orderId"`                     // order ID
+	LoanCoin         string           `json:"loanCoin"`                    // borrowed coin
+	PledgeCoin       string           `json:"pledgeCoin"`                  // collateral coin
+	InitPledgeAmount decimal.Decimal  `json:"initPledgeAmount"`            // initial collateral amount
+	InitLoanAmount   decimal.Decimal  `json:"initLoanAmount"`              // initial loan amount
+	HourRate         decimal.Decimal  `json:"hourRate"`                    // hourly interest rate
+	Daily            LoanDailyTerm    `json:"daily"`                       // pledge duration term
+	BorrowTime       time.Time        `json:"borrowTime,format:unixmilli"` // borrow time
+	Status           LoanBorrowStatus `json:"status"`                      // terminal status
 }
 
 // GetLoanDebtsService -- GET /api/v2/earn/loan/debts (earn read)
@@ -607,16 +607,16 @@ func (s *GetLoanReducesService) Do(ctx context.Context) ([]LoanReduceRecord, err
 
 // LoanReduceRecord is one liquidation (reduce) record.
 type LoanReduceRecord struct {
-	OrderID         string           `json:"orderId"`         // order ID
-	LoanCoin        string           `json:"loanCoin"`        // borrowed coin
-	PledgeCoin      string           `json:"pledgeCoin"`      // collateral coin
-	ReduceTime      time.Time        `json:"reduceTime"`      // liquidation time
-	PledgeRate      decimal.Decimal  `json:"pledgeRate"`      // collateral rate at liquidation
-	PledgePrice     decimal.Decimal  `json:"pledgePrice"`     // collateral price at liquidation
-	Status          LoanReduceStatus `json:"status"`          // liquidation status
-	PledgeAmount    decimal.Decimal  `json:"pledgeAmount"`    // liquidated collateral amount
-	ReduceFee       decimal.Decimal  `json:"reduceFee"`       // liquidation fee
-	ResidueAmount   decimal.Decimal  `json:"residueAmount"`   // remaining collateral balance
-	RunlockAmount   decimal.Decimal  `json:"runlockAmount"`   // released collateral amount
-	RepayLoanAmount decimal.Decimal  `json:"repayLoanAmount"` // loan repaid
+	OrderID         string           `json:"orderId"`                     // order ID
+	LoanCoin        string           `json:"loanCoin"`                    // borrowed coin
+	PledgeCoin      string           `json:"pledgeCoin"`                  // collateral coin
+	ReduceTime      time.Time        `json:"reduceTime,format:unixmilli"` // liquidation time
+	PledgeRate      decimal.Decimal  `json:"pledgeRate"`                  // collateral rate at liquidation
+	PledgePrice     decimal.Decimal  `json:"pledgePrice"`                 // collateral price at liquidation
+	Status          LoanReduceStatus `json:"status"`                      // liquidation status
+	PledgeAmount    decimal.Decimal  `json:"pledgeAmount"`                // liquidated collateral amount
+	ReduceFee       decimal.Decimal  `json:"reduceFee"`                   // liquidation fee
+	ResidueAmount   decimal.Decimal  `json:"residueAmount"`               // remaining collateral balance
+	RunlockAmount   decimal.Decimal  `json:"runlockAmount"`               // released collateral amount
+	RepayLoanAmount decimal.Decimal  `json:"repayLoanAmount"`             // loan repaid
 }

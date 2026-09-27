@@ -44,7 +44,7 @@ type RiskReserveRecord struct {
 	Type    string          `json:"type"` // deprecated
 	Amount  decimal.Decimal `json:"amount"`
 	Balance decimal.Decimal `json:"balance"`
-	Ts      time.Time       `json:"ts"`
+	Ts      time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetRiskReserveHourService -- GET /api/v3/market/risk-reserve-hour
@@ -82,7 +82,7 @@ type RiskReserveHour struct {
 type RiskReserveHourRecord struct {
 	Amount  decimal.Decimal `json:"amount"`
 	Balance decimal.Decimal `json:"balance"`
-	Ts      time.Time       `json:"ts"`
+	Ts      time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetRiskReserveAllService -- GET /api/v3/market/risk-reserve-all

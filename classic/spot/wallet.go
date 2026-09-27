@@ -430,8 +430,8 @@ type DepositRecord struct {
 	Confirm       string          `json:"confirm"`
 	Dest          RecordDest      `json:"dest"`
 	Tag           string          `json:"tag"`
-	CTime         time.Time       `json:"cTime"`
-	UTime         time.Time       `json:"uTime"`
+	CTime         time.Time       `json:"cTime,format:unixmilli"`
+	UTime         time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetSubAccountDepositRecordsService -- GET /api/v2/spot/wallet/subaccount-deposit-records (signed)
@@ -555,6 +555,6 @@ type WithdrawalRecord struct {
 	Chain         string          `json:"chain"`
 	Confirm       string          `json:"confirm"`
 	Tag           string          `json:"tag"`
-	CTime         time.Time       `json:"cTime"`
-	UTime         time.Time       `json:"uTime"`
+	CTime         time.Time       `json:"cTime,format:unixmilli"`
+	UTime         time.Time       `json:"uTime,format:unixmilli"`
 }

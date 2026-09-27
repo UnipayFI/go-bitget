@@ -197,8 +197,8 @@ type SubTransferRecord struct {
 	ToUserID      string          `json:"toUserId"`
 	Status        string          `json:"status"`
 	ClientOrderID string          `json:"clientOid"`
-	CreatedTime   time.Time       `json:"createdTime"`
-	UpdatedTime   time.Time       `json:"updatedTime"`
+	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 	OldTransferID string          `json:"oldTransferId"`
 }
 

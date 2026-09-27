@@ -40,7 +40,7 @@ type MarginCrossIndexPrice struct {
 	BaseCoin   string          `json:"baseCoin"`
 	QuoteCoin  string          `json:"quoteCoin"`
 	IndexPrice decimal.Decimal `json:"indexPrice"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 }
 
 // -----------------------------------------------------------------------------
@@ -67,24 +67,24 @@ func (s *SubscribeMarginCrossOrdersService) Do(ctx context.Context, cb WsHandler
 
 // MarginCrossOrder is one element of the "orders-crossed" push data array.
 type MarginCrossOrder struct {
-	BaseSize         decimal.Decimal  `json:"baseSize"`         // quantity of base coins
-	CTime            time.Time        `json:"cTime"`            // creation time
-	UTime            time.Time        `json:"uTime"`            // update time
-	ClientOrderID    string           `json:"clientOid"`        // client order id
-	FillPrice        decimal.Decimal  `json:"fillPrice"`        // execution price
-	BaseVolume       decimal.Decimal  `json:"baseVolume"`       // filled quantity
-	FillTotalAmount  decimal.Decimal  `json:"fillTotalAmount"`  // total value of filled amount
-	LoanType         string           `json:"loanType"`         // normal, autoLoan, autoRepay, autoLoanAndRepay
-	OrderID          string           `json:"orderId"`          // order id
-	OrderType        string           `json:"orderType"`        // limit or market
-	Price            decimal.Decimal  `json:"price"`            // order price
-	QuoteSize        decimal.Decimal  `json:"quoteSize"`        // quantity of denominated coins
-	Side             string           `json:"side"`             // buy/sell
-	EnterPointSource string           `json:"enterPointSource"` // WEB, API, SYS, ANDROID, IOS
-	Status           string           `json:"status"`           // live, partially_filled, filled, cancelled
-	Force            string           `json:"force"`            // order strategy
-	StpMode          string           `json:"stpMode"`          // none, cancel_taker, cancel_maker, cancel_both
-	FeeDetail        []MarginOrderFee `json:"feeDetail"`        // transaction fees
+	BaseSize         decimal.Decimal  `json:"baseSize"`               // quantity of base coins
+	CTime            time.Time        `json:"cTime,format:unixmilli"` // creation time
+	UTime            time.Time        `json:"uTime,format:unixmilli"` // update time
+	ClientOrderID    string           `json:"clientOid"`              // client order id
+	FillPrice        decimal.Decimal  `json:"fillPrice"`              // execution price
+	BaseVolume       decimal.Decimal  `json:"baseVolume"`             // filled quantity
+	FillTotalAmount  decimal.Decimal  `json:"fillTotalAmount"`        // total value of filled amount
+	LoanType         string           `json:"loanType"`               // normal, autoLoan, autoRepay, autoLoanAndRepay
+	OrderID          string           `json:"orderId"`                // order id
+	OrderType        string           `json:"orderType"`              // limit or market
+	Price            decimal.Decimal  `json:"price"`                  // order price
+	QuoteSize        decimal.Decimal  `json:"quoteSize"`              // quantity of denominated coins
+	Side             string           `json:"side"`                   // buy/sell
+	EnterPointSource string           `json:"enterPointSource"`       // WEB, API, SYS, ANDROID, IOS
+	Status           string           `json:"status"`                 // live, partially_filled, filled, cancelled
+	Force            string           `json:"force"`                  // order strategy
+	StpMode          string           `json:"stpMode"`                // none, cancel_taker, cancel_maker, cancel_both
+	FeeDetail        []MarginOrderFee `json:"feeDetail"`              // transaction fees
 }
 
 // MarginOrderFee is one element of a margin order's "feeDetail" array (shared by
@@ -121,14 +121,14 @@ func (s *SubscribeMarginCrossAccountService) Do(ctx context.Context, cb WsHandle
 
 // MarginCrossAccount is one element of the "account-crossed" push data array.
 type MarginCrossAccount struct {
-	Available decimal.Decimal `json:"available"` // available amount
-	Borrow    decimal.Decimal `json:"borrow"`    // borrow amount
-	Coin      string          `json:"coin"`      // coin name
-	Frozen    decimal.Decimal `json:"frozen"`    // amount frozen
-	Coupon    decimal.Decimal `json:"coupon"`    // coupon
-	ID        string          `json:"id"`        // id
-	Interest  decimal.Decimal `json:"interest"`  // interest
-	UTime     time.Time       `json:"uTime"`     // updated time
+	Available decimal.Decimal `json:"available"`              // available amount
+	Borrow    decimal.Decimal `json:"borrow"`                 // borrow amount
+	Coin      string          `json:"coin"`                   // coin name
+	Frozen    decimal.Decimal `json:"frozen"`                 // amount frozen
+	Coupon    decimal.Decimal `json:"coupon"`                 // coupon
+	ID        string          `json:"id"`                     // id
+	Interest  decimal.Decimal `json:"interest"`               // interest
+	UTime     time.Time       `json:"uTime,format:unixmilli"` // updated time
 }
 
 // -----------------------------------------------------------------------------
@@ -155,24 +155,24 @@ func (s *SubscribeMarginIsolatedOrdersService) Do(ctx context.Context, cb WsHand
 
 // MarginIsolatedOrder is one element of the "orders-isolated" push data array.
 type MarginIsolatedOrder struct {
-	BaseSize         decimal.Decimal  `json:"baseSize"`         // number of base coins
-	CTime            time.Time        `json:"cTime"`            // creation time
-	UTime            time.Time        `json:"uTime"`            // update time
-	ClientOrderID    string           `json:"clientOid"`        // client order id
-	FillPrice        decimal.Decimal  `json:"fillPrice"`        // sale price
-	BaseVolume       decimal.Decimal  `json:"baseVolume"`       // base coin quantity
-	FillTotalAmount  decimal.Decimal  `json:"fillTotalAmount"`  // sum of money sold
-	LoanType         string           `json:"loanType"`         // normal, autoLoan, autoRepay, autoLoanAndRepay
-	OrderID          string           `json:"orderId"`          // order id
-	OrderType        string           `json:"orderType"`        // limit or market
-	Price            decimal.Decimal  `json:"price"`            // order price
-	QuoteSize        decimal.Decimal  `json:"quoteSize"`        // number of denominated coins
-	Side             string           `json:"side"`             // buy/sell
-	EnterPointSource string           `json:"enterPointSource"` // WEB, API, SYS, ANDROID, IOS
-	Status           string           `json:"status"`           // order status
-	Force            string           `json:"force"`            // order strategy
-	StpMode          string           `json:"stpMode"`          // none, cancel_taker, cancel_maker, cancel_both
-	FeeDetail        []MarginOrderFee `json:"feeDetail"`        // transaction fees
+	BaseSize         decimal.Decimal  `json:"baseSize"`               // number of base coins
+	CTime            time.Time        `json:"cTime,format:unixmilli"` // creation time
+	UTime            time.Time        `json:"uTime,format:unixmilli"` // update time
+	ClientOrderID    string           `json:"clientOid"`              // client order id
+	FillPrice        decimal.Decimal  `json:"fillPrice"`              // sale price
+	BaseVolume       decimal.Decimal  `json:"baseVolume"`             // base coin quantity
+	FillTotalAmount  decimal.Decimal  `json:"fillTotalAmount"`        // sum of money sold
+	LoanType         string           `json:"loanType"`               // normal, autoLoan, autoRepay, autoLoanAndRepay
+	OrderID          string           `json:"orderId"`                // order id
+	OrderType        string           `json:"orderType"`              // limit or market
+	Price            decimal.Decimal  `json:"price"`                  // order price
+	QuoteSize        decimal.Decimal  `json:"quoteSize"`              // number of denominated coins
+	Side             string           `json:"side"`                   // buy/sell
+	EnterPointSource string           `json:"enterPointSource"`       // WEB, API, SYS, ANDROID, IOS
+	Status           string           `json:"status"`                 // order status
+	Force            string           `json:"force"`                  // order strategy
+	StpMode          string           `json:"stpMode"`                // none, cancel_taker, cancel_maker, cancel_both
+	FeeDetail        []MarginOrderFee `json:"feeDetail"`              // transaction fees
 }
 
 // -----------------------------------------------------------------------------
@@ -200,13 +200,13 @@ func (s *SubscribeMarginIsolatedAccountService) Do(ctx context.Context, cb WsHan
 
 // MarginIsolatedAccount is one element of the "account-isolated" push data array.
 type MarginIsolatedAccount struct {
-	UTime     time.Time       `json:"uTime"`     // updated time
-	ID        string          `json:"id"`        // id
-	Coin      string          `json:"coin"`      // coin name
-	Symbol    string          `json:"symbol"`    // trading pair
-	Available decimal.Decimal `json:"available"` // available amount
-	Borrow    decimal.Decimal `json:"borrow"`    // borrow amount
-	Frozen    decimal.Decimal `json:"frozen"`    // amount frozen
-	Interest  decimal.Decimal `json:"interest"`  // interest accrued
-	Coupon    decimal.Decimal `json:"coupon"`    // coupon value
+	UTime     time.Time       `json:"uTime,format:unixmilli"` // updated time
+	ID        string          `json:"id"`                     // id
+	Coin      string          `json:"coin"`                   // coin name
+	Symbol    string          `json:"symbol"`                 // trading pair
+	Available decimal.Decimal `json:"available"`              // available amount
+	Borrow    decimal.Decimal `json:"borrow"`                 // borrow amount
+	Frozen    decimal.Decimal `json:"frozen"`                 // amount frozen
+	Interest  decimal.Decimal `json:"interest"`               // interest accrued
+	Coupon    decimal.Decimal `json:"coupon"`                 // coupon value
 }

@@ -96,8 +96,8 @@ type Position struct {
 	AssetMode        AssetMode       `json:"assetMode"`
 	AutoMargin       AutoMargin      `json:"autoMargin"`
 	Grant            decimal.Decimal `json:"grant"`
-	CTime            time.Time       `json:"cTime"`
-	UTime            time.Time       `json:"uTime"`
+	CTime            time.Time       `json:"cTime,format:unixmilli"`
+	UTime            time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetPositionADLRankService -- GET /api/v2/mix/position/adlRank (private)
@@ -202,6 +202,6 @@ type HistoryPosition struct {
 	TotalFunding  decimal.Decimal `json:"totalFunding"`
 	OpenFee       decimal.Decimal `json:"openFee"`
 	CloseFee      decimal.Decimal `json:"closeFee"`
-	CTime         time.Time       `json:"ctime"`
-	UTime         time.Time       `json:"utime"`
+	CTime         time.Time       `json:"ctime,format:unixmilli"`
+	UTime         time.Time       `json:"utime,format:unixmilli"`
 }

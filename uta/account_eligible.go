@@ -58,7 +58,7 @@ type EligibleSymbol struct {
 	MaxPositionNum      string           `json:"maxPositionNum"`
 	Status              InstrumentStatus `json:"status"`
 	MaintainTime        string           `json:"maintainTime"`
-	LaunchTime          time.Time        `json:"launchTime"`
+	LaunchTime          time.Time        `json:"launchTime,format:unixmilli"`
 }
 
 // GetEligibleMarginTierService -- GET /api/v3/account/eligible-margin-tier (UTA mgt. read)

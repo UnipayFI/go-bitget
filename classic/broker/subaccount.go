@@ -85,7 +85,7 @@ func (s *GetBrokerAccountInfoService) Do(ctx context.Context) (*BrokerAccountInf
 type BrokerAccountInfo struct {
 	SubAccountSize    string    `json:"subAccountSize"`
 	MaxSubAccountSize string    `json:"maxSubAccountSize"`
-	UTime             time.Time `json:"uTime"`
+	UTime             time.Time `json:"uTime,format:unixmilli"`
 }
 
 // CreateSubaccountService -- POST /api/v2/broker/account/create-subaccount (broker, signed)
@@ -119,8 +119,8 @@ type Subaccount struct {
 	PermList       []string         `json:"permList"`
 	Label          string           `json:"label"`
 	Language       string           `json:"language"`
-	CTime          time.Time        `json:"cTime"`
-	UTime          time.Time        `json:"uTime"`
+	CTime          time.Time        `json:"cTime,format:unixmilli"`
+	UTime          time.Time        `json:"uTime,format:unixmilli"`
 }
 
 // GetSubaccountListService -- GET /api/v2/broker/account/subaccount-list (broker, signed)
@@ -250,8 +250,8 @@ type SubaccountEmail struct {
 	SubUID          string    `json:"subUid"`
 	SubaccountName  string    `json:"subaccountName"`
 	SubaccountEmail string    `json:"subaccountEmail"`
-	CTime           time.Time `json:"cTime"`
-	UTime           time.Time `json:"uTime"`
+	CTime           time.Time `json:"cTime,format:unixmilli"`
+	UTime           time.Time `json:"uTime,format:unixmilli"`
 }
 
 // GetSubaccountSpotAssetsService -- GET /api/v2/broker/account/subaccount-spot-assets (broker, signed)
@@ -294,7 +294,7 @@ type SubaccountSpotAsset struct {
 	Available decimal.Decimal `json:"available"`
 	Frozen    decimal.Decimal `json:"frozen"`
 	Locked    decimal.Decimal `json:"locked"`
-	UTime     time.Time       `json:"uTime"`
+	UTime     time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetSubaccountFutureAssetsService -- GET /api/v2/broker/account/subaccount-future-assets (broker, signed)
@@ -335,7 +335,7 @@ type SubaccountFutureAsset struct {
 	USDTEquity           decimal.Decimal `json:"usdtEquity"`
 	BtcEquity            decimal.Decimal `json:"btcEquity"`
 	UnrealizedPL         decimal.Decimal `json:"unrealizedPL"`
-	UTime                time.Time       `json:"uTime"`
+	UTime                time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // CreateSubaccountDepositAddressService -- POST /api/v2/broker/account/subaccount-address (broker, signed)
@@ -372,7 +372,7 @@ type SubaccountDepositAddress struct {
 	Coin    string    `json:"coin"`
 	Tag     string    `json:"tag"`
 	URL     string    `json:"url"`
-	CTime   time.Time `json:"cTime"`
+	CTime   time.Time `json:"cTime,format:unixmilli"`
 }
 
 // SubaccountWithdrawalService -- POST /api/v2/broker/account/subaccount-withdrawal (broker, signed)
@@ -521,8 +521,8 @@ type SubaccountDepositRecord struct {
 	Confirm     string          `json:"confirm"`
 	Tag         string          `json:"tag"`
 	UserID      string          `json:"userId"`
-	CTime       time.Time       `json:"cTime"`
-	UTime       time.Time       `json:"uTime"`
+	CTime       time.Time       `json:"cTime,format:unixmilli"`
+	UTime       time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetSubaccountWithdrawalRecordsService -- GET /api/v2/broker/subaccount-withdrawal (broker, signed)
@@ -600,8 +600,8 @@ type SubaccountWithdrawalRecord struct {
 	Confirm     string          `json:"confirm"`
 	Tag         string          `json:"tag"`
 	UserID      string          `json:"userId"`
-	CTime       time.Time       `json:"cTime"`
-	UTime       time.Time       `json:"uTime"`
+	CTime       time.Time       `json:"cTime,format:unixmilli"`
+	UTime       time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetAllSubDepositWithdrawalService -- GET /api/v2/broker/all-sub-deposit-withdrawal (broker, signed)
@@ -667,7 +667,7 @@ type SubDepositWithdrawalRecord struct {
 	Coin    string          `json:"coin"`
 	Amount  decimal.Decimal `json:"amount"`
 	Status  string          `json:"status"` // pending, fail, success
-	Ts      time.Time       `json:"ts"`
+	Ts      time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetBrokerSubaccountsService -- GET /api/v2/broker/subaccounts (broker, signed)
@@ -720,9 +720,9 @@ func (s *GetBrokerSubaccountsService) Do(ctx context.Context) ([]BrokerSubaccoun
 type BrokerSubaccountStat struct {
 	UID              string          `json:"uid"`
 	Asset            decimal.Decimal `json:"asset"`
-	FirstTimeDeposit time.Time       `json:"firstTimeDeposit"`
-	FirstTimeTrade   time.Time       `json:"firstTimeTrade"`
-	RegisterTime     time.Time       `json:"registerTime"`
+	FirstTimeDeposit time.Time       `json:"firstTimeDeposit,format:unixmilli"`
+	FirstTimeTrade   time.Time       `json:"firstTimeTrade,format:unixmilli"`
+	RegisterTime     time.Time       `json:"registerTime,format:unixmilli"`
 }
 
 // GetBrokerCommissionsService -- GET /api/v2/broker/commissions (broker, signed)

@@ -137,7 +137,7 @@ type InsLoanRepaidOrder struct {
 	RepayOrderID  string          `json:"repayOrderId"`
 	BusinessType  string          `json:"businessType"` // normal, liquidation
 	RepayType     string          `json:"repayType"`    // all, part
-	RepaidTime    time.Time       `json:"repaidTime"`
+	RepaidTime    time.Time       `json:"repaidTime,format:unixmilli"`
 	Coin          string          `json:"coin"`
 	RepayAmount   decimal.Decimal `json:"repayAmount"`
 	RepayInterest decimal.Decimal `json:"repayInterest"`
@@ -218,7 +218,7 @@ type InsLoanOrder struct {
 	OrderID        string          `json:"orderId"`
 	OrderProductID string          `json:"orderProductId"`
 	UID            string          `json:"uid"`
-	LoanTime       time.Time       `json:"loanTime"`
+	LoanTime       time.Time       `json:"loanTime,format:unixmilli"`
 	LoanCoin       string          `json:"loanCoin"`
 	LoanAmount     decimal.Decimal `json:"loanAmount"`
 	UnpaidAmount   decimal.Decimal `json:"unpaidAmount"`

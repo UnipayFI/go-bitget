@@ -35,28 +35,28 @@ func (s *SubscribeMixTickerService) Do(ctx context.Context, cb WsHandler[MixWsTi
 
 // MixWsTicker is one element of the futures "ticker" channel push data array.
 type MixWsTicker struct {
-	InstID          string          `json:"instId"`          // product id, e.g. BTCUSDT
-	LastPr          decimal.Decimal `json:"lastPr"`          // most recent transaction price
-	AskPr           decimal.Decimal `json:"askPr"`           // best ask price
-	BidPr           decimal.Decimal `json:"bidPr"`           // best bid price
-	BidSz           decimal.Decimal `json:"bidSz"`           // best bid size
-	AskSz           decimal.Decimal `json:"askSz"`           // best ask size
-	High24h         decimal.Decimal `json:"high24h"`         // 24h high
-	Low24h          decimal.Decimal `json:"low24h"`          // 24h low
-	Change24h       decimal.Decimal `json:"change24h"`       // 24h change ratio
-	FundingRate     decimal.Decimal `json:"fundingRate"`     // current funding rate
-	NextFundingTime time.Time       `json:"nextFundingTime"` // next funding settlement time (ms)
-	MarkPrice       decimal.Decimal `json:"markPrice"`       // mark price
-	IndexPrice      decimal.Decimal `json:"indexPrice"`      // index price
-	HoldingAmount   decimal.Decimal `json:"holdingAmount"`   // open interest amount
-	BaseVolume      decimal.Decimal `json:"baseVolume"`      // base coin trading volume
-	QuoteVolume     decimal.Decimal `json:"quoteVolume"`     // quote currency volume
-	OpenUtc         decimal.Decimal `json:"openUtc"`         // 00:00 UTC opening price
-	SymbolType      string          `json:"symbolType"`      // "1" perpetual, "2" delivery
-	Symbol          string          `json:"symbol"`          // trading pair name
-	DeliveryPrice   decimal.Decimal `json:"deliveryPrice"`   // delivery price (0 for perpetual)
-	Open24h         decimal.Decimal `json:"open24h"`         // price 24h ago
-	Ts              time.Time       `json:"ts"`              // data timestamp (ms)
+	InstID          string          `json:"instId"`                           // product id, e.g. BTCUSDT
+	LastPr          decimal.Decimal `json:"lastPr"`                           // most recent transaction price
+	AskPr           decimal.Decimal `json:"askPr"`                            // best ask price
+	BidPr           decimal.Decimal `json:"bidPr"`                            // best bid price
+	BidSz           decimal.Decimal `json:"bidSz"`                            // best bid size
+	AskSz           decimal.Decimal `json:"askSz"`                            // best ask size
+	High24h         decimal.Decimal `json:"high24h"`                          // 24h high
+	Low24h          decimal.Decimal `json:"low24h"`                           // 24h low
+	Change24h       decimal.Decimal `json:"change24h"`                        // 24h change ratio
+	FundingRate     decimal.Decimal `json:"fundingRate"`                      // current funding rate
+	NextFundingTime time.Time       `json:"nextFundingTime,format:unixmilli"` // next funding settlement time (ms)
+	MarkPrice       decimal.Decimal `json:"markPrice"`                        // mark price
+	IndexPrice      decimal.Decimal `json:"indexPrice"`                       // index price
+	HoldingAmount   decimal.Decimal `json:"holdingAmount"`                    // open interest amount
+	BaseVolume      decimal.Decimal `json:"baseVolume"`                       // base coin trading volume
+	QuoteVolume     decimal.Decimal `json:"quoteVolume"`                      // quote currency volume
+	OpenUtc         decimal.Decimal `json:"openUtc"`                          // 00:00 UTC opening price
+	SymbolType      string          `json:"symbolType"`                       // "1" perpetual, "2" delivery
+	Symbol          string          `json:"symbol"`                           // trading pair name
+	DeliveryPrice   decimal.Decimal `json:"deliveryPrice"`                    // delivery price (0 for perpetual)
+	Open24h         decimal.Decimal `json:"open24h"`                          // price 24h ago
+	Ts              time.Time       `json:"ts,format:unixmilli"`              // data timestamp (ms)
 }
 
 // SubscribeMixCandleService -- public candlestick channel (futures). The
@@ -86,14 +86,14 @@ func (s *SubscribeMixCandleService) Do(ctx context.Context, cb WsHandler[MixWsCa
 // ([ts, open, high, low, close, baseVolume, quoteVolume, usdtVolume]);
 // MixWsCandle parses that array into named fields and re-emits the same shape.
 type MixWsCandle struct {
-	Ts          time.Time       `json:"ts"`          // array[0] -- candle start time (ms)
-	Open        decimal.Decimal `json:"open"`        // array[1]
-	High        decimal.Decimal `json:"high"`        // array[2]
-	Low         decimal.Decimal `json:"low"`         // array[3]
-	Close       decimal.Decimal `json:"close"`       // array[4]
-	BaseVolume  decimal.Decimal `json:"baseVolume"`  // array[5] -- base coin volume
-	QuoteVolume decimal.Decimal `json:"quoteVolume"` // array[6] -- quote currency volume
-	USDTVolume  decimal.Decimal `json:"usdtVolume"`  // array[7] -- USDT-denominated volume
+	Ts          time.Time       `json:"ts,format:unixmilli"` // array[0] -- candle start time (ms)
+	Open        decimal.Decimal `json:"open"`                // array[1]
+	High        decimal.Decimal `json:"high"`                // array[2]
+	Low         decimal.Decimal `json:"low"`                 // array[3]
+	Close       decimal.Decimal `json:"close"`               // array[4]
+	BaseVolume  decimal.Decimal `json:"baseVolume"`          // array[5] -- base coin volume
+	QuoteVolume decimal.Decimal `json:"quoteVolume"`         // array[6] -- quote currency volume
+	USDTVolume  decimal.Decimal `json:"usdtVolume"`          // array[7] -- USDT-denominated volume
 }
 
 // UnmarshalJSON decodes the positional candle array into named fields. The USDT
@@ -171,11 +171,11 @@ func (s *SubscribeMixOrderBookService) Do(ctx context.Context, cb WsHandler[MixW
 // MixWsOrderBook is one element of the futures depth channel push data array.
 // Asks and bids arrive as arrays of [price, size] string pairs.
 type MixWsOrderBook struct {
-	Asks     [][]decimal.Decimal `json:"asks"`     // seller depth, [price, size] pairs
-	Bids     [][]decimal.Decimal `json:"bids"`     // buyer depth, [price, size] pairs
-	Checksum int32               `json:"checksum"` // CRC32 checksum for validation
-	Ts       time.Time           `json:"ts"`       // match engine timestamp (ms)
-	Seq      int64               `json:"seq"`      // serial number, increments per update
+	Asks     [][]decimal.Decimal `json:"asks"`                // seller depth, [price, size] pairs
+	Bids     [][]decimal.Decimal `json:"bids"`                // buyer depth, [price, size] pairs
+	Checksum int32               `json:"checksum"`            // CRC32 checksum for validation
+	Ts       time.Time           `json:"ts,format:unixmilli"` // match engine timestamp (ms)
+	Seq      int64               `json:"seq"`                 // serial number, increments per update
 }
 
 // SubscribeMixTradeService -- public "trade" channel (tick-by-tick fills).
@@ -198,9 +198,9 @@ func (s *SubscribeMixTradeService) Do(ctx context.Context, cb WsHandler[MixWsTra
 
 // MixWsTrade is one element of the futures "trade" channel push data array.
 type MixWsTrade struct {
-	Ts      time.Time       `json:"ts"`      // fill time (ms)
-	Price   decimal.Decimal `json:"price"`   // filled price
-	Size    decimal.Decimal `json:"size"`    // filled quantity
-	Side    string          `json:"side"`    // trade direction: "buy" or "sell"
-	TradeID string          `json:"tradeId"` // trade identifier
+	Ts      time.Time       `json:"ts,format:unixmilli"` // fill time (ms)
+	Price   decimal.Decimal `json:"price"`               // filled price
+	Size    decimal.Decimal `json:"size"`                // filled quantity
+	Side    string          `json:"side"`                // trade direction: "buy" or "sell"
+	TradeID string          `json:"tradeId"`             // trade identifier
 }

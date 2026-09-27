@@ -92,5 +92,5 @@ type InterestRateRecord struct {
 	Coin               string          `json:"coin"`
 	DailyInterestRate  decimal.Decimal `json:"dailyInterestRate"`
 	AnnualInterestRate decimal.Decimal `json:"annualInterestRate"`
-	UpdatedTime        time.Time       `json:"updatedTime"`
+	UpdatedTime        time.Time       `json:"updatedTime,format:unixmilli"`
 }

@@ -15,13 +15,13 @@ import (
 // JSON array ([ts, open, high, low, close, volume, turnover]); Candle parses
 // that array into named fields and re-emits the same array shape on marshal.
 type Candle struct {
-	Ts       time.Time       `json:"ts"`       // array[0] -- candle start time (ms)
-	Open     decimal.Decimal `json:"open"`     // array[1]
-	High     decimal.Decimal `json:"high"`     // array[2]
-	Low      decimal.Decimal `json:"low"`      // array[3]
-	Close    decimal.Decimal `json:"close"`    // array[4]
-	Volume   decimal.Decimal `json:"volume"`   // array[5] -- base coin volume
-	Turnover decimal.Decimal `json:"turnover"` // array[6] -- quote coin turnover
+	Ts       time.Time       `json:"ts,format:unixmilli"` // array[0] -- candle start time (ms)
+	Open     decimal.Decimal `json:"open"`                // array[1]
+	High     decimal.Decimal `json:"high"`                // array[2]
+	Low      decimal.Decimal `json:"low"`                 // array[3]
+	Close    decimal.Decimal `json:"close"`               // array[4]
+	Volume   decimal.Decimal `json:"volume"`              // array[5] -- base coin volume
+	Turnover decimal.Decimal `json:"turnover"`            // array[6] -- quote coin turnover
 }
 
 // UnmarshalJSON decodes the 7-element positional array into named fields.

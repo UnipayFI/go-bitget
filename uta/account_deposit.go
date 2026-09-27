@@ -137,8 +137,8 @@ type DepositRecord struct {
 	FromAddress string          `json:"fromAddress"`
 	ToAddress   string          `json:"toAddress"`
 	Chain       string          `json:"chain"`
-	CreatedTime time.Time       `json:"createdTime"`
-	UpdatedTime time.Time       `json:"updatedTime"`
+	CreatedTime time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // GetSubDepositRecordsService -- GET /api/v3/account/sub-deposit-records (UTA mgt. read)

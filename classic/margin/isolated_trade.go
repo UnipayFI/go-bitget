@@ -269,8 +269,8 @@ type IsolatedOrder struct {
 	Status           OrderStatus      `json:"status"`
 	LoanType         LoanType         `json:"loanType"`
 	EnterPointSource EnterPointSource `json:"enterPointSource"`
-	CTime            time.Time        `json:"cTime"`
-	UTime            time.Time        `json:"uTime"`
+	CTime            time.Time        `json:"cTime,format:unixmilli"`
+	UTime            time.Time        `json:"uTime,format:unixmilli"`
 }
 
 // GetIsolatedHistoryOrdersService -- GET /api/v2/margin/isolated/history-orders (margin read)
@@ -391,8 +391,8 @@ type IsolatedFill struct {
 	Amount     decimal.Decimal       `json:"amount"`
 	TradeScope string                `json:"tradeScope"` // taker, maker
 	FeeDetail  IsolatedFillFeeDetail `json:"feeDetail"`
-	CTime      time.Time             `json:"cTime"`
-	UTime      time.Time             `json:"uTime"`
+	CTime      time.Time             `json:"cTime,format:unixmilli"`
+	UTime      time.Time             `json:"uTime,format:unixmilli"`
 }
 
 // IsolatedFillFeeDetail is the fee breakdown for an isolated-margin fill.
@@ -487,6 +487,6 @@ type IsolatedLiquidationOrder struct {
 	FromSize  decimal.Decimal `json:"fromSize"`
 	ToCoin    string          `json:"toCoin"`
 	ToSize    decimal.Decimal `json:"toSize"`
-	CTime     time.Time       `json:"cTime"`
-	UTime     time.Time       `json:"uTime"`
+	CTime     time.Time       `json:"cTime,format:unixmilli"`
+	UTime     time.Time       `json:"uTime,format:unixmilli"`
 }

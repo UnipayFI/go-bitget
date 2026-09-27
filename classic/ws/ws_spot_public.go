@@ -28,21 +28,21 @@ func (s *SubscribeSpotTickerService) Do(ctx context.Context, cb WsHandler[SpotWs
 
 // SpotWsTicker is one element of the spot "ticker" channel push data array.
 type SpotWsTicker struct {
-	InstID       string          `json:"instId"`       // product id
-	LastPr       decimal.Decimal `json:"lastPr"`       // current market price
-	AskPr        decimal.Decimal `json:"askPr"`        // best ask price
-	BidPr        decimal.Decimal `json:"bidPr"`        // best bid price
-	Open24h      decimal.Decimal `json:"open24h"`      // entry price of the last 24 hours
-	High24h      decimal.Decimal `json:"high24h"`      // 24h high
-	Low24h       decimal.Decimal `json:"low24h"`       // 24h low
-	BaseVolume   decimal.Decimal `json:"baseVolume"`   // 24h volume in base (left) coin
-	QuoteVolume  decimal.Decimal `json:"quoteVolume"`  // 24h volume in quote (right) coin
-	OpenUtc      decimal.Decimal `json:"openUtc"`      // UTC+0 entry price
-	ChangeUtc24h decimal.Decimal `json:"changeUtc24h"` // UTC+0 change (0.01 = 1%)
-	BidSz        decimal.Decimal `json:"bidSz"`        // best bid size
-	AskSz        decimal.Decimal `json:"askSz"`        // best ask size
-	Change24h    decimal.Decimal `json:"change24h"`    // 24h change (0.01 = 1%)
-	Ts           time.Time       `json:"ts"`           // event timestamp (ms)
+	InstID       string          `json:"instId"`              // product id
+	LastPr       decimal.Decimal `json:"lastPr"`              // current market price
+	AskPr        decimal.Decimal `json:"askPr"`               // best ask price
+	BidPr        decimal.Decimal `json:"bidPr"`               // best bid price
+	Open24h      decimal.Decimal `json:"open24h"`             // entry price of the last 24 hours
+	High24h      decimal.Decimal `json:"high24h"`             // 24h high
+	Low24h       decimal.Decimal `json:"low24h"`              // 24h low
+	BaseVolume   decimal.Decimal `json:"baseVolume"`          // 24h volume in base (left) coin
+	QuoteVolume  decimal.Decimal `json:"quoteVolume"`         // 24h volume in quote (right) coin
+	OpenUtc      decimal.Decimal `json:"openUtc"`             // UTC+0 entry price
+	ChangeUtc24h decimal.Decimal `json:"changeUtc24h"`        // UTC+0 change (0.01 = 1%)
+	BidSz        decimal.Decimal `json:"bidSz"`               // best bid size
+	AskSz        decimal.Decimal `json:"askSz"`               // best ask size
+	Change24h    decimal.Decimal `json:"change24h"`           // 24h change (0.01 = 1%)
+	Ts           time.Time       `json:"ts,format:unixmilli"` // event timestamp (ms)
 }
 
 // SubscribeSpotCandleService -- public candlestick channel (spot). The channel
@@ -70,14 +70,14 @@ func (s *SubscribeSpotCandleService) Do(ctx context.Context, cb WsHandler[SpotWs
 // ([ts, open, high, low, close, baseVolume, quoteVolume, usdtVolume]);
 // SpotWsCandle parses that array into named fields and re-emits the same shape.
 type SpotWsCandle struct {
-	Ts          time.Time       `json:"ts"`          // array[0] -- candle start time (ms)
-	Open        decimal.Decimal `json:"open"`        // array[1]
-	High        decimal.Decimal `json:"high"`        // array[2]
-	Low         decimal.Decimal `json:"low"`         // array[3]
-	Close       decimal.Decimal `json:"close"`       // array[4]
-	BaseVolume  decimal.Decimal `json:"baseVolume"`  // array[5] -- volume in base coin
-	QuoteVolume decimal.Decimal `json:"quoteVolume"` // array[6] -- volume in quote coin
-	USDTVolume  decimal.Decimal `json:"usdtVolume"`  // array[7] -- volume in USDT
+	Ts          time.Time       `json:"ts,format:unixmilli"` // array[0] -- candle start time (ms)
+	Open        decimal.Decimal `json:"open"`                // array[1]
+	High        decimal.Decimal `json:"high"`                // array[2]
+	Low         decimal.Decimal `json:"low"`                 // array[3]
+	Close       decimal.Decimal `json:"close"`               // array[4]
+	BaseVolume  decimal.Decimal `json:"baseVolume"`          // array[5] -- volume in base coin
+	QuoteVolume decimal.Decimal `json:"quoteVolume"`         // array[6] -- volume in quote coin
+	USDTVolume  decimal.Decimal `json:"usdtVolume"`          // array[7] -- volume in USDT
 }
 
 // UnmarshalJSON decodes the 8-element positional array into named fields.
@@ -137,11 +137,11 @@ func (s *SubscribeSpotTradeService) Do(ctx context.Context, cb WsHandler[SpotWsT
 
 // SpotWsTrade is one element of the spot "trade" channel push data array.
 type SpotWsTrade struct {
-	Ts      time.Time       `json:"ts"`      // transaction time (ms)
-	TradeID string          `json:"tradeId"` // transaction id
-	Price   decimal.Decimal `json:"price"`   // transaction price
-	Size    decimal.Decimal `json:"size"`    // transaction quantity
-	Side    string          `json:"side"`    // "buy" or "sell"
+	Ts      time.Time       `json:"ts,format:unixmilli"` // transaction time (ms)
+	TradeID string          `json:"tradeId"`             // transaction id
+	Price   decimal.Decimal `json:"price"`               // transaction price
+	Size    decimal.Decimal `json:"size"`                // transaction quantity
+	Side    string          `json:"side"`                // "buy" or "sell"
 }
 
 // SubscribeSpotOrderBookService -- public depth channel (spot). depth selects
@@ -171,11 +171,11 @@ func (s *SubscribeSpotOrderBookService) Do(ctx context.Context, cb WsHandler[Spo
 // SpotWsOrderBook is one element of the spot depth channel push data array.
 // Asks/Bids rows are [price, size] pairs.
 type SpotWsOrderBook struct {
-	Asks     [][]decimal.Decimal `json:"asks"`     // seller depth [price, size]
-	Bids     [][]decimal.Decimal `json:"bids"`     // buyer depth [price, size]
-	Checksum int64               `json:"checksum"` // CRC32 validation value
-	Seq      int64               `json:"seq"`      // serial number, increments with updates
-	Ts       time.Time           `json:"ts"`       // matching engine timestamp (ms)
+	Asks     [][]decimal.Decimal `json:"asks"`                // seller depth [price, size]
+	Bids     [][]decimal.Decimal `json:"bids"`                // buyer depth [price, size]
+	Checksum int64               `json:"checksum"`            // CRC32 validation value
+	Seq      int64               `json:"seq"`                 // serial number, increments with updates
+	Ts       time.Time           `json:"ts,format:unixmilli"` // matching engine timestamp (ms)
 }
 
 // SubscribeSpotAuctionService -- public "auction" call-auction channel (spot).
@@ -196,9 +196,9 @@ func (s *SubscribeSpotAuctionService) Do(ctx context.Context, cb WsHandler[SpotW
 
 // SpotWsAuction is one element of the spot "auction" channel push data array.
 type SpotWsAuction struct {
-	Stage           string          `json:"stage"`           // pre_market, stage_1, stage_2, stage_3, success, failure
-	StageEndTime    time.Time       `json:"stageEndTime"`    // current phase end time (ms)
-	EstOpeningPrice decimal.Decimal `json:"estOpeningPrice"` // estimated opening price
-	MatchedVolume   decimal.Decimal `json:"matchedVolume"`   // matched volume, base coin
-	AuctionEndTime  time.Time       `json:"auctionEndTime"`  // call auction end time (ms)
+	Stage           string          `json:"stage"`                           // pre_market, stage_1, stage_2, stage_3, success, failure
+	StageEndTime    time.Time       `json:"stageEndTime,format:unixmilli"`   // current phase end time (ms)
+	EstOpeningPrice decimal.Decimal `json:"estOpeningPrice"`                 // estimated opening price
+	MatchedVolume   decimal.Decimal `json:"matchedVolume"`                   // matched volume, base coin
+	AuctionEndTime  time.Time       `json:"auctionEndTime,format:unixmilli"` // call auction end time (ms)
 }

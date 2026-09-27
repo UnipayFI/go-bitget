@@ -114,8 +114,8 @@ type CrossBorrowRecord struct {
 	Coin         string          `json:"coin"`
 	BorrowAmount decimal.Decimal `json:"borrowAmount"`
 	BorrowType   CrossBorrowType `json:"borrowType"`
-	CTime        time.Time       `json:"cTime"`
-	UTime        time.Time       `json:"uTime"`
+	CTime        time.Time       `json:"cTime,format:unixmilli"`
+	UTime        time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetCrossRepayHistoryService -- GET /api/v2/margin/crossed/repay-history (cross margin read)
@@ -177,8 +177,8 @@ type CrossRepayRecord struct {
 	RepayAmount    decimal.Decimal `json:"repayAmount"`
 	RepayInterest  decimal.Decimal `json:"repayInterest"`
 	RepayType      CrossRepayType  `json:"repayType"`
-	CTime          time.Time       `json:"cTime"`
-	UTime          time.Time       `json:"uTime"`
+	CTime          time.Time       `json:"cTime,format:unixmilli"`
+	UTime          time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetCrossInterestHistoryService -- GET /api/v2/margin/crossed/interest-history (cross margin read)
@@ -235,8 +235,8 @@ type CrossInterestRecord struct {
 	DailyInterestRate decimal.Decimal   `json:"dailyInterestRate"`
 	InterestAmount    decimal.Decimal   `json:"interestAmount"`
 	InterstType       CrossInterestType `json:"interstType"` // key spelled "interstType" verbatim per Bitget docs
-	CTime             time.Time         `json:"cTime"`
-	UTime             time.Time         `json:"uTime"`
+	CTime             time.Time         `json:"cTime,format:unixmilli"`
+	UTime             time.Time         `json:"uTime,format:unixmilli"`
 }
 
 // GetCrossLiquidationHistoryService -- GET /api/v2/margin/crossed/liquidation-history (cross margin read)
@@ -284,14 +284,14 @@ type CrossLiquidationHistoryResponse struct {
 // assets/debt are denominated in USDT.
 type CrossLiquidationRecord struct {
 	LiqID        string          `json:"liqId"`
-	LiqStartTime time.Time       `json:"liqStartTime"`
-	LiqEndTime   time.Time       `json:"liqEndTime"`
+	LiqStartTime time.Time       `json:"liqStartTime,format:unixmilli"`
+	LiqEndTime   time.Time       `json:"liqEndTime,format:unixmilli"`
 	LiqRiskRatio decimal.Decimal `json:"liqRiskRatio"`
 	TotalAssets  decimal.Decimal `json:"totalAssets"`
 	TotalDebt    decimal.Decimal `json:"totalDebt"`
 	LiqFee       decimal.Decimal `json:"liqFee"`
-	CTime        time.Time       `json:"cTime"`
-	UTime        time.Time       `json:"uTime"`
+	CTime        time.Time       `json:"cTime,format:unixmilli"`
+	UTime        time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetCrossFinancialRecordsService -- GET /api/v2/margin/crossed/financial-records (cross margin read)
@@ -353,6 +353,6 @@ type CrossFinancialRecord struct {
 	Balance    decimal.Decimal     `json:"balance"`
 	Fee        decimal.Decimal     `json:"fee"`
 	MarginType CrossMarginFlowType `json:"marginType"`
-	UTime      time.Time           `json:"uTime"`
-	CTime      time.Time           `json:"cTime"`
+	UTime      time.Time           `json:"uTime,format:unixmilli"`
+	CTime      time.Time           `json:"cTime,format:unixmilli"`
 }

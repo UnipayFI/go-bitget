@@ -46,7 +46,7 @@ type WsTradeResponse[T any] struct {
 	Args      T                  `json:"args"`
 	RateLimit []WsTradeRateLimit `json:"rateLimit"`
 	ConnID    string             `json:"connId"`
-	Ts        time.Time          `json:"ts"`
+	Ts        time.Time          `json:"ts,format:unixmilli"`
 }
 
 // WsTradeRateLimit reports the remaining quota for a rate-limit dimension on a

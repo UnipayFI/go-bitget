@@ -1,13 +1,13 @@
 package request
 
 import (
+	"encoding/json/jsontext"
 	"errors"
 	"fmt"
 	"strconv"
 
 	"github.com/UnipayFI/go-bitget/client"
 	"github.com/UnipayFI/go-bitget/common"
-	"github.com/go-json-experiment/json/jsontext"
 )
 
 // apiResponse is Bitget's uniform REST envelope. "code" is "00000" on success;

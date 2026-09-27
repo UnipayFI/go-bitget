@@ -191,7 +191,7 @@ type CopyTransferRecord struct {
 	Coin        string          `json:"coin"`
 	Amount      decimal.Decimal `json:"amount"`
 	Status      string          `json:"status"` // Successful, Failed, Processing
-	CreatedTime time.Time       `json:"createdTime"`
+	CreatedTime time.Time       `json:"createdTime,format:unixmilli"`
 }
 
 // GetCopyCurrentFollowersService -- GET /api/v3/copy/futures/current-follower (Elite trading read)
@@ -236,7 +236,7 @@ type CopyCurrentFollower struct {
 	TotalInvestment  decimal.Decimal `json:"totalInvestment"`
 	CanRemove        string          `json:"canRemove"` // yes, no
 	FollowDays       string          `json:"followDays"`
-	StartTime        time.Time       `json:"startTime"`
+	StartTime        time.Time       `json:"startTime,format:unixmilli"`
 }
 
 // GetCopyHistoryFollowersService -- GET /api/v3/copy/futures/history-follower (Elite trading read)
@@ -277,8 +277,8 @@ type CopyHistoryFollower struct {
 	TotalProfit      decimal.Decimal `json:"totalProfit"`
 	TotalShareProfit decimal.Decimal `json:"totalShareProfit"`
 	TotalInvestment  decimal.Decimal `json:"totalInvestment"`
-	StartTime        time.Time       `json:"startTime"`
-	EndTime          time.Time       `json:"endTime"`
+	StartTime        time.Time       `json:"startTime,format:unixmilli"`
+	EndTime          time.Time       `json:"endTime,format:unixmilli"`
 }
 
 // GetCopyProfitSummaryService -- GET /api/v3/copy/futures/profit-summary (Elite trading read)
@@ -357,7 +357,7 @@ type CopyProfitDetail struct {
 	ShareRatio   decimal.Decimal `json:"shareRatio"`   // profit-sharing ratio, decimal form
 	ShareProfit  decimal.Decimal `json:"shareProfit"`
 	Reason       string          `json:"reason"` // period, unfollow
-	SettleTime   time.Time       `json:"settleTime"`
+	SettleTime   time.Time       `json:"settleTime,format:unixmilli"`
 }
 
 // GetCopyPortfolioOverviewService -- GET /api/v3/copy/futures/portfolio-overview (Elite trading read)

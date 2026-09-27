@@ -68,5 +68,5 @@ type TaxRecord struct {
 	Amount  decimal.Decimal `json:"amount"`
 	Fee     decimal.Decimal `json:"fee"`
 	Balance decimal.Decimal `json:"balance"`
-	Ts      time.Time       `json:"ts"`
+	Ts      time.Time       `json:"ts,format:unixmilli"`
 }

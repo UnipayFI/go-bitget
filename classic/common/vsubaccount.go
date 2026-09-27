@@ -67,8 +67,8 @@ type VirtualSubaccountCreateSuccess struct {
 	Status         VirtualSubaccountStatus `json:"status"`
 	Label          string                  `json:"label"`
 	PermList       []VirtualSubaccountPerm `json:"permList"`
-	CTime          time.Time               `json:"cTime"`
-	UTime          time.Time               `json:"uTime"`
+	CTime          time.Time               `json:"cTime,format:unixmilli"`
+	UTime          time.Time               `json:"uTime,format:unixmilli"`
 }
 
 // ModifyVirtualSubaccountService -- POST /api/v2/user/modify-virtual-subaccount (signed; state-changing)
@@ -186,8 +186,8 @@ type VirtualSubaccount struct {
 	Label          string                  `json:"label"`
 	Status         VirtualSubaccountStatus `json:"status"`
 	PermList       []VirtualSubaccountPerm `json:"permList"`
-	CTime          time.Time               `json:"cTime"`
-	UTime          time.Time               `json:"uTime"`
+	CTime          time.Time               `json:"cTime,format:unixmilli"`
+	UTime          time.Time               `json:"uTime,format:unixmilli"`
 }
 
 // CreateVirtualSubaccountApikeyService -- POST /api/v2/user/create-virtual-subaccount-apikey (signed; state-changing)

@@ -40,11 +40,11 @@ type CurrentFundingRate struct {
 	Symbol                 string          `json:"symbol"`
 	FundingRate            decimal.Decimal `json:"fundingRate"`
 	FundingRateInterval    string          `json:"fundingRateInterval"`
-	NextUpdate             time.Time       `json:"nextUpdate"`
+	NextUpdate             time.Time       `json:"nextUpdate,format:unixmilli"`
 	MinFundingRate         decimal.Decimal `json:"minFundingRate"`
 	MaxFundingRate         decimal.Decimal `json:"maxFundingRate"`
 	CashDividend           decimal.Decimal `json:"cashDividend"`
-	CashDividendNextUpdate time.Time       `json:"cashDividendNextUpdate"`
+	CashDividendNextUpdate time.Time       `json:"cashDividendNextUpdate,format:unixmilli"`
 }
 
 // GetFundingRateHistoryService -- GET /api/v3/market/history-fund-rate
@@ -85,7 +85,7 @@ type FundingRateHistoryResponse struct {
 type FundingRateHistory struct {
 	Symbol               string          `json:"symbol"`
 	FundingRate          decimal.Decimal `json:"fundingRate"`
-	FundingRateTimestamp time.Time       `json:"fundingRateTimestamp"`
+	FundingRateTimestamp time.Time       `json:"fundingRateTimestamp,format:unixmilli"`
 }
 
 // GetOpenInterestService -- GET /api/v3/market/open-interest
@@ -113,7 +113,7 @@ func (s *GetOpenInterestService) Do(ctx context.Context) (*OpenInterestResponse,
 
 type OpenInterestResponse struct {
 	List []OpenInterest `json:"list"`
-	Ts   time.Time      `json:"ts"`
+	Ts   time.Time      `json:"ts,format:unixmilli"`
 }
 
 type OpenInterest struct {

@@ -47,8 +47,8 @@ type IsolatedAssets struct {
 	Interest    decimal.Decimal `json:"interest"`
 	Net         decimal.Decimal `json:"net"`
 	Coupon      decimal.Decimal `json:"coupon"`
-	CTime       time.Time       `json:"cTime"`
-	UTime       time.Time       `json:"uTime"`
+	CTime       time.Time       `json:"cTime,format:unixmilli"`
+	UTime       time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // IsolatedBorrowService -- POST /api/v2/margin/isolated/account/borrow (signed, state-changing)

@@ -27,7 +27,7 @@ func (s *GetServerTimeService) Do(ctx context.Context) (*ServerTimeResponse, err
 }
 
 type ServerTimeResponse struct {
-	ServerTime time.Time `json:"serverTime"`
+	ServerTime time.Time `json:"serverTime,format:unixmilli"`
 }
 
 // GetInstrumentsService -- GET /api/v3/market/instruments
@@ -82,7 +82,7 @@ type Instrument struct {
 	MaxPositionNum       string           `json:"maxPositionNum"`
 	Status               InstrumentStatus `json:"status"`
 	MaintainTime         string           `json:"maintainTime"`
-	LaunchTime           time.Time        `json:"launchTime"`
+	LaunchTime           time.Time        `json:"launchTime,format:unixmilli"`
 
 	// Futures-only fields.
 	Type               SymbolType      `json:"type"` // perpetual, delivery
@@ -96,9 +96,9 @@ type Instrument struct {
 	FundInterval       string          `json:"fundInterval"`
 	MinLeverage        decimal.Decimal `json:"minLeverage"`
 	MaxLeverage        decimal.Decimal `json:"maxLeverage"`
-	OffTime            time.Time       `json:"offTime"`
-	LimitOpenTime      time.Time       `json:"limitOpenTime"`
-	DeliveryTime       time.Time       `json:"deliveryTime"`
-	DeliveryStartTime  time.Time       `json:"deliveryStartTime"`
+	OffTime            time.Time       `json:"offTime,format:unixmilli"`
+	LimitOpenTime      time.Time       `json:"limitOpenTime,format:unixmilli"`
+	DeliveryTime       time.Time       `json:"deliveryTime,format:unixmilli"`
+	DeliveryStartTime  time.Time       `json:"deliveryStartTime,format:unixmilli"`
 	DeliveryPeriod     string          `json:"deliveryPeriod"`
 }

@@ -453,8 +453,8 @@ type OrderInfo struct {
 	TPSLType         TPSLType        `json:"tpslType"`
 	TriggerPrice     decimal.Decimal `json:"triggerPrice"`
 	CancelReason     string          `json:"cancelReason"` // normal_cancel, stp_cancel
-	CTime            time.Time       `json:"cTime"`
-	UTime            time.Time       `json:"uTime"`
+	CTime            time.Time       `json:"cTime,format:unixmilli"`
+	UTime            time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetUnfilledOrdersService -- GET /api/v2/spot/trade/unfilled-orders (private)
@@ -555,8 +555,8 @@ type UnfilledOrder struct {
 	ExecuteStopLossPrice   decimal.Decimal `json:"executeStopLossPrice"`
 	TriggerPrice           decimal.Decimal `json:"triggerPrice"`
 	TPSLType               TPSLType        `json:"tpslType"`
-	CTime                  time.Time       `json:"cTime"`
-	UTime                  time.Time       `json:"uTime"`
+	CTime                  time.Time       `json:"cTime,format:unixmilli"`
+	UTime                  time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetHistoryOrdersService -- GET /api/v2/spot/trade/history-orders (private)
@@ -657,8 +657,8 @@ type HistoryOrder struct {
 	TPSLType         TPSLType        `json:"tpslType"`
 	TriggerPrice     decimal.Decimal `json:"triggerPrice"`
 	CancelReason     string          `json:"cancelReason"` // normal_cancel, stp_cancel, ""
-	CTime            time.Time       `json:"cTime"`
-	UTime            time.Time       `json:"uTime"`
+	CTime            time.Time       `json:"cTime,format:unixmilli"`
+	UTime            time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetFillsService -- GET /api/v2/spot/trade/fills (private)
@@ -731,8 +731,8 @@ type Fill struct {
 	Amount     decimal.Decimal `json:"amount"`
 	FeeDetail  FillFeeDetail   `json:"feeDetail"`
 	TradeScope string          `json:"tradeScope"` // taker, maker
-	CTime      time.Time       `json:"cTime"`
-	UTime      time.Time       `json:"uTime"`
+	CTime      time.Time       `json:"cTime,format:unixmilli"`
+	UTime      time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // FillFeeDetail is the per-fill fee breakdown returned (as an object) by the

@@ -190,7 +190,7 @@ type SpotFollowerTrader struct {
 	BgbMaxFollowLimit   string          `json:"bgbMaxFollowLimit"`
 	FollowCount         string          `json:"followCount"`
 	BgbFollowCount      string          `json:"bgbFollowCount"`
-	FollowerTime        time.Time       `json:"followerTime"`
+	FollowerTime        time.Time       `json:"followerTime,format:unixmilli"`
 }
 
 // GetSpotFollowerTraderSymbolsService -- GET /api/v2/copy/spot-follower/query-trader-symbols (private)
@@ -350,8 +350,8 @@ type SpotFollowerHistoryOrder struct {
 	SellFee     decimal.Decimal `json:"sellFee"`
 	AchievedPL  decimal.Decimal `json:"achievedPL"`
 	AchievedPLR decimal.Decimal `json:"achievedPLR"`
-	BuyTime     time.Time       `json:"buyTime"`
-	SellTime    time.Time       `json:"sellTime"`
+	BuyTime     time.Time       `json:"buyTime,format:unixmilli"`
+	SellTime    time.Time       `json:"sellTime,format:unixmilli"`
 }
 
 // GetSpotFollowerCurrentOrdersService -- GET /api/v2/copy/spot-follower/query-current-orders (private)
@@ -432,7 +432,7 @@ type SpotFollowerCurrentOrder struct {
 	UnrealizedPLR    decimal.Decimal `json:"unrealizedPLR"`
 	StopSurplusPrice decimal.Decimal `json:"stopSurplusPrice"`
 	StopLossPrice    decimal.Decimal `json:"stopLossPrice"`
-	BuyTime          time.Time       `json:"buyTime"`
+	BuyTime          time.Time       `json:"buyTime,format:unixmilli"`
 }
 
 // CloseSpotFollowerOrderService -- POST /api/v2/copy/spot-follower/order-close-tracking (private, state-changing)

@@ -26,12 +26,12 @@ func (s *SubscribeSpotAccountService) Do(ctx context.Context, cb WsHandler[SpotW
 
 // SpotWsAccount is one balance entry pushed on the spot "account" channel.
 type SpotWsAccount struct {
-	Coin           string          `json:"coin"`           // token/asset name
-	Available      decimal.Decimal `json:"available"`      // spendable balance
-	Frozen         decimal.Decimal `json:"frozen"`         // frozen (e.g. by open orders)
-	Locked         decimal.Decimal `json:"locked"`         // locked assets
-	LimitAvailable decimal.Decimal `json:"limitAvailable"` // restricted balance for spot copy trading
-	UTime          time.Time       `json:"uTime"`          // last modification time
+	Coin           string          `json:"coin"`                   // token/asset name
+	Available      decimal.Decimal `json:"available"`              // spendable balance
+	Frozen         decimal.Decimal `json:"frozen"`                 // frozen (e.g. by open orders)
+	Locked         decimal.Decimal `json:"locked"`                 // locked assets
+	LimitAvailable decimal.Decimal `json:"limitAvailable"`         // restricted balance for spot copy trading
+	UTime          time.Time       `json:"uTime,format:unixmilli"` // last modification time
 }
 
 // SubscribeSpotOrdersService -- private "orders" channel (order lifecycle).
@@ -54,31 +54,31 @@ func (s *SubscribeSpotOrdersService) Do(ctx context.Context, cb WsHandler[SpotWs
 
 // SpotWsOrder is one order update pushed on the spot "orders" channel.
 type SpotWsOrder struct {
-	InstID           string           `json:"instId"`           // product id, e.g. BTCUSDT
-	OrderID          string           `json:"orderId"`          // order id
-	ClientOrderID    string           `json:"clientOid"`        // user-specified order id
-	Price            decimal.Decimal  `json:"price"`            // order price
-	Size             decimal.Decimal  `json:"size"`             // order quantity (quote for buy, base for sell)
-	NewSize          decimal.Decimal  `json:"newSize"`          // normalized quantity per order-type rules
-	Notional         decimal.Decimal  `json:"notional"`         // purchase amount at market price
-	OrderType        string           `json:"orderType"`        // market / limit
-	Force            string           `json:"force"`            // GTC, post_only, FOK, IOC
-	Side             string           `json:"side"`             // buy / sell
-	FillPrice        decimal.Decimal  `json:"fillPrice"`        // most recent execution price
-	TradeID          string           `json:"tradeId"`          // most recent trade id
-	BaseVolume       decimal.Decimal  `json:"baseVolume"`       // quantity from latest execution
-	FillTime         time.Time        `json:"fillTime"`         // latest transaction time (ms)
-	FillFee          decimal.Decimal  `json:"fillFee"`          // latest transaction fee (negative)
-	FillFeeCoin      string           `json:"fillFeeCoin"`      // fee currency
-	TradeScope       string           `json:"tradeScope"`       // T (taker) / M (maker)
-	AccBaseVolume    decimal.Decimal  `json:"accBaseVolume"`    // cumulative filled quantity
-	PriceAvg         decimal.Decimal  `json:"priceAvg"`         // weighted average execution price
-	Status           string           `json:"status"`           // live, partially_filled, filled, cancelled
-	EnterPointSource string           `json:"enterPointSource"` // order origin source
-	CTime            time.Time        `json:"cTime"`            // creation time (ms)
-	UTime            time.Time        `json:"uTime"`            // update time (ms)
-	StpMode          string           `json:"stpMode"`          // none, cancel_taker, cancel_maker, cancel_both
-	FeeDetail        []SpotWsOrderFee `json:"feeDetail"`        // fee breakdown
+	InstID           string           `json:"instId"`                    // product id, e.g. BTCUSDT
+	OrderID          string           `json:"orderId"`                   // order id
+	ClientOrderID    string           `json:"clientOid"`                 // user-specified order id
+	Price            decimal.Decimal  `json:"price"`                     // order price
+	Size             decimal.Decimal  `json:"size"`                      // order quantity (quote for buy, base for sell)
+	NewSize          decimal.Decimal  `json:"newSize"`                   // normalized quantity per order-type rules
+	Notional         decimal.Decimal  `json:"notional"`                  // purchase amount at market price
+	OrderType        string           `json:"orderType"`                 // market / limit
+	Force            string           `json:"force"`                     // GTC, post_only, FOK, IOC
+	Side             string           `json:"side"`                      // buy / sell
+	FillPrice        decimal.Decimal  `json:"fillPrice"`                 // most recent execution price
+	TradeID          string           `json:"tradeId"`                   // most recent trade id
+	BaseVolume       decimal.Decimal  `json:"baseVolume"`                // quantity from latest execution
+	FillTime         time.Time        `json:"fillTime,format:unixmilli"` // latest transaction time (ms)
+	FillFee          decimal.Decimal  `json:"fillFee"`                   // latest transaction fee (negative)
+	FillFeeCoin      string           `json:"fillFeeCoin"`               // fee currency
+	TradeScope       string           `json:"tradeScope"`                // T (taker) / M (maker)
+	AccBaseVolume    decimal.Decimal  `json:"accBaseVolume"`             // cumulative filled quantity
+	PriceAvg         decimal.Decimal  `json:"priceAvg"`                  // weighted average execution price
+	Status           string           `json:"status"`                    // live, partially_filled, filled, cancelled
+	EnterPointSource string           `json:"enterPointSource"`          // order origin source
+	CTime            time.Time        `json:"cTime,format:unixmilli"`    // creation time (ms)
+	UTime            time.Time        `json:"uTime,format:unixmilli"`    // update time (ms)
+	StpMode          string           `json:"stpMode"`                   // none, cancel_taker, cancel_maker, cancel_both
+	FeeDetail        []SpotWsOrderFee `json:"feeDetail"`                 // fee breakdown
 }
 
 // SpotWsOrderFee is one fee line in a spot order's fee breakdown.
@@ -107,18 +107,18 @@ func (s *SubscribeSpotFillService) Do(ctx context.Context, cb WsHandler[SpotWsFi
 
 // SpotWsFill is one execution pushed on the spot "fill" channel.
 type SpotWsFill struct {
-	OrderID    string          `json:"orderId"`    // order id
-	TradeID    string          `json:"tradeId"`    // trade id
-	Symbol     string          `json:"symbol"`     // trading pair symbol
-	OrderType  string          `json:"orderType"`  // limit / market
-	Side       string          `json:"side"`       // buy / sell
-	PriceAvg   decimal.Decimal `json:"priceAvg"`   // total average filled price
-	Size       decimal.Decimal `json:"size"`       // filled quantity
-	Amount     decimal.Decimal `json:"amount"`     // accumulated filled size
-	TradeScope string          `json:"tradeScope"` // taker / maker
-	FeeDetail  []SpotWsFillFee `json:"feeDetail"`  // fee breakdown
-	CTime      time.Time       `json:"cTime"`      // creation time (ms)
-	UTime      time.Time       `json:"uTime"`      // update time (ms)
+	OrderID    string          `json:"orderId"`                // order id
+	TradeID    string          `json:"tradeId"`                // trade id
+	Symbol     string          `json:"symbol"`                 // trading pair symbol
+	OrderType  string          `json:"orderType"`              // limit / market
+	Side       string          `json:"side"`                   // buy / sell
+	PriceAvg   decimal.Decimal `json:"priceAvg"`               // total average filled price
+	Size       decimal.Decimal `json:"size"`                   // filled quantity
+	Amount     decimal.Decimal `json:"amount"`                 // accumulated filled size
+	TradeScope string          `json:"tradeScope"`             // taker / maker
+	FeeDetail  []SpotWsFillFee `json:"feeDetail"`              // fee breakdown
+	CTime      time.Time       `json:"cTime,format:unixmilli"` // creation time (ms)
+	UTime      time.Time       `json:"uTime,format:unixmilli"` // update time (ms)
 }
 
 // SpotWsFillFee is one fee line in a spot fill's fee breakdown.
@@ -151,21 +151,21 @@ func (s *SubscribeSpotOrdersAlgoService) Do(ctx context.Context, cb WsHandler[Sp
 // SpotWsOrderAlgo is one plan/trigger order update pushed on the spot
 // "orders-algo" channel.
 type SpotWsOrderAlgo struct {
-	InstID           string          `json:"instId"`           // product id
-	OrderID          string          `json:"orderId"`          // plan order id
-	ClientOrderID    string          `json:"clientOid"`        // customized plan order id
-	TriggerPrice     decimal.Decimal `json:"triggerPrice"`     // trigger price
-	TriggerType      string          `json:"triggerType"`      // fill_price / mark_price
-	PlanType         string          `json:"planType"`         // amount / total
-	Price            decimal.Decimal `json:"price"`            // order price
-	Size             decimal.Decimal `json:"size"`             // original order amount in coin
-	ActualSize       decimal.Decimal `json:"actualSize"`       // actual number of orders in coin
-	OrderType        string          `json:"orderType"`        // limit / market
-	Side             string          `json:"side"`             // order direction
-	Status           string          `json:"status"`           // order status
-	ExecutePrice     decimal.Decimal `json:"executePrice"`     // execute price
-	EnterPointSource string          `json:"enterPointSource"` // WEB, API, SYS, ANDROID, IOS
-	CTime            time.Time       `json:"cTime"`            // create time (ms)
-	UTime            time.Time       `json:"uTime"`            // update time (ms)
-	StpMode          string          `json:"stpMode"`          // none, cancel_taker, cancel_maker, cancel_both
+	InstID           string          `json:"instId"`                 // product id
+	OrderID          string          `json:"orderId"`                // plan order id
+	ClientOrderID    string          `json:"clientOid"`              // customized plan order id
+	TriggerPrice     decimal.Decimal `json:"triggerPrice"`           // trigger price
+	TriggerType      string          `json:"triggerType"`            // fill_price / mark_price
+	PlanType         string          `json:"planType"`               // amount / total
+	Price            decimal.Decimal `json:"price"`                  // order price
+	Size             decimal.Decimal `json:"size"`                   // original order amount in coin
+	ActualSize       decimal.Decimal `json:"actualSize"`             // actual number of orders in coin
+	OrderType        string          `json:"orderType"`              // limit / market
+	Side             string          `json:"side"`                   // order direction
+	Status           string          `json:"status"`                 // order status
+	ExecutePrice     decimal.Decimal `json:"executePrice"`           // execute price
+	EnterPointSource string          `json:"enterPointSource"`       // WEB, API, SYS, ANDROID, IOS
+	CTime            time.Time       `json:"cTime,format:unixmilli"` // create time (ms)
+	UTime            time.Time       `json:"uTime,format:unixmilli"` // update time (ms)
+	StpMode          string          `json:"stpMode"`                // none, cancel_taker, cancel_maker, cancel_both
 }

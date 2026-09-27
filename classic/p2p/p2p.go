@@ -98,7 +98,7 @@ type P2PMerchantList struct {
 
 // P2PMerchant is a single merchant's public profile and trading statistics.
 type P2PMerchant struct {
-	RegisterTime        time.Time       `json:"registerTime"`
+	RegisterTime        time.Time       `json:"registerTime,format:unixmilli"`
 	NickName            string          `json:"nickName"`
 	IsOnline            string          `json:"isOnline"`
 	AvgPaymentTime      string          `json:"avgPaymentTime"` // minutes
@@ -132,7 +132,7 @@ func (s *GetMerchantInfoService) Do(ctx context.Context) (*MerchantInfo, error) 
 
 // MerchantInfo is the authenticated merchant's own profile.
 type MerchantInfo struct {
-	RegisterTime        time.Time       `json:"registerTime"`
+	RegisterTime        time.Time       `json:"registerTime,format:unixmilli"`
 	NickName            string          `json:"nickName"`
 	MerchantID          string          `json:"merchantId"`
 	AvgPaymentTime      string          `json:"avgPaymentTime"` // minutes
@@ -272,9 +272,9 @@ type P2PAdv struct {
 	TurnoverNum           decimal.Decimal        `json:"turnoverNum"`
 	TurnoverRate          decimal.Decimal        `json:"turnoverRate"`
 	Label                 string                 `json:"label"`
-	Ctime                 time.Time              `json:"ctime"`
-	Utime                 time.Time              `json:"utime"`
-	RegisterTime          time.Time              `json:"registerTime"`
+	Ctime                 time.Time              `json:"ctime,format:unixmilli"`
+	Utime                 time.Time              `json:"utime,format:unixmilli"`
+	RegisterTime          time.Time              `json:"registerTime,format:unixmilli"`
 	UserLimitList         []P2PAdvUserLimit      `json:"userLimitList"`
 	PaymentMethod         []P2PAdvPaymentMethod  `json:"paymentMethod"`
 	MerchantCertifiedList []P2PMerchantCertified `json:"merchantCertifiedList"`
@@ -410,16 +410,16 @@ type P2POrder struct {
 	Side           P2PSide             `json:"side"`
 	Fiat           string              `json:"fiat"`
 	Coin           string              `json:"coin"`
-	WithdrawTime   time.Time           `json:"withdrawTime"`
-	RepresentTime  time.Time           `json:"representTime"`
-	PaymentTime    time.Time           `json:"paymentTime"`
-	ReleaseTime    time.Time           `json:"releaseTime"`
+	WithdrawTime   time.Time           `json:"withdrawTime,format:unixmilli"`
+	RepresentTime  time.Time           `json:"representTime,format:unixmilli"`
+	PaymentTime    time.Time           `json:"paymentTime,format:unixmilli"`
+	ReleaseTime    time.Time           `json:"releaseTime,format:unixmilli"`
 	Amount         decimal.Decimal     `json:"amount"`
 	BuyerRealName  string              `json:"buyerRealName"`
 	SellerRealName string              `json:"sellerRealName"`
 	Status         P2POrderStatus      `json:"status"`
-	Ctime          time.Time           `json:"ctime"`
-	Utime          time.Time           `json:"utime"`
+	Ctime          time.Time           `json:"ctime,format:unixmilli"`
+	Utime          time.Time           `json:"utime,format:unixmilli"`
 	PaymentInfo    P2POrderPaymentInfo `json:"paymentInfo"`
 }
 

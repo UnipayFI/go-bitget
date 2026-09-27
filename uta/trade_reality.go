@@ -120,7 +120,7 @@ type RealityOrderBook struct {
 	Symbol string              `json:"symbol"`
 	Asks   [][]decimal.Decimal `json:"a"`
 	Bids   [][]decimal.Decimal `json:"b"`
-	Ts     time.Time           `json:"ts"`
+	Ts     time.Time           `json:"ts,format:unixmilli"`
 }
 
 // GetRealityFillsService -- GET /api/v3/account/reality-fills (UTA trade read)
@@ -157,5 +157,5 @@ type RealityFill struct {
 	Price  decimal.Decimal `json:"price"`
 	Size   decimal.Decimal `json:"size"`
 	Side   Side            `json:"side"`
-	Ts     time.Time       `json:"ts"`
+	Ts     time.Time       `json:"ts,format:unixmilli"`
 }

@@ -48,7 +48,7 @@ func (s *GetMergeDepthService) Do(ctx context.Context) (*MergeDepth, error) {
 type MergeDepth struct {
 	Asks           [][]decimal.Decimal `json:"asks"`
 	Bids           [][]decimal.Decimal `json:"bids"`
-	Ts             time.Time           `json:"ts"`
+	Ts             time.Time           `json:"ts,format:unixmilli"`
 	Scale          decimal.Decimal     `json:"scale"`
 	Precision      string              `json:"precision"`
 	IsMaxPrecision string              `json:"isMaxPrecision"` // YES, NO
@@ -111,7 +111,7 @@ type Ticker struct {
 	AskSz             decimal.Decimal `json:"askSz"`
 	High24h           decimal.Decimal `json:"high24h"`
 	Low24h            decimal.Decimal `json:"low24h"`
-	Ts                time.Time       `json:"ts"`
+	Ts                time.Time       `json:"ts,format:unixmilli"`
 	Change24h         decimal.Decimal `json:"change24h"`
 	BaseVolume        decimal.Decimal `json:"baseVolume"`
 	QuoteVolume       decimal.Decimal `json:"quoteVolume"`
@@ -121,8 +121,8 @@ type Ticker struct {
 	IndexPrice        decimal.Decimal `json:"indexPrice"`
 	FundingRate       decimal.Decimal `json:"fundingRate"`
 	HoldingAmount     decimal.Decimal `json:"holdingAmount"`
-	DeliveryStartTime time.Time       `json:"deliveryStartTime"`
-	DeliveryTime      time.Time       `json:"deliveryTime"`
+	DeliveryStartTime time.Time       `json:"deliveryStartTime,format:unixmilli"`
+	DeliveryTime      time.Time       `json:"deliveryTime,format:unixmilli"`
 	DeliveryStatus    string          `json:"deliveryStatus"`
 	Open24h           decimal.Decimal `json:"open24h"`
 	MarkPrice         decimal.Decimal `json:"markPrice"`
@@ -217,7 +217,7 @@ type MarketFill struct {
 	Price   decimal.Decimal `json:"price"`
 	Size    decimal.Decimal `json:"size"`
 	Side    string          `json:"side"`
-	Ts      time.Time       `json:"ts"`
+	Ts      time.Time       `json:"ts,format:unixmilli"`
 	Symbol  string          `json:"symbol"`
 }
 
@@ -244,7 +244,7 @@ func (s *GetOpenInterestService) Do(ctx context.Context) (*OpenInterest, error) 
 // OpenInterest is the open-interest snapshot for the queried product type.
 type OpenInterest struct {
 	OpenInterestList []OpenInterestItem `json:"openInterestList"`
-	Ts               time.Time          `json:"ts"`
+	Ts               time.Time          `json:"ts,format:unixmilli"`
 }
 
 // OpenInterestItem is one contract's open interest (in base coin).
@@ -280,7 +280,7 @@ func (s *GetFundingTimeService) Do(ctx context.Context) ([]FundingTime, error) {
 // FundingTime is the next funding settlement for a contract.
 type FundingTime struct {
 	Symbol          string    `json:"symbol"`
-	NextFundingTime time.Time `json:"nextFundingTime"`
+	NextFundingTime time.Time `json:"nextFundingTime,format:unixmilli"`
 	RatePeriod      string    `json:"ratePeriod"` // funding interval in hours
 }
 
@@ -314,7 +314,7 @@ type SymbolPrice struct {
 	Price      decimal.Decimal `json:"price"`
 	IndexPrice decimal.Decimal `json:"indexPrice"`
 	MarkPrice  decimal.Decimal `json:"markPrice"`
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetOiLimitService -- GET /api/v2/mix/market/oi-limit (public)
@@ -401,18 +401,18 @@ type Contract struct {
 	MaxProductOrderNum  string          `json:"maxProductOrderNum"`
 	MaxPositionNum      string          `json:"maxPositionNum"`
 	SymbolStatus        string          `json:"symbolStatus"` // listed, normal, maintain, limit_open, restrictedAPI, off
-	OffTime             time.Time       `json:"offTime"`
-	LimitOpenTime       time.Time       `json:"limitOpenTime"`
-	DeliveryTime        time.Time       `json:"deliveryTime"`
-	DeliveryStartTime   time.Time       `json:"deliveryStartTime"`
+	OffTime             time.Time       `json:"offTime,format:unixmilli"`
+	LimitOpenTime       time.Time       `json:"limitOpenTime,format:unixmilli"`
+	DeliveryTime        time.Time       `json:"deliveryTime,format:unixmilli"`
+	DeliveryStartTime   time.Time       `json:"deliveryStartTime,format:unixmilli"`
 	DeliveryPeriod      string          `json:"deliveryPeriod"`
-	LaunchTime          time.Time       `json:"launchTime"`
+	LaunchTime          time.Time       `json:"launchTime,format:unixmilli"`
 	FundInterval        string          `json:"fundInterval"`
 	MinLever            string          `json:"minLever"`
 	MaxLever            string          `json:"maxLever"`
 	PosLimit            decimal.Decimal `json:"posLimit"`
-	MaintainTime        time.Time       `json:"maintainTime"`
-	OpenTime            time.Time       `json:"openTime"`
+	MaintainTime        time.Time       `json:"maintainTime,format:unixmilli"`
+	OpenTime            time.Time       `json:"openTime,format:unixmilli"`
 	MaxMarketOrderQty   decimal.Decimal `json:"maxMarketOrderQty"`
 	MaxOrderQty         decimal.Decimal `json:"maxOrderQty"`
 	IsRwa               string          `json:"isRwa"` // YES, NO

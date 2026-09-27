@@ -41,8 +41,8 @@ type BrokerSubAccount struct {
 	PermList        []string  `json:"permList"`
 	Label           string    `json:"label"`
 	Language        string    `json:"language"`
-	CTime           time.Time `json:"cTime"`
-	UTime           time.Time `json:"uTime"`
+	CTime           time.Time `json:"cTime,format:unixmilli"`
+	UTime           time.Time `json:"uTime,format:unixmilli"`
 }
 
 // GetBrokerSubListService -- GET /api/v3/broker/sub-list (ND Broker master)
@@ -196,7 +196,7 @@ type BrokerSubDepositAddress struct {
 	Chain   string    `json:"chain"`
 	Tag     string    `json:"tag"`
 	URL     string    `json:"url"`
-	CTime   time.Time `json:"cTime"`
+	CTime   time.Time `json:"cTime,format:unixmilli"`
 }
 
 // GetAllBrokerSubDepositWithdrawalService -- GET /api/v3/broker/all-sub-deposit-withdrawal (ND Broker master)
@@ -262,7 +262,7 @@ type BrokerSubDepositWithdrawal struct {
 	Coin    string          `json:"coin"`
 	Amount  decimal.Decimal `json:"amount"`
 	Status  string          `json:"status"`
-	Ts      time.Time       `json:"ts"`
+	Ts      time.Time       `json:"ts,format:unixmilli"`
 }
 
 // GetBrokerCommissionService -- GET /api/v3/broker/commission (ND Broker master)

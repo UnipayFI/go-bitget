@@ -73,7 +73,7 @@ func (s *GetValuationIndicatorsService) Do(ctx context.Context) (*ValuationIndic
 
 // ValuationIndicators is the valuation-ratio snapshot of a listed company.
 type ValuationIndicators struct {
-	Date time.Time `json:"date"`
+	Date time.Time `json:"date,format:unixmilli"`
 	// PB, PE, PS and PCF are the price-to-book, price-to-earnings,
 	// price-to-sales and price-to-cash-flow ratios.
 	PB          decimal.Decimal `json:"pb"`
@@ -126,7 +126,7 @@ func (s *GetEarningsForecastService) Do(ctx context.Context) (*EarningsForecast,
 // EarningsForecast is one fiscal year of forecast (or actual) company earnings.
 type EarningsForecast struct {
 	FiscalYear          string    `json:"fiscalYear"`
-	PublicationDeadline time.Time `json:"publicationDeadline"`
+	PublicationDeadline time.Time `json:"publicationDeadline,format:unixmilli"`
 	// IsActual distinguishes a reported figure from a forecast; it is a real
 	// JSON boolean, not one of Bitget's usual quoted flags.
 	IsActual bool `json:"isActual"`
@@ -166,11 +166,11 @@ func (s *GetSuspensionResumptionInfoService) Do(ctx context.Context) (*Suspensio
 type SuspensionResumptionInfo struct {
 	Code             string          `json:"code"`
 	Name             string          `json:"name"` // localized by the locale header
-	SuspensionDate   time.Time       `json:"suspensionDate"`
+	SuspensionDate   time.Time       `json:"suspensionDate,format:unixmilli"`
 	SuspensionTime   string          `json:"suspensionTime"`
 	SuspensionReason string          `json:"suspensionReason"`
 	SuspensionPrice  decimal.Decimal `json:"suspensionPrice"`
-	ResumptionDate   time.Time       `json:"resumptionDate"`
+	ResumptionDate   time.Time       `json:"resumptionDate,format:unixmilli"`
 	// ResumptionQuoteTime is when quoting reopens, ResumptionTradingTime when
 	// the security is released for trading.
 	ResumptionQuoteTime   string `json:"resumptionQuoteTime"`
@@ -216,15 +216,15 @@ type Dividends struct {
 // the matching Type are populated; the rest arrive as null and decode as zero.
 type DividendRecord struct {
 	Type             string    `json:"type"` // cash_dividend, stock_split, stock_dividend
-	AnnouncementDate time.Time `json:"announcementDate"`
-	RecordDate       time.Time `json:"recordDate"`
-	ExrightDate      time.Time `json:"exrightDate"`
-	DividendDate     time.Time `json:"dividendDate"`
+	AnnouncementDate time.Time `json:"announcementDate,format:unixmilli"`
+	RecordDate       time.Time `json:"recordDate,format:unixmilli"`
+	ExrightDate      time.Time `json:"exrightDate,format:unixmilli"`
+	DividendDate     time.Time `json:"dividendDate,format:unixmilli"`
 	// DividendPerShare is the cash paid per share, StockDividendPerShare the
 	// shares granted per share.
 	DividendPerShare      decimal.Decimal `json:"dividendPerShare"`
 	StockDividendPerShare decimal.Decimal `json:"stockDividendPerShare"`
-	SplitValidDate        time.Time       `json:"splitValidDate"`
+	SplitValidDate        time.Time       `json:"splitValidDate,format:unixmilli"`
 	// SplitNumerator over SplitDenominator is the split ratio: 10 over 1 is a
 	// ten-for-one split.
 	SplitNumerator   decimal.Decimal `json:"splitNumerator"`
@@ -251,8 +251,8 @@ func (s *GetShareCapitalChangeService) Do(ctx context.Context) (*ShareCapitalCha
 
 // ShareCapitalChange is a company's share structure after its latest change.
 type ShareCapitalChange struct {
-	AnnouncementDate time.Time       `json:"announcementDate"`
-	ChangeDate       time.Time       `json:"changeDate"`
+	AnnouncementDate time.Time       `json:"announcementDate,format:unixmilli"`
+	ChangeDate       time.Time       `json:"changeDate,format:unixmilli"`
 	TotalShares      decimal.Decimal `json:"totalShares"`
 	CommonShares     decimal.Decimal `json:"commonShares"`
 	PreferredShares  decimal.Decimal `json:"preferredShares"`
@@ -300,15 +300,15 @@ type InnerTrades struct {
 type InnerTrade struct {
 	ReporterName     string    `json:"reporterName"`
 	IssueOrgName     string    `json:"issueOrgName"`
-	EndDate          time.Time `json:"endDate"`
-	AnnouncementDate time.Time `json:"announcementDate"`
+	EndDate          time.Time `json:"endDate,format:unixmilli"`
+	AnnouncementDate time.Time `json:"announcementDate,format:unixmilli"`
 	// InnerType is the insider's relationship to the issuer (Director,
 	// Officer, …) and Position the specific role.
 	InnerType              string    `json:"innerType"`
 	Position               string    `json:"position"`
 	SecurityTitle          string    `json:"securityTitle"`
-	TradeDate              time.Time `json:"tradeDate"`
-	DesignatedExerciseDate time.Time `json:"designatedExerciseDate"`
+	TradeDate              time.Time `json:"tradeDate,format:unixmilli"`
+	DesignatedExerciseDate time.Time `json:"designatedExerciseDate,format:unixmilli"`
 	// InnerTradeType is the SEC transaction code: P purchase, S sale, A award,
 	// F tax withholding, M exempt, C conversion, G gift, J other.
 	InnerTradeType string          `json:"innerTradeType"`
@@ -364,7 +364,7 @@ type ExecutiveShareholding struct {
 	HoldingRatio     decimal.Decimal `json:"holdingRatio"`
 	VoteRatio        decimal.Decimal `json:"voteRatio"`
 	Period           string          `json:"period"` // localized by the locale header
-	AnnouncementDate time.Time       `json:"announcementDate"`
+	AnnouncementDate time.Time       `json:"announcementDate,format:unixmilli"`
 }
 
 // GetShareholdDetailService -- GET /api/v3/reality/market/sharehold-detail

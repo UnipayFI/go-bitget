@@ -146,8 +146,8 @@ type EliteSubscribeInfo struct {
 	RemainQuota          decimal.Decimal          `json:"remainQuota"`
 	ExchangeRate         decimal.Decimal          `json:"exchangeRate"` // applicable to BGBTC / BGSOL only
 	ProductCoin          string                   `json:"productCoin"`
-	InterestTime         time.Time                `json:"interestTime"` // only applicable to BGUSD / BGBTC
-	SettleTime           time.Time                `json:"settleTime"`   // only applicable to BGUSD / BGBTC
+	InterestTime         time.Time                `json:"interestTime,format:unixmilli"` // only applicable to BGUSD / BGBTC
+	SettleTime           time.Time                `json:"settleTime,format:unixmilli"`   // only applicable to BGUSD / BGBTC
 	Precision            string                   `json:"precision"`
 	FeeRate              decimal.Decimal          `json:"feeRate"`
 	SubscriptionCoinList []EliteSubscribeInfoCoin `json:"subscriptionCoinList"` // BGUSD only
@@ -224,7 +224,7 @@ type EliteRecord struct {
 	PaymentAccount         []string        `json:"paymentAccount"`         // spot, unified (subscribe only)
 	SettlePoints           string          `json:"settlePoints"`           // BGBTC (interest only)
 	Fee                    decimal.Decimal `json:"fee"`                    // subscribe/redeem only
-	BizTime                time.Time       `json:"bizTime"`
+	BizTime                time.Time       `json:"bizTime,format:unixmilli"`
 }
 
 // EliteSubscribeService -- POST /api/v3/earn/elite-subscribe (UTA mgt. read & write)
@@ -332,7 +332,7 @@ type EliteRedeemMode struct {
 	RedeemScale     string          `json:"redeemScale"`
 	RedeemDelayDate string          `json:"redeemDelayDate"`
 	MinRedeemAmount decimal.Decimal `json:"minRedeemAmount"`
-	RedeemTime      time.Time       `json:"redeemTime"`
+	RedeemTime      time.Time       `json:"redeemTime,format:unixmilli"`
 }
 
 // EliteRedeemService -- POST /api/v3/earn/elite-redeem (UTA mgt. read & write)

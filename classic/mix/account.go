@@ -212,7 +212,7 @@ func (s *GetInterestHistoryService) Do(ctx context.Context) (*InterestHistory, e
 
 // InterestHistory is the futures borrowing summary plus its interest records.
 type InterestHistory struct {
-	NextSettleTime time.Time       `json:"nextSettleTime"`
+	NextSettleTime time.Time       `json:"nextSettleTime,format:unixmilli"`
 	BorrowAmount   decimal.Decimal `json:"borrowAmount"`
 	BorrowLimit    decimal.Decimal `json:"borrowLimit"`
 	InterestList   []InterestItem  `json:"interestList"`
@@ -227,7 +227,7 @@ type InterestItem struct {
 	InterestLimit     decimal.Decimal `json:"interestLimit"`
 	HourInterestRate  decimal.Decimal `json:"hourInterestRate"`
 	Interest          decimal.Decimal `json:"interest"`
-	CTime             time.Time       `json:"cTime"`
+	CTime             time.Time       `json:"cTime,format:unixmilli"`
 }
 
 // GetMaxOpenService -- GET /api/v2/mix/account/max-open (private)
@@ -408,7 +408,7 @@ type BillItem struct {
 	BusinessType string          `json:"businessType"`
 	Coin         string          `json:"coin"`
 	Balance      decimal.Decimal `json:"balance"`
-	CTime        time.Time       `json:"cTime"`
+	CTime        time.Time       `json:"cTime,format:unixmilli"`
 }
 
 // GetTransferLimitsService -- GET /api/v2/mix/account/transfer-limits (private)

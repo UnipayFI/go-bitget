@@ -36,7 +36,7 @@ type AccountInfo struct {
 	TraderType  string    `json:"traderType"` // trader, not_trader
 	ChannelCode string    `json:"channelCode"`
 	Channel     string    `json:"channel"`
-	RegisTime   time.Time `json:"regisTime"`
+	RegisTime   time.Time `json:"regisTime,format:unixmilli"`
 }
 
 // GetAccountAssetsService -- GET /api/v2/spot/account/assets (private)
@@ -80,7 +80,7 @@ type AccountAsset struct {
 	Frozen         decimal.Decimal `json:"frozen"`
 	Locked         decimal.Decimal `json:"locked"`
 	LimitAvailable decimal.Decimal `json:"limitAvailable"`
-	UTime          time.Time       `json:"uTime"`
+	UTime          time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetSubaccountAssetsService -- GET /api/v2/spot/account/subaccount-assets (private)
@@ -131,7 +131,7 @@ type SubaccountAsset struct {
 	LimitAvailable decimal.Decimal `json:"limitAvailable"`
 	Frozen         decimal.Decimal `json:"frozen"`
 	Locked         decimal.Decimal `json:"locked"`
-	UTime          time.Time       `json:"uTime"`
+	UTime          time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // GetAccountBillsService -- GET /api/v2/spot/account/bills (private)
@@ -203,7 +203,7 @@ func (s *GetAccountBillsService) Do(ctx context.Context) ([]AccountBill, error) 
 
 // AccountBill is one financial flow record.
 type AccountBill struct {
-	CTime        time.Time       `json:"cTime"`
+	CTime        time.Time       `json:"cTime,format:unixmilli"`
 	Coin         string          `json:"coin"`
 	GroupType    string          `json:"groupType"`
 	BusinessType string          `json:"businessType"`
@@ -352,7 +352,7 @@ type TransferRecord struct {
 	FromType      string          `json:"fromType"`
 	FromSymbol    string          `json:"fromSymbol"`
 	Size          decimal.Decimal `json:"size"`
-	Ts            time.Time       `json:"ts"`
+	Ts            time.Time       `json:"ts,format:unixmilli"`
 	ClientOrderID string          `json:"clientOid"`
 	TransferID    string          `json:"transferId"`
 }
@@ -434,7 +434,7 @@ type SubMainTransferRecord struct {
 	ToType        string          `json:"toType"`
 	FromType      string          `json:"fromType"`
 	Size          decimal.Decimal `json:"size"`
-	Ts            time.Time       `json:"ts"`
+	Ts            time.Time       `json:"ts,format:unixmilli"`
 	ClientOrderID string          `json:"clientOid"`
 	TransferID    string          `json:"transferId"`
 	NewTransferID string          `json:"newTransferId"`

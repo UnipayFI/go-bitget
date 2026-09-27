@@ -493,8 +493,8 @@ type MixOrder struct {
 	LiqPrice                      decimal.Decimal `json:"liqPrice"`
 	CancelReason                  string          `json:"cancelReason"`
 	FeeDetail                     string          `json:"feeDetail"`
-	CTime                         time.Time       `json:"cTime"`
-	UTime                         time.Time       `json:"uTime"`
+	CTime                         time.Time       `json:"cTime,format:unixmilli"`
+	UTime                         time.Time       `json:"uTime,format:unixmilli"`
 }
 
 // EffectiveStatus returns the order status regardless of which endpoint shape
@@ -701,7 +701,7 @@ type MixFill struct {
 	PosMode          PositionMode       `json:"posMode"`
 	TradeScope       string             `json:"tradeScope"`
 	FeeDetail        []MixFillFeeDetail `json:"feeDetail"`
-	CTime            time.Time          `json:"cTime"`
+	CTime            time.Time          `json:"cTime,format:unixmilli"`
 }
 
 // GetOrderFillsService -- GET /api/v2/mix/order/fills (private)

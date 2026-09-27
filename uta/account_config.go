@@ -75,7 +75,7 @@ type AccountInfo struct {
 	Ips         string    `json:"ips"`
 	PermType    string    `json:"permType"`    // read-only, read-and-write
 	Permissions []string  `json:"permissions"` // uta_mgt, uta_trade, withdraw, copy_futures_position, copy_futures_order
-	RegisTime   time.Time `json:"regisTime"`
+	RegisTime   time.Time `json:"regisTime,format:unixmilli"`
 }
 
 // GetDeltaInfoService -- GET /api/v3/account/delta-info (UTA mgt. read)

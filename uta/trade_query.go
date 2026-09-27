@@ -50,8 +50,8 @@ type Order struct {
 	FeeDetail     []FeeDetail     `json:"feeDetail"`
 	CancelReason  string          `json:"cancelReason"` // incl. cancel_receiveWindow (receiveWindow expired)
 	ExecType      ExecType        `json:"execType"`
-	CreatedTime   time.Time       `json:"createdTime"`
-	UpdatedTime   time.Time       `json:"updatedTime"`
+	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
 // GetOrderInfoService -- GET /api/v3/trade/order-info (UTA trade read)
@@ -260,7 +260,7 @@ func (s *GetLoanDataService) Do(ctx context.Context) (*LoanData, error) {
 
 type LoanData struct {
 	CurrentLoans        decimal.Decimal `json:"currentLoans"` // total current borrowed amount (USD)
-	InterestPaymentTime time.Time       `json:"interestPaymentTime"`
+	InterestPaymentTime time.Time       `json:"interestPaymentTime,format:unixmilli"`
 	DebtCoinList        []LoanDebtCoin  `json:"debtCoinList"`
 }
 
@@ -288,8 +288,8 @@ type Fill struct {
 	TradeScope    TradeScope      `json:"tradeScope"`
 	TradeSide     string          `json:"tradeSide"`
 	FeeDetail     []FeeDetail     `json:"feeDetail"`
-	CreatedTime   time.Time       `json:"createdTime"`
-	UpdatedTime   time.Time       `json:"updatedTime"`
+	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
+	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 	ExecPnL       decimal.Decimal `json:"execPnl"`
 	IsRPI         string          `json:"isRPI"`
 }

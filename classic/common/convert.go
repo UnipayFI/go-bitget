@@ -113,7 +113,7 @@ func (s *ConvertTradeService) Do(ctx context.Context) (*ConvertTradeResult, erro
 
 // ConvertTradeResult is the confirmation of an executed Convert trade.
 type ConvertTradeResult struct {
-	Ts         time.Time       `json:"ts"`
+	Ts         time.Time       `json:"ts,format:unixmilli"`
 	CnvtPrice  decimal.Decimal `json:"cnvtPrice"`
 	ToCoinSize decimal.Decimal `json:"toCoinSize"`
 	ToCoin     string          `json:"toCoin"`
@@ -162,7 +162,7 @@ type ConvertRecords struct {
 // ConvertRecord is one historical Convert (flash) trade.
 type ConvertRecord struct {
 	ID           string          `json:"id"`
-	Ts           time.Time       `json:"ts"`
+	Ts           time.Time       `json:"ts,format:unixmilli"`
 	CnvtPrice    decimal.Decimal `json:"cnvtPrice"`
 	Fee          decimal.Decimal `json:"fee"`
 	FromCoinSize decimal.Decimal `json:"fromCoinSize"`
@@ -200,7 +200,7 @@ type BGBConvertCoin struct {
 	BgbEstAmount decimal.Decimal     `json:"bgbEstAmount"`
 	Precision    string              `json:"precision"` // BGB scale
 	FeeDetail    []BGBConvertCoinFee `json:"feeDetail"`
-	CTime        time.Time           `json:"cTime"`
+	CTime        time.Time           `json:"cTime,format:unixmilli"`
 }
 
 // BGBConvertCoinFee is one fee tier for converting a coin into BGB.
@@ -311,7 +311,7 @@ type BGBConvertRecord struct {
 	ToCoinPrice   decimal.Decimal       `json:"toCoinPrice"`
 	FeeDetail     []BGBConvertRecordFee `json:"feeDetail"`
 	Status        string                `json:"status"`
-	Ctime         time.Time             `json:"ctime"`
+	Ctime         time.Time             `json:"ctime,format:unixmilli"`
 }
 
 // BGBConvertRecordFee is one fee line of a BGB conversion record.
