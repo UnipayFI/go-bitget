@@ -19,11 +19,15 @@ Response structs are reconciled against the live API (not just the docs), so end
 go get github.com/UnipayFI/go-bitget@latest
 ```
 
+Requires Go 1.27 (see [JSON and timestamps](#json-and-timestamps)). API errors are returned as `*client.APIError`, whose
+`Error` method has a value receiver, so under Go 1.27 `go vet` (which `go test` runs) rejects `fmt.Errorf("%w", apiErr)`
+for an `apiErr` of type `*client.APIError` — wrap the original `error` instead.
+
 ## Highlights
 
 - One signing/transport core shared by UTA (`uta`) and Classic (`classic/*`).
 - Fluent per-endpoint API: `NewXxxService(...).SetFoo(...).Do(ctx)`.
-- Amounts as `decimal.Decimal`, timestamps as `time.Time` whose wire unit is declared by the standard `format` tag option (`json:"cTime,format:unixmilli"`) — Bitget's string-encoded numbers and `""`/`"0"`/`"-1"` "not set" sentinels are decoded for you.
+- Amounts as `decimal.Decimal`, timestamps as `time.Time` whose wire unit is declared by a `format` tag option (`json:"cTime,format:unixmilli"`) — Bitget's string-encoded numbers and `""`/`"0"`/`"-1"` "not set" sentinels are decoded for you.
 - Every endpoint is tested against the live API, diffing real JSON keys against the struct.
 
 ## Quick start
@@ -137,16 +141,24 @@ pos, _ := mx.NewGetAllPositionService(mix.ProductTypeUSDTFutures).Do(ctx)
 
 ## JSON and timestamps
 
-The SDK uses Go 1.27's `encoding/json/v2` (keep the default `jsonv2` GOEXPERIMENT enabled). Every `time.Time` field
-declares the unit Bitget actually sends with the standard `format` tag option, e.g. `json:"cTime,format:unixmilli"`;
-`common.JSONMarshal` / `common.JSONUnmarshal` apply the standard semantics of that option plus Bitget's quirks
-(quoted-or-bare numbers, `""`/`"0"`/`"-1"`/`"null"` → zero time). Decoded times are in UTC — use `.Equal` to compare
-and `.In(loc)` / `.Local()` to display.
+The SDK uses Go 1.27's `encoding/json/v2` (keep the default `jsonv2` GOEXPERIMENT enabled; without it the SDK does not
+compile). Every `time.Time` field declares the unit Bitget actually sends with the `format` tag option, e.g.
+`json:"cTime,format:unixmilli"` — experimental in Go 1.27, and enabled by the SDK's codec. `common.JSONMarshal` /
+`common.JSONUnmarshal` apply that option's semantics plus Bitget's quirks: numbers are read quoted or bare and written
+quoted in whole units, and `""`/`"0"`/`"-1"`/`"null"`/`null` read as the zero time, which is written as `""`. Decoded
+times are in UTC — use `.Equal` to compare and `.In(loc)` / `.Local()` to display.
+
+A `time.Time` without a `format` option is RFC 3339, as in the standard library. That includes your own types passed
+through `common.JSONMarshal` / `common.JSONUnmarshal` or the `request` helpers, which earlier versions encoded and
+decoded as milliseconds: tag such fields `format:unixmilli`, and put a `time.Time` into a `request.Post` body map as
+`strconv.FormatInt(t.UnixMilli(), 10)`.
 
 Go 1.27 only honours `format` tags when the experimental `ExperimentalSupportFormatTag` option is passed, so serialize
-SDK types with `common.JSONMarshal` / `common.JSONUnmarshal` (or pass
-`github.com/go-json-experiment/json.ExperimentalSupportFormatTag(true)` to `encoding/json/v2` yourself). Plain
-`encoding/json`, and `log/slog`'s JSON handler, reject structs with `format` tags.
+SDK types with `common.JSONMarshal` / `common.JSONUnmarshal`. Where you only need `encoding/json/v2` to accept the tags
+(say, to store or log SDK values), you can pass `github.com/go-json-experiment/json.ExperimentalSupportFormatTag(true)`
+yourself; that applies the option's plain semantics (bare numbers, no `""`/`"0"`/`"-1"`/`"null"` sentinels), so it
+cannot read Bitget's wire data. Plain `encoding/json` returns an error for structs with `format` tags, and `log/slog`'s
+JSON handler logs `!ERROR:...` in place of such a value.
 
 ## Packages
 
