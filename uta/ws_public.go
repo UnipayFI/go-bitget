@@ -28,8 +28,10 @@ func (s *SubscribeTickerService) Do(ctx context.Context, cb WsHandler[WsTicker])
 		request.WsArg{InstType: string(s.instType), Topic: "ticker", Symbol: s.symbol}, cb)
 }
 
+// WsTicker is a symbol's snapshot pushed on the "ticker" channel. Its items
+// carry neither the symbol nor a timestamp: read them from the envelope's
+// WsPush.Arg.Symbol and WsPush.Ts.
 type WsTicker struct {
-	Symbol       string          `json:"symbol"`
 	LastPrice    decimal.Decimal `json:"lastPrice"`
 	OpenPrice24h decimal.Decimal `json:"openPrice24h"`
 	HighPrice24h decimal.Decimal `json:"highPrice24h"`
@@ -51,7 +53,6 @@ type WsTicker struct {
 	DeliveryStart       time.Time       `json:"deliveryStartTime,format:unixmilli"`
 	DeliveryTime        time.Time       `json:"deliveryTime,format:unixmilli"`
 	DeliveryStatus      string          `json:"deliveryStatus"`
-	Ts                  time.Time       `json:"ts,format:unixmilli"`
 }
 
 // SubscribeKlineService -- public "kline" candlestick channel. Reality stock

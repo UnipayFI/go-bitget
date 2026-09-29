@@ -66,6 +66,10 @@ func TestWsPublicTicker(t *testing.T) {
 		if p.Data[0].NextFundingTime.IsZero() {
 			t.Error("perp ticker nextFundingTime is zero (WsTicker.NextFundingTime missing?)")
 		}
+		// Ticker items carry no ts; the push time is on the envelope.
+		if p.Ts.IsZero() {
+			t.Error("ticker push ts is zero")
+		}
 	case <-time.After(15 * time.Second):
 		t.Fatal("no ticker message within 15s")
 	}
