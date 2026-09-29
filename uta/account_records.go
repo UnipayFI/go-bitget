@@ -86,11 +86,18 @@ type FinancialRecord struct {
 type FinancialRecordType string
 
 const (
+	// Cross-margin funding-fee entries.
 	FinancialRecordContractMainSettleFeeUserIn  FinancialRecordType = "CONTRACT_MAIN_SETTLE_FEE_USER_IN"
 	FinancialRecordContractMainSettleFeeUserOut FinancialRecordType = "CONTRACT_MAIN_SETTLE_FEE_USER_OUT"
+	// Isolated-margin funding-fee entries.
+	FinancialRecordMarginSettleFeeUserIn  FinancialRecordType = "MARGIN_SETTLE_FEE_USER_IN"
+	FinancialRecordMarginSettleFeeUserOut FinancialRecordType = "MARGIN_SETTLE_FEE_USER_OUT"
 	// RWA cash-dividend cross-margin funding-fee entries.
 	FinancialRecordRWAContractMainSettleFeeUserIn  FinancialRecordType = "RWA_CONTRACT_MAIN_SETTLE_FEE_USER_IN"
 	FinancialRecordRWAContractMainSettleFeeUserOut FinancialRecordType = "RWA_CONTRACT_MAIN_SETTLE_FEE_USER_OUT"
+	// RWA cash-dividend isolated-margin funding-fee entries.
+	FinancialRecordRWAFixedSettleFeeUserIn  FinancialRecordType = "RWA_FIXED_SETTLE_FEE_USER_IN"
+	FinancialRecordRWAFixedSettleFeeUserOut FinancialRecordType = "RWA_FIXED_SETTLE_FEE_USER_OUT"
 	// RWA contract rebase entries (position open/close and in-SSM buy/sell).
 	FinancialRecordRWAContractRebaseUserOpenLong   FinancialRecordType = "RWA_CONTRACT_REBASE_USER_OPEN_LONG"
 	FinancialRecordRWAContractRebaseUserOpenShort  FinancialRecordType = "RWA_CONTRACT_REBASE_USER_OPEN_SHORT"
