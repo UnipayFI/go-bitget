@@ -16,6 +16,10 @@ import (
 // are required; price is required for limit orders. For market buys qty is in
 // the quote coin, otherwise in the base coin. category selects spot vs. margin
 // trading (defaults to SPOT). The reply carries the new order's identifiers.
+//
+// A UID whose terminal orders on one rtoken pair exceed 2,000 in a daily cycle
+// with a fill rate below 10% has limit orders on that pair rejected with code
+// 41121; the restriction lifts after a clean cycle (re-evaluated 04:00 UTC+8).
 type PlaceRealityOrderService struct {
 	c    *UTAClient
 	body map[string]any
