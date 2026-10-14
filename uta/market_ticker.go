@@ -69,6 +69,12 @@ type Ticker struct {
 // GetOrderBookService -- GET /api/v3/market/orderbook
 //
 // Returns the order book depth (asks and bids) for a symbol.
+//
+// For Reality (rtoken) pairs, during US market hours (weekdays) only the best
+// bid/ask level is returned; outside them (weekends) the internal (onshore)
+// depth up to limit. Once a pair migrates to the new rToken matching engine
+// (2026-10-14 to 2026-10-20) its book may briefly show crossed prices. Use
+// GetRealityOrderBookService for full rtoken depth.
 type GetOrderBookService struct {
 	c      *UTAClient
 	params map[string]string

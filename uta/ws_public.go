@@ -87,6 +87,13 @@ type WsKline struct {
 
 // SubscribeOrderBookService -- public depth channel. depth selects the topic:
 // "books" (full), "books1", "books5", or "books50".
+//
+// For Reality (rtoken) pairs, books1 pushes at all times, while books5,
+// books50 and books push only outside US market hours (internal depth only),
+// so they stay silent during weekday market hours. Once a pair migrates to the
+// new rToken matching engine (2026-10-14 to 2026-10-20) its book may briefly
+// show crossed prices. Use SubscribeRealityOrderBookService for full rtoken
+// depth.
 type SubscribeOrderBookService struct {
 	c        *UTAWebSocketClient
 	instType WsInstType
@@ -178,9 +185,13 @@ type WsRPIOrderBook struct {
 }
 
 // SubscribeRealityOrderBookService -- "reality-orderbook" channel: raw
-// (unaggregated) depth for a Reality (US stock) trading pair, e.g. RAAPLUSDT.
-// Every push is a full snapshot, with complete depth in both trading and
-// non-trading sessions.
+// (unaggregated) depth for a Reality (US stock) trading pair, e.g. RAAPLUSDT,
+// merging onshore (internal) and offshore (external) quantities; see
+// SubscribeRealityOrderBookSegmentedService for the split. Every push is a
+// full snapshot of up to 85 levels, with complete depth in both trading and
+// non-trading sessions, sent every 500ms while the depth changes or every 10s
+// otherwise. Once the pair migrates to the new rToken matching engine
+// (2026-10-14 to 2026-10-20) the book may briefly show crossed prices.
 //
 // This channel requires API Key authentication and whitelist access (apply via
 // your BD contact), so the subscription is sent over the authenticated

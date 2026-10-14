@@ -102,8 +102,11 @@ func (s *CancelRealityOrderService) Do(ctx context.Context) (*OrderRef, error) {
 // GetRealityOrderBookService -- GET /api/v3/account/reality-orderbook (UTA trade read)
 //
 // Returns the order book depth snapshot for a Reality stock trading pair (e.g.
-// rAAPLUSDT). Requires API Key authentication and Reality access. symbol is
-// required.
+// rAAPLUSDT), merging onshore (internal) and offshore (external) quantities;
+// see GetRealityOrderBookSegmentedService for the split. Up to 85 levels; once
+// the pair migrates to the new rToken matching engine (2026-10-14 to
+// 2026-10-20) the book may briefly show crossed prices. Requires API Key
+// authentication and Reality access. symbol is required.
 type GetRealityOrderBookService struct {
 	c      *UTAClient
 	params map[string]string
