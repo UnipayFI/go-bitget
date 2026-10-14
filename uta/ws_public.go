@@ -206,7 +206,7 @@ func (c *UTAWebSocketClient) NewSubscribeRealityOrderBookService(symbol string) 
 }
 
 func (s *SubscribeRealityOrderBookService) Do(ctx context.Context, cb WsHandler[WsRealityOrderBook]) (chan<- struct{}, <-chan struct{}, error) {
-	return request.Subscribe[[]WsRealityOrderBook](ctx, s.c, true,
+	return subscribeObjectOrArray(ctx, s.c, true,
 		request.WsArg{InstType: wsInstTypeUTA, Topic: "reality-orderbook", Symbol: s.symbol}, cb)
 }
 
