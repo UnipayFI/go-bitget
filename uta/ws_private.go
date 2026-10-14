@@ -132,6 +132,10 @@ type WsOrder struct {
 	FeeDetail     []FeeDetail     `json:"feeDetail"`
 	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
 	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
+	// Venue and RTokenTimeInForce are only meaningful for Reality (rtoken)
+	// pairs.
+	Venue             Venue             `json:"venue"`
+	RTokenTimeInForce RTokenTimeInForce `json:"rTokenTimeInForce"`
 }
 
 // SubscribeFillService -- private "fill" channel (real-time executions).

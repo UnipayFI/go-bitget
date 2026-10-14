@@ -19,6 +19,8 @@ import (
 // A UID whose terminal orders on one rtoken pair exceed 2,000 in a daily cycle
 // with a fill rate below 10% has limit orders on that pair rejected with code
 // 41121; the restriction lifts after a clean cycle (re-evaluated 04:00 UTC+8).
+// rtoken orders cannot be modified: cancel and re-place instead. Their routing
+// and validity are set with SetVenue and SetRTokenTimeInForce.
 type PlaceOrderService struct {
 	c    *UTAClient
 	body map[string]any
@@ -40,7 +42,8 @@ func (s *PlaceOrderService) SetPrice(price decimal.Decimal) *PlaceOrderService {
 	return s
 }
 
-// SetTimeInForce sets the time-in-force policy (defaults to gtc for limit orders).
+// SetTimeInForce sets the time-in-force policy (defaults to gtc for limit
+// orders). Ignored for Reality (rtoken) pairs; see SetRTokenTimeInForce.
 func (s *PlaceOrderService) SetTimeInForce(timeInForce TimeInForce) *PlaceOrderService {
 	s.body["timeInForce"] = string(timeInForce)
 	return s
@@ -142,6 +145,20 @@ func (s *PlaceOrderService) SetSlLimitPrice(slLimitPrice decimal.Decimal) *Place
 	return s
 }
 
+// SetVenue sets the order routing strategy (defaults to VenueLitMarket). Only
+// effective for Reality (rtoken) pairs.
+func (s *PlaceOrderService) SetVenue(venue Venue) *PlaceOrderService {
+	s.body["venue"] = string(venue)
+	return s
+}
+
+// SetRTokenTimeInForce sets the order validity (defaults to
+// RTokenTimeInForceGTD). Only effective for Reality (rtoken) pairs.
+func (s *PlaceOrderService) SetRTokenTimeInForce(rTokenTimeInForce RTokenTimeInForce) *PlaceOrderService {
+	s.body["rTokenTimeInForce"] = string(rTokenTimeInForce)
+	return s
+}
+
 func (s *PlaceOrderService) Do(ctx context.Context) (*OrderRef, error) {
 	req := request.Post(ctx, s.c, "/api/v3/trade/place-order", s.body).WithSign()
 	return request.Do[OrderRef](req)
@@ -159,6 +176,7 @@ type OrderRef struct {
 // Amends an open order's quantity and/or price. Identify the order by orderId
 // or clientOid (orderId wins if both are set); at least one of qty or price
 // must be provided. From 2026-09-30 symbol and category become required.
+// Reality (rtoken) orders cannot be modified: cancel and re-place instead.
 type ModifyOrderService struct {
 	c    *UTAClient
 	body map[string]any

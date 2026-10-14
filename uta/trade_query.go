@@ -52,6 +52,10 @@ type Order struct {
 	ExecType      ExecType        `json:"execType"`
 	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
 	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
+	// Venue and RTokenTimeInForce are only meaningful for Reality (rtoken)
+	// pairs and are only carried by order-info.
+	Venue             Venue             `json:"venue"`
+	RTokenTimeInForce RTokenTimeInForce `json:"rTokenTimeInForce"`
 }
 
 // GetOrderInfoService -- GET /api/v3/trade/order-info (UTA trade read)

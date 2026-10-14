@@ -68,6 +68,12 @@ type WsNewOrder struct {
 	PxAmendType string `json:"pxAmendType,omitempty"`
 	// AutoBorrow enables auto-borrowing of the spent coin (spot orders only).
 	AutoBorrow AutoBorrow `json:"autoBorrow,omitempty"`
+	// Venue (default VenueLitMarket) and RTokenTimeInForce (default
+	// RTokenTimeInForceGTD) set a Reality (rtoken) order's routing and
+	// validity; they have no effect on other pairs. batch-place-order does not
+	// accept rtoken pairs.
+	Venue             Venue             `json:"venue,omitempty"`
+	RTokenTimeInForce RTokenTimeInForce `json:"rTokenTimeInForce,omitempty"`
 	// ReceiveWindow is the order's validity window in ms ([10, 60000]); the
 	// order is cancelled (cancelReason "cancel_receiveWindow") if the window
 	// elapses before the gateway processes it. Only takes effect together with
@@ -105,7 +111,8 @@ type WsCancelOrder struct {
 // PlaceOrder places a single order over the stream. Reality stock pairs (rtoken,
 // e.g. rAAPLUSDT) are supported and rate-limited on their own budget:
 // 5 req/sec/UID, or 30 req/sec/UID once whitelisted. Their preset TP/SL is
-// market-only: tpOrderType and slOrderType accept only market.
+// market-only: tpOrderType and slOrderType accept only market. rtoken orders
+// cannot be modified: cancel and re-place instead.
 func (t *UTATradeConn) PlaceOrder(ctx context.Context, category Category, order WsNewOrder) (*WsOrderAck, error) {
 	return t.single(ctx, category, "place-order", order)
 }

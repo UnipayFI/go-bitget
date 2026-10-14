@@ -82,6 +82,32 @@ const (
 	TimeInForceIOC      TimeInForce = "ioc"
 )
 
+// Venue is the order routing strategy for Reality (rtoken) pairs; it has no
+// effect on other pairs. Orders default to VenueLitMarket.
+type Venue string
+
+const (
+	// VenueInternalization matches only inside Bitget's internal (onshore)
+	// pool and is never forwarded to the external broker.
+	VenueInternalization Venue = "internalization"
+	// VenueLitMarket matches internally first, routes any remainder to the
+	// external pool, then rests what is still unmatched as a limit order.
+	VenueLitMarket Venue = "lit_market"
+)
+
+// RTokenTimeInForce is the validity of a Reality (rtoken) order; it has no
+// effect on other pairs. Orders default to RTokenTimeInForceGTD.
+type RTokenTimeInForce string
+
+const (
+	// RTokenTimeInForceGTD is valid for the current session: an order placed
+	// during US market hours (weekdays) lives until the end of after-hours
+	// trading, one placed on a weekend until just before the next US open.
+	RTokenTimeInForceGTD RTokenTimeInForce = "gtd"
+	// RTokenTimeInForceGTC is valid for 90 days.
+	RTokenTimeInForceGTC RTokenTimeInForce = "gtc"
+)
+
 // HoldMode is the futures position mode (one-way vs hedge).
 type HoldMode string
 
