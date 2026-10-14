@@ -127,6 +127,38 @@ type RealityOrderBook struct {
 	Ts     time.Time           `json:"ts,format:unixmilli"`
 }
 
+// GetRealityOrderBookSegmentedService -- GET /api/v3/account/reality-orderbook-segmented (UTA trade read)
+//
+// Returns the order book depth snapshot for a Reality stock trading pair (e.g.
+// rAAPLUSDT) with each level's onshore (internal) and offshore (external)
+// quantities reported separately; GetRealityOrderBookService merges them. Up
+// to 85 levels; the book may briefly show crossed prices. Only pairs migrated
+// to the new rToken matching engine return data (live from 2026-10-15).
+// Requires API Key authentication and whitelist access. symbol is required.
+type GetRealityOrderBookSegmentedService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetRealityOrderBookSegmentedService(symbol string) *GetRealityOrderBookSegmentedService {
+	return &GetRealityOrderBookSegmentedService{c: c, params: map[string]string{"symbol": symbol}}
+}
+
+func (s *GetRealityOrderBookSegmentedService) Do(ctx context.Context) (*RealityOrderBookSegmented, error) {
+	req := request.Get(ctx, s.c, "/api/v3/account/reality-orderbook-segmented", s.params).WithSign()
+	return request.Do[RealityOrderBookSegmented](req)
+}
+
+// RealityOrderBookSegmented is a Reality trading pair's segmented depth
+// snapshot. Asks ("a", ascending) and bids ("b", descending) arrive as arrays
+// of [price, onshore size, offshore size] string triples.
+type RealityOrderBookSegmented struct {
+	Symbol string              `json:"symbol"`
+	Asks   [][]decimal.Decimal `json:"a"`
+	Bids   [][]decimal.Decimal `json:"b"`
+	Ts     time.Time           `json:"ts,format:unixmilli"`
+}
+
 // GetRealityFillsService -- GET /api/v3/account/reality-fills (UTA trade read)
 //
 // Returns the most recent platform fills for a Reality stock trading pair (e.g.

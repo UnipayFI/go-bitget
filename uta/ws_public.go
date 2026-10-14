@@ -2,6 +2,8 @@ package uta
 
 import (
 	"context"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"time"
 
 	"github.com/UnipayFI/go-bitget/request"
@@ -203,6 +205,67 @@ type WsRealityOrderBook struct {
 	Symbol string              `json:"symbol"`
 	Asks   [][]decimal.Decimal `json:"a"`
 	Bids   [][]decimal.Decimal `json:"b"`
+}
+
+// SubscribeRealityOrderBookSegmentedService -- "reality-orderbook-segmented"
+// channel: the reality-orderbook depth with each level's onshore (internal)
+// and offshore (external) quantities reported separately. Every push is a full
+// snapshot of up to 85 levels, sent every 500ms while the depth changes or
+// every 10s otherwise; the book may briefly show crossed prices.
+// Only pairs migrated to the new rToken matching engine push data (live from
+// 2026-10-15).
+//
+// This channel requires API Key authentication and whitelist access (apply via
+// your BD contact), so the subscription is sent over the authenticated
+// connection.
+type SubscribeRealityOrderBookSegmentedService struct {
+	c      *UTAWebSocketClient
+	symbol string
+}
+
+func (c *UTAWebSocketClient) NewSubscribeRealityOrderBookSegmentedService(symbol string) *SubscribeRealityOrderBookSegmentedService {
+	return &SubscribeRealityOrderBookSegmentedService{c: c, symbol: symbol}
+}
+
+func (s *SubscribeRealityOrderBookSegmentedService) Do(ctx context.Context, cb WsHandler[WsRealityOrderBookSegmented]) (chan<- struct{}, <-chan struct{}, error) {
+	return subscribeObjectOrArray(ctx, s.c, true,
+		request.WsArg{InstType: wsInstTypeUTA, Topic: "reality-orderbook-segmented", Symbol: s.symbol}, cb)
+}
+
+// WsRealityOrderBookSegmented rows are [price, onshore size, offshore size]
+// triples: asks ascending, bids descending.
+type WsRealityOrderBookSegmented struct {
+	Asks [][]decimal.Decimal `json:"a"`
+	Bids [][]decimal.Decimal `json:"b"`
+}
+
+// subscribeObjectOrArray is request.Subscribe for channels whose docs show data
+// as a single object instead of the usual array: it decodes either shape and
+// always hands cb a slice.
+func subscribeObjectOrArray[T any](ctx context.Context, c *UTAWebSocketClient, private bool, arg request.WsArg, cb WsHandler[T]) (chan<- struct{}, <-chan struct{}, error) {
+	return request.Subscribe(ctx, c, private, arg, func(p *request.WsPush[objectOrArray[T]], err error) {
+		if err != nil {
+			cb(nil, err)
+			return
+		}
+		cb(&request.WsPush[[]T]{Action: p.Action, Arg: p.Arg, Data: p.Data, Ts: p.Ts}, nil)
+	})
+}
+
+// objectOrArray decodes a JSON array of T, or a single T object as a
+// one-element slice.
+type objectOrArray[T any] []T
+
+func (s *objectOrArray[T]) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
+	if dec.PeekKind() != '{' {
+		return json.UnmarshalDecode(dec, (*[]T)(s))
+	}
+	var v T
+	if err := json.UnmarshalDecode(dec, &v); err != nil {
+		return err
+	}
+	*s = objectOrArray[T]{v}
+	return nil
 }
 
 // SubscribeLiquidationService -- public "liquidation" channel (futures only).

@@ -41,3 +41,26 @@ func TestRealityMarketData(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/account/reality-fills", map[string]string{"symbol": symbol}, true)
 	assertCovers(t, "account/reality-fills", raw, fills)
 }
+
+// TestRealityOrderBookSegmented exercises the authenticated
+// reality-orderbook-segmented endpoint. It requires whitelist access and a pair
+// migrated to the new rToken matching engine; an API error skips the test.
+func TestRealityOrderBookSegmented(t *testing.T) {
+	c := testClient(t)
+	if err := c.SyncServerTime(ctx(t)); err != nil {
+		t.Fatalf("sync time: %v", err)
+	}
+	cx := ctx(t)
+	symbol := "RAAPLUSDT"
+
+	ob, err := c.NewGetRealityOrderBookSegmentedService(symbol).Do(cx)
+	if err != nil {
+		if apiErr, ok := err.(*client.APIError); ok {
+			t.Skipf("reality orderbook segmented not available (whitelist required): %v", apiErr)
+		}
+		t.Fatalf("reality orderbook segmented: %v", err)
+	}
+	t.Logf("reality orderbook segmented: symbol=%s asks=%d bids=%d ts=%s", ob.Symbol, len(ob.Asks), len(ob.Bids), ob.Ts)
+	raw := fetchRawGet(t, c, cx, "/api/v3/account/reality-orderbook-segmented", map[string]string{"symbol": symbol}, true)
+	assertCovers(t, "account/reality-orderbook-segmented", raw, ob)
+}

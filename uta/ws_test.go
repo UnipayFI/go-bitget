@@ -184,6 +184,46 @@ func TestWsRealityOrderBook(t *testing.T) {
 	}
 }
 
+// TestWsRealityOrderBookSegmented exercises the authenticated
+// reality-orderbook-segmented channel. It needs API keys (skipped otherwise),
+// whitelist access and a migrated pair, so an error frame or silence skips.
+func TestWsRealityOrderBookSegmented(t *testing.T) {
+	ws := testWsClient(t)
+	msgC := make(chan *request.WsPush[[]WsRealityOrderBookSegmented], 4)
+	errC := make(chan error, 4)
+	done, _, err := ws.NewSubscribeRealityOrderBookSegmentedService("RAAPLUSDT").
+		Do(context.Background(), func(p *request.WsPush[[]WsRealityOrderBookSegmented], err error) {
+			if err != nil {
+				select {
+				case errC <- err:
+				default:
+				}
+				return
+			}
+			select {
+			case msgC <- p:
+			default:
+			}
+		})
+	if err != nil {
+		t.Fatalf("subscribe reality-orderbook-segmented: %v", err)
+	}
+	defer close(done)
+
+	select {
+	case e := <-errC:
+		t.Skipf("reality-orderbook-segmented not available (whitelist required): %v", e)
+	case p := <-msgC:
+		if len(p.Data) == 0 {
+			t.Fatal("reality-orderbook-segmented push had empty data")
+		}
+		t.Logf("reality-orderbook-segmented action=%s asks=%d bids=%d",
+			p.Action, len(p.Data[0].Asks), len(p.Data[0].Bids))
+	case <-time.After(12 * time.Second):
+		t.Skip("no reality-orderbook-segmented message (symbol may be closed, not migrated or not whitelisted)")
+	}
+}
+
 func TestWsPublicLiquidation(t *testing.T) {
 	ws := testPublicWsClient()
 	errC := make(chan error, 4)
