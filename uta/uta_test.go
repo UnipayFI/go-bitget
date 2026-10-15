@@ -50,10 +50,15 @@ func TestServerTime(t *testing.T) {
 	if err != nil {
 		t.Fatalf("server time: %v", err)
 	}
-	t.Logf("serverTime=%s (%d)", resp.ServerTime, resp.ServerTime.UnixMilli())
+	t.Logf("serverTime=%s (%d) serverTimeMicros=%d", resp.ServerTime, resp.ServerTime.UnixMilli(), resp.ServerTimeMicros.UnixMicro())
 	if resp.ServerTime.IsZero() {
 		t.Fatal("server time is zero")
 	}
+	if resp.ServerTimeMicros.IsZero() {
+		t.Fatal("server time micros is zero")
+	}
+	raw := fetchRawGet(t, c, ctx(t), "/api/v3/market/time", nil, false)
+	assertCovers(t, "market/time", raw, resp)
 }
 
 func TestAccountAssets(t *testing.T) {

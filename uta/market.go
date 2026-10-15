@@ -8,11 +8,10 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-// GetServerTimeService -- GET /api/v2/public/time
+// GetServerTimeService -- GET /api/v3/market/time
 //
-// Returns the Bitget server time. Bitget exposes a single shared time endpoint
-// (under the v2 common namespace); SyncServerTime uses it to correct clock
-// drift before signing private requests.
+// Returns the Bitget server time; SyncServerTime uses it to correct clock drift
+// before signing private requests.
 type GetServerTimeService struct {
 	c *UTAClient
 }
@@ -22,12 +21,15 @@ func (c *UTAClient) NewGetServerTimeService() *GetServerTimeService {
 }
 
 func (s *GetServerTimeService) Do(ctx context.Context) (*ServerTimeResponse, error) {
-	req := request.Get(ctx, s.c, "/api/v2/public/time")
+	req := request.Get(ctx, s.c, "/api/v3/market/time")
 	return request.Do[ServerTimeResponse](req)
 }
 
+// ServerTimeResponse carries the same instant at millisecond and microsecond
+// precision.
 type ServerTimeResponse struct {
-	ServerTime time.Time `json:"serverTime,format:unixmilli"`
+	ServerTime       time.Time `json:"serverTime,format:unixmilli"`
+	ServerTimeMicros time.Time `json:"serverTimeMicros,format:unixmicro"`
 }
 
 // GetInstrumentsService -- GET /api/v3/market/instruments
