@@ -223,8 +223,9 @@ type CFDOrder struct {
 
 // GetCFDOrderHistoryService -- GET /api/v3/cfd/trade/history-order (UTA trade read)
 //
-// Returns historical CFD orders for a symbol, paginated by page number. A
-// single query may span at most 30 days within a 90-day lookback window.
+// Returns historical CFD orders for a symbol, paginated by page number or by
+// cursor. A single query may span at most 30 days within a 90-day lookback
+// window.
 type GetCFDOrderHistoryService struct {
 	c      *UTAClient
 	params map[string]string
@@ -252,7 +253,8 @@ func (s *GetCFDOrderHistoryService) SetEndTime(t time.Time) *GetCFDOrderHistoryS
 	return s
 }
 
-// SetLimit caps the number of orders per page (default 10, range [1, 50]).
+// SetLimit caps the number of orders per page (default 10, range [1, 50]). The
+// first page may return more entries than limit.
 func (s *GetCFDOrderHistoryService) SetLimit(limit int) *GetCFDOrderHistoryService {
 	s.params["limit"] = strconv.Itoa(limit)
 	return s
@@ -261,6 +263,13 @@ func (s *GetCFDOrderHistoryService) SetLimit(limit int) *GetCFDOrderHistoryServi
 // SetPageNo selects the page to return.
 func (s *GetCFDOrderHistoryService) SetPageNo(pageNo int) *GetCFDOrderHistoryService {
 	s.params["pageNo"] = strconv.Itoa(pageNo)
+	return s
+}
+
+// SetCursor pages by cursor instead of pageNo: omit it for the first page, then
+// pass the orderId of the last order on the previous page.
+func (s *GetCFDOrderHistoryService) SetCursor(cursor string) *GetCFDOrderHistoryService {
+	s.params["cursor"] = cursor
 	return s
 }
 
