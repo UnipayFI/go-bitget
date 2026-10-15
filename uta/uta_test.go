@@ -80,6 +80,22 @@ func TestAccountAssets(t *testing.T) {
 	assertCovers(t, "account/assets", raw, resp)
 }
 
+func TestCoins(t *testing.T) {
+	c := testPublicClient()
+	cx := ctx(t)
+	params := map[string]string{"coin": "BTC"}
+	list, err := c.NewGetCoinsService().SetCoin("BTC").Do(cx)
+	if err != nil {
+		t.Fatalf("coins: %v", err)
+	}
+	if len(list) == 0 || len(list[0].Chains) == 0 {
+		t.Fatal("no BTC coin/chains returned")
+	}
+	t.Logf("BTC: %+v", list[0])
+	raw := fetchRawGet(t, c, cx, "/api/v3/market/coins", params, false)
+	assertCovers(t, "market/coins", raw, list)
+}
+
 func TestInstruments(t *testing.T) {
 	c := testPublicClient()
 	cx := ctx(t)

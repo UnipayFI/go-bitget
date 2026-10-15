@@ -32,6 +32,64 @@ type ServerTimeResponse struct {
 	ServerTimeMicros time.Time `json:"serverTimeMicros,format:unixmicro"`
 }
 
+// GetCoinsService -- GET /api/v3/market/coins
+//
+// Returns coin metadata and the supported deposit/withdraw chains, for every
+// coin unless SetCoin is used.
+type GetCoinsService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetCoinsService() *GetCoinsService {
+	return &GetCoinsService{c: c, params: map[string]string{}}
+}
+
+// SetCoin filters the result to a single coin (e.g. "BTC").
+func (s *GetCoinsService) SetCoin(coin string) *GetCoinsService {
+	s.params["coin"] = coin
+	return s
+}
+
+func (s *GetCoinsService) Do(ctx context.Context) ([]CoinInfo, error) {
+	req := request.Get(ctx, s.c, "/api/v3/market/coins", s.params)
+	resp, err := request.Do[[]CoinInfo](req)
+	if err != nil {
+		return nil, err
+	}
+	return *resp, nil
+}
+
+// CoinInfo is a single coin's metadata together with its per-chain config.
+type CoinInfo struct {
+	CoinID   string      `json:"coinId"`
+	Coin     string      `json:"coin"`
+	Transfer string      `json:"transfer"` // "true"/"false": transferable between accounts
+	AreaCoin string      `json:"areaCoin"` // "yes"/"no": region-restricted coin
+	Chains   []CoinChain `json:"chains"`
+}
+
+// CoinChain is the deposit/withdraw configuration for one chain of a coin.
+type CoinChain struct {
+	Chain             string          `json:"chain"`
+	NeedTag           string          `json:"needTag"`      // "true"/"false": deposit requires a memo/tag
+	Withdrawable      string          `json:"withdrawable"` // "true"/"false"
+	Rechargeable      string          `json:"rechargeable"` // "true"/"false": depositable
+	WithdrawFee       decimal.Decimal `json:"withdrawFee"`
+	ExtraWithdrawFee  decimal.Decimal `json:"extraWithdrawFee"` // extra on-chain destruction fee, 0.1 = 10%
+	DepositConfirm    string          `json:"depositConfirm"`   // confirmations to credit a deposit
+	WithdrawConfirm   string          `json:"withdrawConfirm"`  // confirmations before withdraw is final
+	MinDepositAmount  decimal.Decimal `json:"minDepositAmount"`
+	MinWithdrawAmount decimal.Decimal `json:"minWithdrawAmount"`
+	BrowserURL        string          `json:"browserUrl"`
+	ContractAddress   string          `json:"contractAddress"`
+	WithdrawStep      string          `json:"withdrawStep"` // withdraw amount step (0 = no step limit)
+	// WithdrawMinScale is the decimal places allowed on a withdraw amount (the
+	// docs call it withdrawPrecision; the API sends withdrawMinScale).
+	WithdrawMinScale string `json:"withdrawMinScale"`
+	Congestion       string `json:"congestion"` // chain status: "normal"/"congested"
+}
+
 // GetInstrumentsService -- GET /api/v3/market/instruments
 //
 // Returns trading specifications for a product category, optionally filtered to
