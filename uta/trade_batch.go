@@ -34,6 +34,14 @@ type BatchOrderItem struct {
 	// PxAmendType is "no" (default: reject an out-of-band limit price) or "yes"
 	// (adjust it to the best value within the price limit range).
 	PxAmendType string `json:"pxAmendType,omitempty"`
+	// ReceiveWindow is the order's validity window in ms ([10, 60000]); an
+	// order the matching engine receives after RequestTime + ReceiveWindow is
+	// cancelled instead of placed. Only takes effect together with
+	// RequestTime.
+	ReceiveWindow string `json:"receiveWindow,omitempty"`
+	// RequestTime is the client-side request timestamp in ms, the origin the
+	// ReceiveWindow is measured from.
+	RequestTime string `json:"requestTime,omitempty"`
 }
 
 // PlaceBatchService -- POST /api/v3/trade/place-batch

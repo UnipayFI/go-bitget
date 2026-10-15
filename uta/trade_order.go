@@ -2,6 +2,8 @@ package uta
 
 import (
 	"context"
+	"strconv"
+	"time"
 
 	"github.com/UnipayFI/go-bitget/request"
 	"github.com/shopspring/decimal"
@@ -156,6 +158,21 @@ func (s *PlaceOrderService) SetVenue(venue Venue) *PlaceOrderService {
 // RTokenTimeInForceGTD). Only effective for Reality (rtoken) pairs.
 func (s *PlaceOrderService) SetRTokenTimeInForce(rTokenTimeInForce RTokenTimeInForce) *PlaceOrderService {
 	s.body["rTokenTimeInForce"] = string(rTokenTimeInForce)
+	return s
+}
+
+// SetRequestTime sets the client request time, the origin ReceiveWindow is
+// measured from.
+func (s *PlaceOrderService) SetRequestTime(t time.Time) *PlaceOrderService {
+	s.body["requestTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetReceiveWindow sets the order's validity window in ms ([10, 60000]): an
+// order the matching engine receives after requestTime + receiveWindow is
+// cancelled instead of placed. Only takes effect together with SetRequestTime.
+func (s *PlaceOrderService) SetReceiveWindow(ms int64) *PlaceOrderService {
+	s.body["receiveWindow"] = strconv.FormatInt(ms, 10)
 	return s
 }
 
