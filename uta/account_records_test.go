@@ -74,3 +74,20 @@ func TestMaxBorrowable(t *testing.T) {
 		map[string]string{"coin": "USDT"}, true)
 	assertCovers(t, "account/max-borrowable", raw, got)
 }
+
+func TestInterestRateHistory(t *testing.T) {
+	c := testClient(t)
+	if err := c.SyncServerTime(ctx(t)); err != nil {
+		t.Fatalf("sync time: %v", err)
+	}
+	cx := ctx(t)
+
+	got, err := c.NewGetInterestRateHistoryService("USDT").Do(cx)
+	if err != nil {
+		t.Fatalf("interest rate history: %v", err)
+	}
+	t.Logf("interest rate history USDT: %d entries cursor=%s", len(got.List), got.Cursor)
+	raw := fetchRawGet(t, c, cx, "/api/v3/account/interest-rate-history",
+		map[string]string{"coin": "USDT"}, true)
+	assertCovers(t, "account/interest-rate-history", raw, got)
+}
