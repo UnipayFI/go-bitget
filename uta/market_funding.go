@@ -121,6 +121,40 @@ type OpenInterest struct {
 	OpenInterest decimal.Decimal `json:"openInterest"`
 }
 
+// GetOpenInterestHistoryService -- GET /api/v3/market/open-interest-history
+//
+// Returns the recent open-interest series of a futures symbol, newest first.
+// period is required: 5m, 15m, 30m, 1h, 2h, 4h, 6h, 12h or 1d.
+type GetOpenInterestHistoryService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetOpenInterestHistoryService(symbol, period string) *GetOpenInterestHistoryService {
+	return &GetOpenInterestHistoryService{c: c, params: map[string]string{"symbol": symbol, "period": period}}
+}
+
+func (s *GetOpenInterestHistoryService) Do(ctx context.Context) (*OpenInterestHistory, error) {
+	req := request.Get(ctx, s.c, "/api/v3/market/open-interest-history", s.params)
+	return request.Do[OpenInterestHistory](req)
+}
+
+type OpenInterestHistory struct {
+	List []OpenInterestRecord `json:"list"`
+}
+
+// OpenInterestRecord is the open interest at the end of one period. Quantities
+// are in base coin; values are in quote coin (openInterest * markPrice). The
+// one-side figures count a single side of the book.
+type OpenInterestRecord struct {
+	Symbol                   string          `json:"symbol"`
+	OpenInterest             decimal.Decimal `json:"openInterest"`
+	OneSideOpenInterest      decimal.Decimal `json:"oneSideOpenInterest"`
+	OpenInterestValue        decimal.Decimal `json:"openInterestValue"`
+	OneSideOpenInterestValue decimal.Decimal `json:"oneSideOpenInterestValue"`
+	Timestamp                time.Time       `json:"timestamp,format:unixmilli"` // period end
+}
+
 // GetOpenInterestLimitService -- GET /api/v3/market/oi-limit
 //
 // Returns the per-symbol and total notional open-interest limits for a futures

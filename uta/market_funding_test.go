@@ -45,6 +45,18 @@ func TestMarketFunding(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/market/open-interest", map[string]string{"category": cat, "symbol": symbol}, false)
 	assertCovers(t, "market/open-interest", raw, oi)
 
+	// Open interest history.
+	oiHist, err := c.NewGetOpenInterestHistoryService(symbol, "1h").Do(cx)
+	if err != nil {
+		t.Fatalf("open interest history: %v", err)
+	}
+	if len(oiHist.List) == 0 {
+		t.Fatal("no open interest history returned")
+	}
+	t.Logf("oi history first: %+v", oiHist.List[0])
+	raw = fetchRawGet(t, c, cx, "/api/v3/market/open-interest-history", map[string]string{"symbol": symbol, "period": "1h"}, false)
+	assertCovers(t, "market/open-interest-history", raw, oiHist)
+
 	// Open interest limit.
 	oiLimit, err := c.NewGetOpenInterestLimitService(CategoryUSDTFutures).SetSymbol(symbol).Do(cx)
 	if err != nil {
