@@ -96,6 +96,25 @@ func TestCoins(t *testing.T) {
 	assertCovers(t, "market/coins", raw, list)
 }
 
+func TestAnnouncements(t *testing.T) {
+	c := testPublicClient()
+	cx := ctx(t)
+	params := map[string]string{"language": string(AnnouncementLanguageEnUS)}
+	list, err := c.NewGetAnnouncementsService(AnnouncementLanguageEnUS).Do(cx)
+	if err != nil {
+		t.Fatalf("announcements: %v", err)
+	}
+	if len(list) == 0 {
+		t.Fatal("no announcements returned")
+	}
+	t.Logf("first: %+v", list[0])
+	if list[0].CTime.IsZero() {
+		t.Fatal("announcement cTime is zero")
+	}
+	raw := fetchRawGet(t, c, cx, "/api/v3/public/annoucements", params, false)
+	assertCovers(t, "public/annoucements", raw, list)
+}
+
 func TestInstruments(t *testing.T) {
 	c := testPublicClient()
 	cx := ctx(t)

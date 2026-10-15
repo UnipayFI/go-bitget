@@ -2,6 +2,7 @@ package uta
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/UnipayFI/go-bitget/request"
@@ -88,6 +89,95 @@ type CoinChain struct {
 	// docs call it withdrawPrecision; the API sends withdrawMinScale).
 	WithdrawMinScale string `json:"withdrawMinScale"`
 	Congestion       string `json:"congestion"` // chain status: "normal"/"congested"
+}
+
+// AnnouncementType enumerates the announcement categories accepted by the
+// annType filter (and echoed back in each announcement's annType field).
+type AnnouncementType string
+
+const (
+	AnnouncementTypeLatestNews               AnnouncementType = "latest_news"
+	AnnouncementTypeCoinListings             AnnouncementType = "coin_listings"
+	AnnouncementTypeProductUpdates           AnnouncementType = "product_updates"
+	AnnouncementTypeSecurity                 AnnouncementType = "security"
+	AnnouncementTypeAPITrading               AnnouncementType = "api_trading"
+	AnnouncementTypeMaintenanceSystemUpdates AnnouncementType = "maintenance_system_updates"
+	AnnouncementTypeSymbolDelisting          AnnouncementType = "symbol_delisting"
+)
+
+// AnnouncementLanguage enumerates the localization codes accepted by the
+// required language parameter; unsupported languages fall back to English.
+type AnnouncementLanguage string
+
+const (
+	AnnouncementLanguageZhCN AnnouncementLanguage = "zh_CN"
+	AnnouncementLanguageEnUS AnnouncementLanguage = "en_US"
+)
+
+// GetAnnouncementsService -- GET /api/v3/public/annoucements
+//
+// Returns Bitget platform announcements for a language, newest first,
+// optionally filtered by category and display-time window and paginated by
+// cursor (max 10 per page). Note the path uses Bitget's misspelling
+// "annoucements".
+type GetAnnouncementsService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetAnnouncementsService(language AnnouncementLanguage) *GetAnnouncementsService {
+	return &GetAnnouncementsService{c: c, params: map[string]string{"language": string(language)}}
+}
+
+func (s *GetAnnouncementsService) SetAnnType(annType AnnouncementType) *GetAnnouncementsService {
+	s.params["annType"] = string(annType)
+	return s
+}
+
+// SetStartTime filters announcements displayed at or after t.
+func (s *GetAnnouncementsService) SetStartTime(t time.Time) *GetAnnouncementsService {
+	s.params["startTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetEndTime filters announcements displayed at or before t.
+func (s *GetAnnouncementsService) SetEndTime(t time.Time) *GetAnnouncementsService {
+	s.params["endTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetCursor pages on: pass the last annId of the previous page.
+func (s *GetAnnouncementsService) SetCursor(cursor string) *GetAnnouncementsService {
+	s.params["cursor"] = cursor
+	return s
+}
+
+// SetLimit sets the page size (default 10, max 10).
+func (s *GetAnnouncementsService) SetLimit(limit int) *GetAnnouncementsService {
+	s.params["limit"] = strconv.Itoa(limit)
+	return s
+}
+
+func (s *GetAnnouncementsService) Do(ctx context.Context) ([]Announcement, error) {
+	req := request.Get(ctx, s.c, "/api/v3/public/annoucements", s.params)
+	resp, err := request.Do[[]Announcement](req)
+	if err != nil {
+		return nil, err
+	}
+	return *resp, nil
+}
+
+// Announcement is a single platform notice. The docs list its release time as
+// createdTime; the API sends cTime.
+type Announcement struct {
+	AnnID      string           `json:"annId"`
+	AnnTitle   string           `json:"annTitle"`
+	AnnDesc    string           `json:"annDesc"`
+	AnnType    AnnouncementType `json:"annType"`
+	AnnSubType string           `json:"annSubType"`
+	AnnURL     string           `json:"annUrl"`
+	Language   string           `json:"language"`
+	CTime      time.Time        `json:"cTime,format:unixmilli"`
 }
 
 // GetInstrumentsService -- GET /api/v3/market/instruments
