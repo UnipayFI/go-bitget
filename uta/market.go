@@ -68,6 +68,14 @@ type Instrument struct {
 	IsReality  string   `json:"isReality"`  // spot RWA flag (no/yes)
 	IsRwa      string   `json:"isRwa"`      // futures RWA flag (NO/YES)
 
+	// Traditional-finance identity, returned for both spot and futures.
+	// FullName is the pair/company/ETF name (may carry an ADR/ST/QUANTO mark);
+	// MarketRegion (US, CN, HK, KR, JP) and ISIN are empty for crypto pairs.
+	FullName       string `json:"fullName"`
+	InstrumentType string `json:"instrumentType"` // crypto, metal, energy, stock, etf, fx, index
+	MarketRegion   string `json:"marketRegion"`
+	ISIN           string `json:"isin"`
+
 	BuyLimitPriceRatio   decimal.Decimal  `json:"buyLimitPriceRatio"`
 	SellLimitPriceRatio  decimal.Decimal  `json:"sellLimitPriceRatio"`
 	MinOrderQty          decimal.Decimal  `json:"minOrderQty"`
