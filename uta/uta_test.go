@@ -78,15 +78,17 @@ func TestAccountAssets(t *testing.T) {
 func TestInstruments(t *testing.T) {
 	c := testPublicClient()
 	cx := ctx(t)
-	params := map[string]string{"category": string(CategoryUSDTFutures)}
-	list, err := c.NewGetInstrumentsService(CategoryUSDTFutures).Do(cx)
-	if err != nil {
-		t.Fatalf("instruments: %v", err)
+	for _, cat := range []Category{CategorySpot, CategoryMargin, CategoryUSDTFutures, CategoryCoinFutures, CategoryUSDCFutures} {
+		list, err := c.NewGetInstrumentsService(cat).Do(cx)
+		if err != nil {
+			t.Fatalf("instruments %s: %v", cat, err)
+		}
+		if len(list) == 0 {
+			t.Fatalf("no %s instruments returned", cat)
+		}
+		t.Logf("%s first: %+v", cat, list[0])
+		params := map[string]string{"category": string(cat)}
+		raw := fetchRawGet(t, c, cx, "/api/v3/market/instruments", params, false)
+		assertCovers(t, "market/instruments "+string(cat), raw, list)
 	}
-	if len(list) == 0 {
-		t.Fatal("no instruments returned")
-	}
-	t.Logf("first: %+v", list[0])
-	raw := fetchRawGet(t, c, cx, "/api/v3/market/instruments", params, false)
-	assertCovers(t, "market/instruments", raw, list)
 }

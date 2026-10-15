@@ -67,6 +67,7 @@ type Instrument struct {
 	SymbolType string   `json:"symbolType"` // crypto, metal, stock, commodity
 	IsReality  string   `json:"isReality"`  // spot RWA flag (no/yes)
 	IsRwa      string   `json:"isRwa"`      // futures RWA flag (NO/YES)
+	AreaSymbol string   `json:"areaSymbol"` // spot/margin region-restricted flag (yes/no); spot sends only yes
 
 	// Traditional-finance identity, returned for both spot and futures.
 	// FullName is the pair/company/ETF name (may carry an ADR/ST/QUANTO mark);
@@ -109,4 +110,13 @@ type Instrument struct {
 	DeliveryTime       time.Time       `json:"deliveryTime,format:unixmilli"`
 	DeliveryStartTime  time.Time       `json:"deliveryStartTime,format:unixmilli"`
 	DeliveryPeriod     string          `json:"deliveryPeriod"`
+
+	// Margin-only fields.
+	IsIsolatedBaseBorrowable   string          `json:"isIsolatedBaseBorrowable"`   // YES/NO
+	IsIsolatedQuotedBorrowable string          `json:"isIsolatedQuotedBorrowable"` // YES/NO
+	WarningRiskRatio           decimal.Decimal `json:"warningRiskRatio"`
+	LiquidationRiskRatio       decimal.Decimal `json:"liquidationRiskRatio"`
+	MaxCrossedLeverage         decimal.Decimal `json:"maxCrossedLeverage"`
+	MaxIsolatedLeverage        decimal.Decimal `json:"maxIsolatedLeverage"`
+	UserMinBorrow              decimal.Decimal `json:"userMinBorrow"`
 }
