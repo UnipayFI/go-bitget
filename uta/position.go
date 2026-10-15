@@ -283,6 +283,13 @@ func (s *GetMaxOpenAvailableService) SetAutoBorrow(autoBorrow AutoBorrow) *GetMa
 	return s
 }
 
+// SetMarginMode sets the margin mode (defaults to MarginModeCrossed). Under
+// isolated margin, Available excludes futures trial funds.
+func (s *GetMaxOpenAvailableService) SetMarginMode(marginMode MarginMode) *GetMaxOpenAvailableService {
+	s.body["marginMode"] = string(marginMode)
+	return s
+}
+
 func (s *GetMaxOpenAvailableService) Do(ctx context.Context) (*MaxOpenAvailable, error) {
 	req := request.Post(ctx, s.c, "/api/v3/account/max-open-available", s.body).WithSign()
 	return request.Do[MaxOpenAvailable](req)
