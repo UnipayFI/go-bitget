@@ -513,6 +513,7 @@ type StrategyOrder struct {
 	Category          Category        `json:"category"`
 	Symbol            string          `json:"symbol"`
 	Qty               decimal.Decimal `json:"qty"`
+	Side              Side            `json:"side"` // unfilled listing only
 	PosSide           PosSide         `json:"posSide"`
 	Status            string          `json:"status"` // pending, success, failed, cancelled, submitting
 	TpTriggerBy       TriggerBy       `json:"tpTriggerBy"`
