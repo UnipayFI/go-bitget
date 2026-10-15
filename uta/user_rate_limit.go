@@ -12,7 +12,9 @@ import (
 // (category is "spot" or "futures"), single or batch with up to 50 UIDs per
 // request. Only available to MM (Market Maker) and PRO institutional users: the
 // per-account quota must not exceed the single-account cap, and the summed
-// sub-account quota must not exceed the master-sub cap. The reply data is an
+// sub-account quota must not exceed the master-sub cap. A sub-account may also
+// call it with its own API key to set its own quota; uids is then ignored, so
+// pass nil (it is required when called by the master). The reply data is an
 // empty object.
 type SetRateLimitQuotaService struct {
 	c    *UTAClient
@@ -20,11 +22,14 @@ type SetRateLimitQuotaService struct {
 }
 
 func (c *UTAClient) NewSetRateLimitQuotaService(category string, uids []string, quota string) *SetRateLimitQuotaService {
-	return &SetRateLimitQuotaService{c: c, body: map[string]any{
+	body := map[string]any{
 		"category": category,
-		"uids":     uids,
 		"quota":    quota,
-	}}
+	}
+	if len(uids) > 0 {
+		body["uids"] = uids
+	}
+	return &SetRateLimitQuotaService{c: c, body: body}
 }
 
 func (s *SetRateLimitQuotaService) Do(ctx context.Context) (*any, error) {
@@ -36,8 +41,9 @@ func (s *SetRateLimitQuotaService) Do(ctx context.Context) (*any, error) {
 //
 // Returns the rate-limit quota configuration for a product line (category is
 // "spot" or "futures"): a single account when uid is set, otherwise every
-// sub-account under the master, paginated by cursor. Only available to MM
-// (Market Maker) and PRO institutional users.
+// sub-account under the master, paginated by cursor. A sub-account may also
+// call it with its own API key, in which case uid is ignored and its own quota
+// is returned. Only available to MM (Market Maker) and PRO institutional users.
 type GetRateLimitQuotaService struct {
 	c      *UTAClient
 	params map[string]string
