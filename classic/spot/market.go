@@ -221,6 +221,10 @@ const (
 //
 // Returns an aggregated (merged) order book for a symbol at the chosen price
 // precision.
+//
+// rToken (tokenized stock) symbols are not supported since 2026-10-17; query
+// their depth via the signed UTA endpoint GET /api/v3/account/reality-orderbook
+// (uta.UTAClient.NewGetRealityOrderBookService, whitelist required) instead.
 type GetMergeDepthService struct {
 	c      *SpotClient
 	params map[string]string
@@ -274,6 +278,10 @@ const (
 // GetOrderBookService -- GET /api/v2/spot/market/orderbook (public)
 //
 // Returns the order book depth (asks and bids) for a symbol.
+//
+// rToken (tokenized stock) symbols are not supported since 2026-10-17; query
+// their depth via the signed UTA endpoint GET /api/v3/account/reality-orderbook
+// (uta.UTAClient.NewGetRealityOrderBookService, whitelist required) instead.
 type GetOrderBookService struct {
 	c      *SpotClient
 	params map[string]string
