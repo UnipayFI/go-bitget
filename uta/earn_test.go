@@ -61,3 +61,44 @@ func TestEarn(t *testing.T) {
 		assertCovers(t, "earn/elite-redeem-info", raw, redeemInfo)
 	}
 }
+
+func TestCashPlus(t *testing.T) {
+	c := testClient(t)
+	if err := c.SyncServerTime(ctx(t)); err != nil {
+		t.Fatalf("sync time: %v", err)
+	}
+	cx := ctx(t)
+
+	subscribeInfo, err := c.NewGetCashPlusSubscribeInfoService().Do(cx)
+	if err != nil {
+		t.Fatalf("cash+ subscribe info: %v", err)
+	}
+	t.Logf("cash+ subscribe info: apr=%s coins=%d", subscribeInfo.CashPlusApr, len(subscribeInfo.SubscribeCoinList))
+	raw := fetchRawGet(t, c, cx, "/api/v3/earn/cashplus/subscribe-info", nil, true)
+	assertCovers(t, "earn/cashplus/subscribe-info", raw, subscribeInfo)
+
+	redeemInfo, err := c.NewGetCashPlusRedeemInfoService().Do(cx)
+	if err != nil {
+		t.Fatalf("cash+ redeem info: %v", err)
+	}
+	t.Logf("cash+ redeem info: coins=%d quota=%s", len(redeemInfo.RedeemCoinList), redeemInfo.UserRemainingQuota)
+	raw = fetchRawGet(t, c, cx, "/api/v3/earn/cashplus/redeem-info", nil, true)
+	assertCovers(t, "earn/cashplus/redeem-info", raw, redeemInfo)
+
+	positions, err := c.NewGetCashPlusPositionsService().Do(cx)
+	if err != nil {
+		t.Fatalf("cash+ positions: %v", err)
+	}
+	t.Logf("cash+ positions: balance=%s totalProfit=%s", positions.Balance, positions.TotalProfit)
+	raw = fetchRawGet(t, c, cx, "/api/v3/earn/cashplus/positions", nil, true)
+	assertCovers(t, "earn/cashplus/positions", raw, positions)
+
+	// History may be empty for an account that never used Cash+.
+	history, err := c.NewGetCashPlusHistoryOrdersService().Do(cx)
+	if err != nil {
+		t.Fatalf("cash+ history orders: %v", err)
+	}
+	t.Logf("cash+ history orders: %d nextCursor=%s", len(history.Items), history.NextCursor)
+	raw = fetchRawGet(t, c, cx, "/api/v3/earn/cashplus/history-orders", nil, true)
+	assertCovers(t, "earn/cashplus/history-orders", raw, history)
+}

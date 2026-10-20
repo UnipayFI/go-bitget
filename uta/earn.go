@@ -3,6 +3,7 @@ package uta
 import (
 	"context"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/UnipayFI/go-bitget/request"
@@ -374,4 +375,321 @@ func (s *EliteRedeemService) Do(ctx context.Context) (*EliteRedeemResult, error)
 
 type EliteRedeemResult struct {
 	OrderID string `json:"orderId"`
+}
+
+// CashPlusAccount is a Cash+ debit (subscribe) or credit (redeem) account.
+type CashPlusAccount string
+
+const (
+	CashPlusAccountFunding CashPlusAccount = "funding" // Funding account
+	CashPlusAccountUTA     CashPlusAccount = "uta"     // Unified account
+	CashPlusAccountOTC     CashPlusAccount = "otc"     // OTC account (subscribe debit only)
+)
+
+// CashPlusStatus is the lifecycle state of a Cash+ order or record.
+type CashPlusStatus string
+
+const (
+	CashPlusStatusProcessing CashPlusStatus = "processing"
+	CashPlusStatusSuccess    CashPlusStatus = "success"
+	CashPlusStatusFailed     CashPlusStatus = "failed"
+)
+
+// CashPlusRecordType selects which Cash+ history record kind to query.
+type CashPlusRecordType string
+
+const (
+	CashPlusRecordTypeSubscribe         CashPlusRecordType = "subscribe"
+	CashPlusRecordTypeRedeem            CashPlusRecordType = "redeem"
+	CashPlusRecordTypeCompoundInterest  CashPlusRecordType = "compound_interest"
+	CashPlusRecordTypeLiquidationRedeem CashPlusRecordType = "liquidation_redeem"
+)
+
+// GetCashPlusSubscribeInfoService -- GET /api/v3/earn/cashplus/subscribe-info (UTA mgt. read)
+//
+// Returns the Cash+ subscription prerequisites: the current annualized rate and
+// the subscribable coins with their product sub-IDs. Callable by both master and
+// sub-accounts.
+type GetCashPlusSubscribeInfoService struct {
+	c *UTAClient
+}
+
+func (c *UTAClient) NewGetCashPlusSubscribeInfoService() *GetCashPlusSubscribeInfoService {
+	return &GetCashPlusSubscribeInfoService{c: c}
+}
+
+func (s *GetCashPlusSubscribeInfoService) Do(ctx context.Context) (*CashPlusSubscribeInfo, error) {
+	req := request.Get(ctx, s.c, "/api/v3/earn/cashplus/subscribe-info").WithSign()
+	return request.Do[CashPlusSubscribeInfo](req)
+}
+
+type CashPlusSubscribeInfo struct {
+	ProfitSourceCoin  string                  `json:"profitSourceCoin"` // currently USDGO
+	CashPlusApr       decimal.Decimal         `json:"cashPlusApr"`      // 0.04 means 4%
+	SubscribeCoinList []CashPlusSubscribeCoin `json:"subscribeCoinList"`
+	InterestTime      time.Time               `json:"interestTime,format:unixmilli"`
+	PayInterestTime   time.Time               `json:"payInterestTime,format:unixmilli"`
+	SubscribeTime     time.Time               `json:"subscribeTime,format:unixmilli"`
+}
+
+type CashPlusSubscribeCoin struct {
+	ProductSubID   string          `json:"productSubId"`
+	Coin           string          `json:"coin"`
+	MinAmount      decimal.Decimal `json:"minAmount"`
+	ConversionRate decimal.Decimal `json:"conversionRate"` // Cash+ per unit of coin
+	SubscribeScale string          `json:"subscribeScale"`
+	ProfitScale    string          `json:"profitScale"`
+	SoldOut        string          `json:"soldOut"` // yes, no
+}
+
+// CashPlusSubscribeService -- POST /api/v3/earn/cashplus/subscribe (UTA mgt. read & write)
+//
+// Subscribes to Cash+ with the coin of the given product sub-ID (from
+// subscribe-info), returning the created subscription order ID.
+type CashPlusSubscribeService struct {
+	c    *UTAClient
+	body map[string]any
+}
+
+func (c *UTAClient) NewCashPlusSubscribeService(productSubID string, amount decimal.Decimal) *CashPlusSubscribeService {
+	return &CashPlusSubscribeService{c: c, body: map[string]any{
+		"productSubId": productSubID,
+		"amount":       amount.String(),
+	}}
+}
+
+// SetAccountType sets the debit account(s); several may be combined (e.g.
+// funding and uta). Defaults to the funding account when omitted.
+func (s *CashPlusSubscribeService) SetAccountType(accountTypes ...CashPlusAccount) *CashPlusSubscribeService {
+	types := make([]string, len(accountTypes))
+	for i, t := range accountTypes {
+		types[i] = string(t)
+	}
+	s.body["accountType"] = strings.Join(types, ",")
+	return s
+}
+
+// SetIdempotentNo sets an idempotency ID to guard against duplicate submissions.
+func (s *CashPlusSubscribeService) SetIdempotentNo(idempotentNo string) *CashPlusSubscribeService {
+	s.body["idempotentNo"] = idempotentNo
+	return s
+}
+
+func (s *CashPlusSubscribeService) Do(ctx context.Context) (*CashPlusSubscribeResult, error) {
+	req := request.Post(ctx, s.c, "/api/v3/earn/cashplus/subscribe", s.body).WithSign()
+	return request.Do[CashPlusSubscribeResult](req)
+}
+
+type CashPlusSubscribeResult struct {
+	OrderID string `json:"orderId"`
+}
+
+// GetCashPlusSubscribeResultService -- GET /api/v3/earn/cashplus/subscribe-result (UTA mgt. read)
+//
+// Returns the state of a Cash+ subscription order and how it was paid.
+type GetCashPlusSubscribeResultService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetCashPlusSubscribeResultService(orderID string) *GetCashPlusSubscribeResultService {
+	return &GetCashPlusSubscribeResultService{c: c, params: map[string]string{"orderId": orderID}}
+}
+
+func (s *GetCashPlusSubscribeResultService) Do(ctx context.Context) (*CashPlusSubscribeStatus, error) {
+	req := request.Get(ctx, s.c, "/api/v3/earn/cashplus/subscribe-result", s.params).WithSign()
+	return request.Do[CashPlusSubscribeStatus](req)
+}
+
+type CashPlusSubscribeStatus struct {
+	OrderID            string            `json:"orderId"`
+	Status             CashPlusStatus    `json:"status"` // processing, success, failed
+	Coin               string            `json:"coin"`
+	Amount             decimal.Decimal   `json:"amount"`
+	SubscribeTime      time.Time         `json:"subscribeTime,format:unixmilli"`
+	InterestTime       time.Time         `json:"interestTime,format:unixmilli"`
+	DividendTime       time.Time         `json:"dividendTime,format:unixmilli"` // first interest distribution
+	PaymentAccountList []CashPlusPayment `json:"paymentAccountList"`
+}
+
+type CashPlusPayment struct {
+	AccountType CashPlusAccount `json:"accountType"`
+	PayAmount   decimal.Decimal `json:"payAmount"`
+}
+
+// GetCashPlusRedeemInfoService -- GET /api/v3/earn/cashplus/redeem-info (UTA mgt. read)
+//
+// Returns the Cash+ redemption prerequisites: the coins Cash+ can be redeemed
+// into with the redeemable position, and today's remaining redemption quota.
+// Callable by both master and sub-accounts.
+type GetCashPlusRedeemInfoService struct {
+	c *UTAClient
+}
+
+func (c *UTAClient) NewGetCashPlusRedeemInfoService() *GetCashPlusRedeemInfoService {
+	return &GetCashPlusRedeemInfoService{c: c}
+}
+
+func (s *GetCashPlusRedeemInfoService) Do(ctx context.Context) (*CashPlusRedeemInfo, error) {
+	req := request.Get(ctx, s.c, "/api/v3/earn/cashplus/redeem-info").WithSign()
+	return request.Do[CashPlusRedeemInfo](req)
+}
+
+type CashPlusRedeemInfo struct {
+	RedeemCoinList     []CashPlusRedeemCoin `json:"redeemCoinList"`
+	UserRemainingQuota decimal.Decimal      `json:"userRemainingQuota"` // today's remaining quota
+}
+
+type CashPlusRedeemCoin struct {
+	ProductSubID    string          `json:"productSubId"`
+	Coin            string          `json:"coin"`
+	ConversionRate  decimal.Decimal `json:"conversionRate"` // coin per unit of Cash+
+	RedeemAvailable decimal.Decimal `json:"redeemAvailable"`
+	RedeemMinAmount decimal.Decimal `json:"redeemMinAmount"`
+	RedeemScale     string          `json:"redeemScale"`
+	RedeemTime      time.Time       `json:"redeemTime,format:unixmilli"`
+	ReceivedTime    time.Time       `json:"receivedTime,format:unixmilli"` // estimated arrival
+}
+
+// CashPlusRedeemService -- POST /api/v3/earn/cashplus/redeem (UTA mgt. read & write)
+//
+// Redeems the given amount of Cash+ into the coin of the product sub-ID (from
+// redeem-info), returning the redemption order ID and estimated arrival time.
+type CashPlusRedeemService struct {
+	c    *UTAClient
+	body map[string]any
+}
+
+func (c *UTAClient) NewCashPlusRedeemService(productSubID string, amount decimal.Decimal) *CashPlusRedeemService {
+	return &CashPlusRedeemService{c: c, body: map[string]any{
+		"productSubId": productSubID,
+		"amount":       amount.String(),
+	}}
+}
+
+// SetAccountType sets the credit account (funding or uta; defaults to the
+// funding account when omitted).
+func (s *CashPlusRedeemService) SetAccountType(accountType CashPlusAccount) *CashPlusRedeemService {
+	s.body["accountType"] = string(accountType)
+	return s
+}
+
+func (s *CashPlusRedeemService) Do(ctx context.Context) (*CashPlusRedeemResult, error) {
+	req := request.Post(ctx, s.c, "/api/v3/earn/cashplus/redeem", s.body).WithSign()
+	return request.Do[CashPlusRedeemResult](req)
+}
+
+type CashPlusRedeemResult struct {
+	OrderID     string    `json:"orderId"`
+	RedeemTime  time.Time `json:"redeemTime,format:unixmilli"`
+	ReceiveTime time.Time `json:"receiveTime,format:unixmilli"` // estimated arrival
+}
+
+// GetCashPlusRedeemResultService -- GET /api/v3/earn/cashplus/redeem-result (UTA mgt. read)
+//
+// Returns the state of a Cash+ redemption order.
+type GetCashPlusRedeemResultService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetCashPlusRedeemResultService(orderID string) *GetCashPlusRedeemResultService {
+	return &GetCashPlusRedeemResultService{c: c, params: map[string]string{"orderId": orderID}}
+}
+
+func (s *GetCashPlusRedeemResultService) Do(ctx context.Context) (*CashPlusRedeemStatus, error) {
+	req := request.Get(ctx, s.c, "/api/v3/earn/cashplus/redeem-result", s.params).WithSign()
+	return request.Do[CashPlusRedeemStatus](req)
+}
+
+type CashPlusRedeemStatus struct {
+	OrderID     string         `json:"orderId"`
+	Status      CashPlusStatus `json:"status"` // processing, success, failed
+	RedeemTime  time.Time      `json:"redeemTime,format:unixmilli"`
+	ReceiveTime time.Time      `json:"receiveTime,format:unixmilli"` // estimated arrival
+}
+
+// GetCashPlusPositionsService -- GET /api/v3/earn/cashplus/positions (UTA mgt. read)
+//
+// Returns the account's Cash+ holding, cumulative and yesterday's profit (all
+// in USD) and the reference annualized rate.
+type GetCashPlusPositionsService struct {
+	c *UTAClient
+}
+
+func (c *UTAClient) NewGetCashPlusPositionsService() *GetCashPlusPositionsService {
+	return &GetCashPlusPositionsService{c: c}
+}
+
+func (s *GetCashPlusPositionsService) Do(ctx context.Context) (*CashPlusPositions, error) {
+	req := request.Get(ctx, s.c, "/api/v3/earn/cashplus/positions").WithSign()
+	return request.Do[CashPlusPositions](req)
+}
+
+type CashPlusPositions struct {
+	Balance         decimal.Decimal `json:"balance"`         // USD
+	TotalProfit     decimal.Decimal `json:"totalProfit"`     // USD
+	YesterdayProfit decimal.Decimal `json:"yesterdayProfit"` // USD
+	Apr             decimal.Decimal `json:"apr"`             // compound annual rate, for reference
+}
+
+// GetCashPlusHistoryOrdersService -- GET /api/v3/earn/cashplus/history-orders (UTA mgt. read)
+//
+// Returns the account's Cash+ subscribe/redeem/interest records, paginated by
+// cursor (nextCursor).
+type GetCashPlusHistoryOrdersService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetCashPlusHistoryOrdersService() *GetCashPlusHistoryOrdersService {
+	return &GetCashPlusHistoryOrdersService{c: c, params: map[string]string{}}
+}
+
+func (s *GetCashPlusHistoryOrdersService) SetStartTime(t time.Time) *GetCashPlusHistoryOrdersService {
+	s.params["startTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+func (s *GetCashPlusHistoryOrdersService) SetEndTime(t time.Time) *GetCashPlusHistoryOrdersService {
+	s.params["endTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+func (s *GetCashPlusHistoryOrdersService) SetRecordType(recordType CashPlusRecordType) *GetCashPlusHistoryOrdersService {
+	s.params["recordType"] = string(recordType)
+	return s
+}
+
+// SetLimit sets the page size (default 20, max 100).
+func (s *GetCashPlusHistoryOrdersService) SetLimit(limit string) *GetCashPlusHistoryOrdersService {
+	s.params["limit"] = limit
+	return s
+}
+
+// SetCursor sets the pagination cursor (use nextCursor from the previous
+// response; omit for the first page).
+func (s *GetCashPlusHistoryOrdersService) SetCursor(cursor string) *GetCashPlusHistoryOrdersService {
+	s.params["cursor"] = cursor
+	return s
+}
+
+func (s *GetCashPlusHistoryOrdersService) Do(ctx context.Context) (*CashPlusHistoryOrders, error) {
+	req := request.Get(ctx, s.c, "/api/v3/earn/cashplus/history-orders", s.params).WithSign()
+	return request.Do[CashPlusHistoryOrders](req)
+}
+
+type CashPlusHistoryOrders struct {
+	Items      []CashPlusHistoryOrder `json:"items"`
+	NextCursor string                 `json:"nextCursor"`
+}
+
+type CashPlusHistoryOrder struct {
+	RecordID    string             `json:"recordId"`
+	RecordType  CashPlusRecordType `json:"recordType"`
+	Status      CashPlusStatus     `json:"status"`
+	Amount      decimal.Decimal    `json:"amount"`
+	Coin        string             `json:"coin"`
+	CreatedTime time.Time          `json:"createdTime,format:unixmilli"`
+	AccountType CashPlusAccount    `json:"accountType"` // debit account for subscribe, credit account otherwise
 }
