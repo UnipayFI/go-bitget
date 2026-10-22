@@ -528,6 +528,7 @@ type StrategyOrder struct {
 	TriggerPrice      decimal.Decimal `json:"triggerPrice"`
 	TriggerOrderType  OrderType       `json:"triggerOrderType"`
 	TriggerOrderPrice decimal.Decimal `json:"triggerOrderPrice"`
+	MarginMode        MarginMode      `json:"marginMode"` // futures only
 	// Exactly one of the four param sets below is populated, matching the
 	// strategy type the order was placed with.
 	OCOParams          []StrategyOCOParams          `json:"ocoParams"`

@@ -45,6 +45,12 @@ type CurrentFundingRate struct {
 	MaxFundingRate         decimal.Decimal `json:"maxFundingRate"`
 	CashDividend           decimal.Decimal `json:"cashDividend"`
 	CashDividendNextUpdate time.Time       `json:"cashDividendNextUpdate,format:unixmilli"`
+	LastFundingRate        decimal.Decimal `json:"lastFundingRate"`
+	NextFundingRate        decimal.Decimal `json:"nextFundingRate"`
+	// The live wire key is misspelled with a lowercase L ("basel..."); the
+	// docs list it as baseInterestRate.
+	BaseInterestRate     decimal.Decimal `json:"baselnterestRate"`
+	ImpactMarginNotional decimal.Decimal `json:"impactMarginNotional"` // quote coin
 }
 
 // GetFundingRateHistoryService -- GET /api/v3/market/history-fund-rate
@@ -186,4 +192,8 @@ type OpenInterestLimit struct {
 	Symbol             string          `json:"symbol"`
 	NotionalValue      decimal.Decimal `json:"notionalValue"`
 	TotalNotionalValue decimal.Decimal `json:"totalNotionalValue"`
+	// Position-ratio caps as fractions (0.1 means 10%): per UID, and across a
+	// master account and its sub-accounts.
+	SinglePositionRatio decimal.Decimal `json:"singlePositionRatio"`
+	TotalPositionRatio  decimal.Decimal `json:"totalPositionRatio"`
 }

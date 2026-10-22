@@ -75,6 +75,7 @@ type AccountInfo struct {
 	Ips         string    `json:"ips"`
 	PermType    string    `json:"permType"`    // read-only, read-and-write
 	Permissions []string  `json:"permissions"` // uta_mgt, uta_trade, withdraw, copy_futures_position, copy_futures_order
+	TraderType  string    `json:"traderType"`  // trader, not_trader
 	RegisTime   time.Time `json:"regisTime,format:unixmilli"`
 }
 
