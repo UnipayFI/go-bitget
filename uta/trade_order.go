@@ -161,6 +161,21 @@ func (s *PlaceOrderService) SetRTokenTimeInForce(rTokenTimeInForce RTokenTimeInF
 	return s
 }
 
+// SetBBOLevel sets the best-bid/offer price level. Limit orders only; ignored
+// for market orders.
+func (s *PlaceOrderService) SetBBOLevel(bboLevel BBOLevel) *PlaceOrderService {
+	s.body["bboLevel"] = string(bboLevel)
+	return s
+}
+
+// SetSlippageTolerance caps a market order's slippage as a fraction in
+// [0.01, 0.05] with up to 2 decimals (defaults to 0.02, i.e. 2%). Market
+// orders only.
+func (s *PlaceOrderService) SetSlippageTolerance(slippageTolerance decimal.Decimal) *PlaceOrderService {
+	s.body["slippageTolerance"] = slippageTolerance.String()
+	return s
+}
+
 // SetRequestTime sets the client request time, the origin ReceiveWindow is
 // measured from.
 func (s *PlaceOrderService) SetRequestTime(t time.Time) *PlaceOrderService {

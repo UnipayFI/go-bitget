@@ -108,6 +108,17 @@ const (
 	RTokenTimeInForceGTC RTokenTimeInForce = "gtc"
 )
 
+// BBOLevel is the best-bid/offer price level of a limit order: level 1 or 5
+// on the order's own side (queue) or on the opposite side (counterparty).
+type BBOLevel string
+
+const (
+	BBOLevelQueue1        BBOLevel = "queue1"
+	BBOLevelQueue5        BBOLevel = "queue5"
+	BBOLevelCounterparty1 BBOLevel = "counterparty1"
+	BBOLevelCounterparty5 BBOLevel = "counterparty5"
+)
+
 // HoldMode is the futures position mode (one-way vs hedge).
 type HoldMode string
 
