@@ -38,6 +38,16 @@ func TestCopyFollower(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/copy/futures/current-copy", params, true)
 	assertCovers(t, "copy/futures/current-copy", raw, current)
 
+	// Max transferable.
+	maxT, err := c.NewGetCopyFollowerMaxTransferableService(projectID, "USDT").Do(cx)
+	if err != nil {
+		t.Fatalf("copy max transferable: %v", err)
+	}
+	t.Logf("copy max transferable: %+v", maxT)
+	raw = fetchRawGet(t, c, cx, "/api/v3/copy/futures/copy-max-transferable",
+		map[string]string{"projectId": projectID, "coin": "USDT"}, true)
+	assertCovers(t, "copy/futures/copy-max-transferable", raw, maxT)
+
 	// Transfer records.
 	records, err := c.NewGetCopyFollowerTransferRecordService(projectID).SetLimit("20").Do(cx)
 	if err != nil {

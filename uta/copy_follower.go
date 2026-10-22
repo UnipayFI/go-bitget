@@ -242,6 +242,31 @@ func (s *CopyFollowerTransferService) Do(ctx context.Context) (*string, error) {
 	return request.Do[string](req)
 }
 
+// GetCopyFollowerMaxTransferableService -- GET /api/v3/copy/futures/copy-max-transferable (UTA mgt. read)
+//
+// Returns the maximum amount of a coin that can be transferred out of the
+// follower's copy trading account for a project.
+type GetCopyFollowerMaxTransferableService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetCopyFollowerMaxTransferableService(projectID, coin string) *GetCopyFollowerMaxTransferableService {
+	return &GetCopyFollowerMaxTransferableService{c: c, params: map[string]string{
+		"projectId": projectID,
+		"coin":      coin,
+	}}
+}
+
+func (s *GetCopyFollowerMaxTransferableService) Do(ctx context.Context) (*CopyFollowerMaxTransferable, error) {
+	req := request.Get(ctx, s.c, "/api/v3/copy/futures/copy-max-transferable", s.params).WithSign()
+	return request.Do[CopyFollowerMaxTransferable](req)
+}
+
+type CopyFollowerMaxTransferable struct {
+	MaxTransferable decimal.Decimal `json:"maxTransferable"`
+}
+
 // GetCopyFollowerTransferRecordService -- GET /api/v3/copy/futures/copy-transfer-record (UTA mgt. read)
 //
 // Returns the follower's copy trading account transfer records for a project,
