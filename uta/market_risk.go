@@ -179,6 +179,50 @@ type MarginLoan struct {
 	PlatformRemaingQuota decimal.Decimal `json:"platformRemaingQuota"` // platform remaining quota (Bitget's spelling)
 }
 
+// GetMarginLoansAllService -- GET /api/v3/market/margin-loans-all
+//
+// Returns the borrow interest rates and loan limits of every supported coin,
+// or of a single coin when SetCoin is used.
+type GetMarginLoansAllService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetMarginLoansAllService() *GetMarginLoansAllService {
+	return &GetMarginLoansAllService{c: c, params: map[string]string{}}
+}
+
+// SetCoin restricts the result to a single coin (all coins when omitted).
+func (s *GetMarginLoansAllService) SetCoin(coin string) *GetMarginLoansAllService {
+	s.params["coin"] = coin
+	return s
+}
+
+// SetLevel selects the user tier the rates and limits are quoted for: vip0 to
+// vip7 or pro1 to pro6 (defaults to vip0).
+func (s *GetMarginLoansAllService) SetLevel(level string) *GetMarginLoansAllService {
+	s.params["level"] = level
+	return s
+}
+
+func (s *GetMarginLoansAllService) Do(ctx context.Context) ([]CoinMarginLoan, error) {
+	req := request.Get(ctx, s.c, "/api/v3/market/margin-loans-all", s.params)
+	resp, err := request.Do[[]CoinMarginLoan](req)
+	if err != nil {
+		return nil, err
+	}
+	return *resp, nil
+}
+
+type CoinMarginLoan struct {
+	Coin                 string          `json:"coin"`
+	DailyInterest        decimal.Decimal `json:"dailyInterest"`
+	AnnualInterest       decimal.Decimal `json:"annualInterest"`
+	Limit                decimal.Decimal `json:"limit"`
+	MasterSubLimit       decimal.Decimal `json:"masterSubLimit"`       // master/sub account borrow limit
+	PlatformRemaingQuota decimal.Decimal `json:"platformRemaingQuota"` // platform remaining quota (Bitget's spelling)
+}
+
 // GetInterestRateHistoryService -- GET /api/v3/market/interest-rate-history (UTA mgt. read)
 //
 // Returns the hourly margin-borrowing interest rate history of a coin for a

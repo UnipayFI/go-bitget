@@ -49,6 +49,14 @@ func TestMarketRisk(t *testing.T) {
 	mlRaw := fetchRawGet(t, c, cx, "/api/v3/market/margin-loans", mlParams, false)
 	assertCovers(t, "market/margin-loans", mlRaw, ml)
 
+	// Margin Loans All.
+	mla, err := c.NewGetMarginLoansAllService().Do(cx)
+	if err != nil {
+		t.Fatalf("margin-loans-all: %v", err)
+	}
+	mlaRaw := fetchRawGet(t, c, cx, "/api/v3/market/margin-loans-all", nil, false)
+	assertCovers(t, "market/margin-loans-all", mlaRaw, mla)
+
 	// Position Tier.
 	pt, err := c.NewGetPositionTierService(CategoryUSDTFutures).SetSymbol("BTCUSDT").Do(cx)
 	if err != nil {
