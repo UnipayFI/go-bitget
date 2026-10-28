@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	jsonexp "github.com/go-json-experiment/json"
 	"github.com/shopspring/decimal"
 )
 
@@ -59,7 +58,7 @@ func TestUnixFormats(t *testing.T) {
 // standard `format` option (same instant, same UTC location), whether Bitget
 // sends them quoted or bare.
 func TestUnixMatchesStandard(t *testing.T) {
-	std := jsonexp.ExperimentalSupportFormatTag(true)
+	std := supportFormatTag{}
 	compared := 0
 	defer func() {
 		if compared < 20 {
