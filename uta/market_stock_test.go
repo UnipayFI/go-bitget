@@ -1,10 +1,17 @@
 package uta
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestMarketStock(t *testing.T) {
 	c := testPublicClient()
 	cx := ctx(t)
+
+	// The Reality market endpoints answer 429 when the Service.Do call and the
+	// raw fetch of a section hit them back to back, so pace the calls.
+	pause := func() { time.Sleep(1100 * time.Millisecond) }
 
 	// Split records.
 	{
@@ -16,6 +23,7 @@ func TestMarketStock(t *testing.T) {
 			t.Fatal("no split records returned")
 		}
 		t.Logf("split record: %+v", records[0])
+		pause()
 		raw := fetchRawGet(t, c, cx, "/api/v3/market/split-records", nil, false)
 		assertCovers(t, "market/split-records", raw, records)
 	}
@@ -23,6 +31,7 @@ func TestMarketStock(t *testing.T) {
 	// Stock info.
 	{
 		params := map[string]string{"symbol": "RAAPLUSDT"}
+		pause()
 		infos, err := c.NewGetStockInfoService().SetSymbol("RAAPLUSDT").Do(cx)
 		if err != nil {
 			t.Fatalf("stock-info: %v", err)
@@ -31,12 +40,14 @@ func TestMarketStock(t *testing.T) {
 			t.Fatal("no stock info returned")
 		}
 		t.Logf("stock info: %+v", infos[0])
+		pause()
 		raw := fetchRawGet(t, c, cx, "/api/v3/reality/market/stock-info", params, false)
 		assertCovers(t, "reality/market/stock-info", raw, infos)
 	}
 
 	// Market states.
 	{
+		pause()
 		states, err := c.NewGetMarketStatesService().Do(cx)
 		if err != nil {
 			t.Fatalf("states: %v", err)
@@ -45,12 +56,14 @@ func TestMarketStock(t *testing.T) {
 			t.Fatal("no trading sessions returned")
 		}
 		t.Logf("states: %+v", states)
+		pause()
 		raw := fetchRawGet(t, c, cx, "/api/v3/reality/market/states", nil, false)
 		assertCovers(t, "reality/market/states", raw, states)
 	}
 
 	// Market calendar.
 	{
+		pause()
 		calendar, err := c.NewGetMarketCalendarService().Do(cx)
 		if err != nil {
 			t.Fatalf("calendar: %v", err)
@@ -59,6 +72,7 @@ func TestMarketStock(t *testing.T) {
 			t.Fatal("no regular closures returned")
 		}
 		t.Logf("calendar: %+v", calendar)
+		pause()
 		raw := fetchRawGet(t, c, cx, "/api/v3/reality/market/calendar", nil, false)
 		assertCovers(t, "reality/market/calendar", raw, calendar)
 	}
