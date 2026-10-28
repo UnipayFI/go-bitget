@@ -2,11 +2,14 @@ package uta
 
 import (
 	"context"
+	"encoding/json/jsontext"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/UnipayFI/go-bitget/client"
+	"github.com/UnipayFI/go-bitget/common"
 	"github.com/UnipayFI/go-bitget/request"
 )
 
@@ -257,6 +260,192 @@ func TestWsPublicLiquidation(t *testing.T) {
 	case <-time.After(8 * time.Second):
 		t.Log("no liquidation event in 8s (event-driven); subscription accepted OK")
 	}
+}
+
+// wsFirstPush subscribes through a typed service's Do and returns its first
+// non-empty data push.
+func wsFirstPush[T any](t *testing.T, label string, do func(context.Context, WsHandler[T]) (chan<- struct{}, <-chan struct{}, error)) *request.WsPush[[]T] {
+	t.Helper()
+	msgC := make(chan *request.WsPush[[]T], 1)
+	errC := make(chan error, 1)
+	done, _, err := do(context.Background(), func(p *request.WsPush[[]T], err error) {
+		if err != nil {
+			select {
+			case errC <- err:
+			default:
+			}
+			return
+		}
+		if len(p.Data) == 0 {
+			return
+		}
+		select {
+		case msgC <- p:
+		default:
+		}
+	})
+	if err != nil {
+		t.Fatalf("subscribe %s: %v", label, err)
+	}
+	defer close(done)
+	select {
+	case e := <-errC:
+		t.Fatalf("%s: %v", label, e)
+	case p := <-msgC:
+		return p
+	case <-time.After(15 * time.Second):
+		t.Fatalf("no %s message within 15s", label)
+	}
+	return nil
+}
+
+// wsFirstPushData returns the raw "data" of the first push on a public channel,
+// used to diff the live push shape against the typed structs. Data sent as a
+// single object is wrapped into a one-element array to match the typed slice.
+func wsFirstPushData(t *testing.T, ws *UTAWebSocketClient, arg request.WsArg) []byte {
+	t.Helper()
+	dataC := make(chan jsontext.Value, 1)
+	errC := make(chan error, 1)
+	done, _, err := ws.Subscribe(context.Background(), false, arg, func(msg []byte, err error) {
+		var push struct {
+			Data jsontext.Value `json:"data"`
+		}
+		if err == nil {
+			err = common.JSONUnmarshal(msg, &push)
+		}
+		if err != nil {
+			select {
+			case errC <- err:
+			default:
+			}
+			return
+		}
+		select {
+		case dataC <- push.Data:
+		default:
+		}
+	})
+	if err != nil {
+		t.Fatalf("raw subscribe %s: %v", arg.Topic, err)
+	}
+	defer close(done)
+	select {
+	case e := <-errC:
+		t.Fatalf("raw %s: %v", arg.Topic, e)
+	case data := <-dataC:
+		if data.Kind() == '{' {
+			return append(append([]byte("["), data...), ']')
+		}
+		return data
+	case <-time.After(15 * time.Second):
+		t.Fatalf("no raw %s message within 15s", arg.Topic)
+	}
+	return nil
+}
+
+// TestWsPublicParamChannels covers the parameter-change channels that push a
+// full snapshot on subscribe, checking each typed struct captures every key of
+// the live push.
+func TestWsPublicParamChannels(t *testing.T) {
+	ws := testPublicWsClient()
+	const symbol, coin = "BTCUSDT", "BTC"
+	futures := string(WsInstTypeUSDTFutures)
+
+	oiLimit := wsFirstPush(t, "open-interest-limit", ws.NewSubscribeOpenInterestLimitService(WsInstTypeUSDTFutures, symbol).Do)
+	t.Logf("open-interest-limit: %+v", oiLimit.Data[0])
+	if oiLimit.Data[0].SingleNotionalValue.IsZero() {
+		t.Error("open-interest-limit singleNotionalValue is zero")
+	}
+	assertCovers(t, "ws open-interest-limit",
+		wsFirstPushData(t, ws, request.WsArg{InstType: futures, Topic: "open-interest-limit", Symbol: symbol}), oiLimit.Data)
+
+	tier := wsFirstPush(t, "position-tier", ws.NewSubscribePositionTierService(WsInstTypeUSDTFutures, symbol).Do)
+	t.Logf("position-tier: symbol=%s tiers=%d", tier.Data[0].Symbol, len(tier.Data[0].List))
+	if len(tier.Data[0].List) == 0 {
+		t.Error("position-tier list is empty")
+	}
+	assertCovers(t, "ws position-tier",
+		wsFirstPushData(t, ws, request.WsArg{InstType: futures, Topic: "position-tier", Symbol: symbol}), tier.Data)
+
+	funding := wsFirstPush(t, "funding-rate", ws.NewSubscribeFundingRateService(WsInstTypeUSDTFutures, symbol).Do)
+	t.Logf("funding-rate: %+v", funding.Data[0])
+	if funding.Data[0].NextUpdate.IsZero() {
+		t.Error("funding-rate nextUpdate is zero")
+	}
+	assertCovers(t, "ws funding-rate",
+		wsFirstPushData(t, ws, request.WsArg{InstType: futures, Topic: "funding-rate", Symbol: symbol}), funding.Data)
+
+	loan := wsFirstPush(t, "margin-loan", ws.NewSubscribeMarginLoanService(coin).Do)
+	t.Logf("margin-loan: %+v", loan.Data[0])
+	if loan.Data[0].Limit.IsZero() {
+		t.Error("margin-loan limit is zero")
+	}
+	assertCovers(t, "ws margin-loan",
+		wsFirstPushData(t, ws, request.WsArg{InstType: wsInstTypeUTAPublic, Topic: "margin-loan", Coin: coin}), loan.Data)
+
+	coins := wsFirstPush(t, "margin-coins", ws.NewSubscribeMarginCoinsService(coin).Do)
+	t.Logf("margin-coins: marginCoin=%s tiers=%d", coins.Data[0].MarginCoin, len(coins.Data[0].DiscountRateList))
+	if len(coins.Data[0].DiscountRateList) == 0 {
+		t.Error("margin-coins discountRateList is empty")
+	}
+	assertCovers(t, "ws margin-coins",
+		wsFirstPushData(t, ws, request.WsArg{InstType: wsInstTypeUTAPublic, Topic: "margin-coins", Coin: coin}), coins.Data)
+}
+
+// TestWsPublicInstruments only confirms the subscription is accepted: the
+// instruments channel pushes nothing until a trading parameter changes.
+func TestWsPublicInstruments(t *testing.T) {
+	ws := testPublicWsClient()
+	errC := make(chan error, 1)
+	dataC := make(chan *request.WsPush[[]WsInstrument], 1)
+	done, _, err := ws.NewSubscribeInstrumentsService(WsInstTypeUSDTFutures).
+		Do(context.Background(), func(p *request.WsPush[[]WsInstrument], err error) {
+			if err != nil {
+				select {
+				case errC <- err:
+				default:
+				}
+				return
+			}
+			select {
+			case dataC <- p:
+			default:
+			}
+		})
+	if err != nil {
+		t.Fatalf("subscribe instruments: %v", err)
+	}
+	defer close(done)
+
+	select {
+	case e := <-errC:
+		t.Fatalf("instruments subscribe error: %v", e)
+	case p := <-dataC:
+		t.Logf("instruments change: %+v", p.Data)
+	case <-time.After(5 * time.Second):
+		t.Log("no instruments change in 5s (event-driven); subscription accepted OK")
+	}
+}
+
+// TestWsInstrumentDecode decodes the docs' instruments push sample, since the
+// channel rarely pushes live.
+func TestWsInstrumentDecode(t *testing.T) {
+	const payload = `{"data":[{"baseCoin":"BTC","quoteCoin":"USDT","buyLimitPriceRatio":"0.05","sellLimitPriceRatio":"0.05","marketPriceRatio":"0.05","priceProtectThreshold":"0.1","feeRateUpRatio":"0.01","openCostUpRatio":"0.01","minOrderQty":"0.001","maxOrderQty":"1000","minOrderAmount":"5","maxMarketOrderQty":"500","pricePrecision":"2","quantityPrecision":"3","quotePrecision":"4","priceMultiplier":"0.01","quantityMultiplier":"0.001","type":"perpetual","status":"online","openTime":"1700000000000","offTime":"","limitOpenTime":""}],"arg":{"instType":"usdt-futures","topic":"instruments"},"action":"snapshot","ts":1736371332162}`
+	var push request.WsPush[objectOrArray[WsInstrument]]
+	if err := common.JSONUnmarshal([]byte(payload), &push); err != nil {
+		t.Fatal(err)
+	}
+	if len(push.Data) != 1 {
+		t.Fatalf("data len = %d, want 1", len(push.Data))
+	}
+	got := push.Data[0]
+	if got.Status != InstrumentStatusOnline || got.Type != SymbolTypePerpetual {
+		t.Errorf("status/type = %s/%s", got.Status, got.Type)
+	}
+	if got.OpenTime.UnixMilli() != 1700000000000 || !got.OffTime.IsZero() || !got.LimitOpenTime.IsZero() {
+		t.Errorf("times = %v / %v / %v", got.OpenTime, got.OffTime, got.LimitOpenTime)
+	}
+	assertCovers(t, "ws instruments sample", []byte(payload[len(`{"data":`):strings.Index(payload, `,"arg"`)]), []WsInstrument(push.Data))
 }
 
 // TestWsPrivateChannels confirms each private data channel logs in and accepts

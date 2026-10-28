@@ -34,6 +34,10 @@ const (
 // wsInstTypeUTA is the instType used by every private (account-scoped) channel.
 const wsInstTypeUTA = "UTA"
 
+// wsInstTypeUTAPublic is the instType of the public coin-scoped margin channels
+// (margin-loan, margin-coins), spelled lowercase as in the docs.
+const wsInstTypeUTAPublic = "uta"
+
 // Subscribe is the low-level escape hatch: it subscribes to an arbitrary channel
 // and delivers each data push's raw bytes. Prefer the typed NewSubscribe*
 // services; use this for channels the SDK does not yet wrap.

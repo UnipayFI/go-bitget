@@ -250,9 +250,9 @@ type WsRealityOrderBookSegmented struct {
 	Bids [][]decimal.Decimal `json:"b"`
 }
 
-// subscribeObjectOrArray is request.Subscribe for channels whose docs show data
-// as a single object instead of the usual array: it decodes either shape and
-// always hands cb a slice.
+// subscribeObjectOrArray is request.Subscribe for channels whose data arrives
+// (per the docs or live) as a single object instead of the usual array: it
+// decodes either shape and always hands cb a slice.
 func subscribeObjectOrArray[T any](ctx context.Context, c *UTAWebSocketClient, private bool, arg request.WsArg, cb WsHandler[T]) (chan<- struct{}, <-chan struct{}, error) {
 	return request.Subscribe(ctx, c, private, arg, func(p *request.WsPush[objectOrArray[T]], err error) {
 		if err != nil {
@@ -304,4 +304,209 @@ type WsLiquidation struct {
 	Price  decimal.Decimal `json:"price"`
 	Amount decimal.Decimal `json:"amount"`
 	Ts     time.Time       `json:"ts,format:unixmilli"`
+}
+
+// SubscribeInstrumentsService -- public "instruments" channel: pushes a
+// product line's trading parameters (price ratios, TP/SL price protection,
+// precisions, order limits) and trading-pair status whenever they change.
+// Nothing is pushed on subscribe, so fetch the full set with
+// NewGetInstrumentsService first and apply these pushes as changes.
+//
+// Modelled from the docs only: no push was seen live, so the shape is
+// unverified and data is decoded whether sent as an array or a single object.
+type SubscribeInstrumentsService struct {
+	c        *UTAWebSocketClient
+	instType WsInstType
+}
+
+func (c *UTAWebSocketClient) NewSubscribeInstrumentsService(instType WsInstType) *SubscribeInstrumentsService {
+	return &SubscribeInstrumentsService{c: c, instType: instType}
+}
+
+func (s *SubscribeInstrumentsService) Do(ctx context.Context, cb WsHandler[WsInstrument]) (chan<- struct{}, <-chan struct{}, error) {
+	return subscribeObjectOrArray(ctx, s.c, false,
+		request.WsArg{InstType: string(s.instType), Topic: "instruments"}, cb)
+}
+
+// WsInstrument items carry no symbol per the docs: identify the pair by
+// BaseCoin and QuoteCoin.
+type WsInstrument struct {
+	BaseCoin            string          `json:"baseCoin"`
+	QuoteCoin           string          `json:"quoteCoin"`
+	BuyLimitPriceRatio  decimal.Decimal `json:"buyLimitPriceRatio"`
+	SellLimitPriceRatio decimal.Decimal `json:"sellLimitPriceRatio"`
+	MarketPriceRatio    decimal.Decimal `json:"marketPriceRatio"`
+	// PriceProtectThreshold is the max TP/SL trigger price deviation from the
+	// last/mark price, as a fraction (0.1 means 10%).
+	PriceProtectThreshold decimal.Decimal  `json:"priceProtectThreshold"`
+	FeeRateUpRatio        decimal.Decimal  `json:"feeRateUpRatio"`
+	OpenCostUpRatio       decimal.Decimal  `json:"openCostUpRatio"`
+	MinOrderQty           decimal.Decimal  `json:"minOrderQty"`
+	MaxOrderQty           decimal.Decimal  `json:"maxOrderQty"` // 0 means no limit
+	MinOrderAmount        decimal.Decimal  `json:"minOrderAmount"`
+	MaxMarketOrderQty     decimal.Decimal  `json:"maxMarketOrderQty"`
+	PricePrecision        decimal.Decimal  `json:"pricePrecision"`
+	QuantityPrecision     decimal.Decimal  `json:"quantityPrecision"`
+	QuotePrecision        decimal.Decimal  `json:"quotePrecision"`
+	PriceMultiplier       decimal.Decimal  `json:"priceMultiplier"`
+	QuantityMultiplier    decimal.Decimal  `json:"quantityMultiplier"`
+	Type                  SymbolType       `json:"type"` // futures: perpetual, delivery
+	Status                InstrumentStatus `json:"status"`
+	OpenTime              time.Time        `json:"openTime,format:unixmilli"`
+	OffTime               time.Time        `json:"offTime,format:unixmilli"` // futures only; zero when not configured
+	// LimitOpenTime, when set, is when the pair enters maintenance and
+	// trading is disabled.
+	LimitOpenTime time.Time `json:"limitOpenTime,format:unixmilli"`
+}
+
+// SubscribeOpenInterestLimitService -- public "open-interest-limit" channel
+// (futures only): pushes a full snapshot of a symbol's single-user open
+// interest limit on subscribe, then again whenever the limit changes. Stock
+// contracts allow up to 20% per UID and 40% across a master account and its
+// sub-accounts.
+type SubscribeOpenInterestLimitService struct {
+	c        *UTAWebSocketClient
+	instType WsInstType
+	symbol   string
+}
+
+func (c *UTAWebSocketClient) NewSubscribeOpenInterestLimitService(instType WsInstType, symbol string) *SubscribeOpenInterestLimitService {
+	return &SubscribeOpenInterestLimitService{c: c, instType: instType, symbol: symbol}
+}
+
+func (s *SubscribeOpenInterestLimitService) Do(ctx context.Context, cb WsHandler[WsOpenInterestLimit]) (chan<- struct{}, <-chan struct{}, error) {
+	return request.Subscribe[[]WsOpenInterestLimit](ctx, s.c, false,
+		request.WsArg{InstType: string(s.instType), Topic: "open-interest-limit", Symbol: s.symbol}, cb)
+}
+
+type WsOpenInterestLimit struct {
+	Symbol string `json:"symbol"`
+	// The live wire key is singleNotionalValue; the docs list it as
+	// notionalValue.
+	SingleNotionalValue decimal.Decimal `json:"singleNotionalValue"`
+	TotalNotionalValue  decimal.Decimal `json:"totalNotionalValue"`
+	// Position-ratio caps as fractions (0.1 means 10%): per UID, and across a
+	// master account and its sub-accounts.
+	SinglePositionRatio decimal.Decimal `json:"singlePositionRatio"`
+	TotalPositionRatio  decimal.Decimal `json:"totalPositionRatio"`
+}
+
+// SubscribePositionTierService -- public "position-tier" channel (futures
+// only): pushes a full snapshot of a symbol's position tiers on subscribe,
+// then again whenever a tier's value range changes. Data arrives live as a
+// single object (the docs show an array).
+type SubscribePositionTierService struct {
+	c        *UTAWebSocketClient
+	instType WsInstType
+	symbol   string
+}
+
+func (c *UTAWebSocketClient) NewSubscribePositionTierService(instType WsInstType, symbol string) *SubscribePositionTierService {
+	return &SubscribePositionTierService{c: c, instType: instType, symbol: symbol}
+}
+
+func (s *SubscribePositionTierService) Do(ctx context.Context, cb WsHandler[WsPositionTier]) (chan<- struct{}, <-chan struct{}, error) {
+	return subscribeObjectOrArray(ctx, s.c, false,
+		request.WsArg{InstType: string(s.instType), Topic: "position-tier", Symbol: s.symbol}, cb)
+}
+
+type WsPositionTier struct {
+	Symbol string         `json:"symbol"`
+	List   []PositionTier `json:"list"`
+}
+
+// SubscribeFundingRateService -- public "funding-rate" channel (futures only):
+// pushes a full snapshot on subscribe, again when the settlement period
+// temporarily switches to 1h or reverts, on a cash dividend event, and as a
+// heartbeat every 60s.
+type SubscribeFundingRateService struct {
+	c        *UTAWebSocketClient
+	instType WsInstType
+	symbol   string
+}
+
+func (c *UTAWebSocketClient) NewSubscribeFundingRateService(instType WsInstType, symbol string) *SubscribeFundingRateService {
+	return &SubscribeFundingRateService{c: c, instType: instType, symbol: symbol}
+}
+
+func (s *SubscribeFundingRateService) Do(ctx context.Context, cb WsHandler[WsFundingRate]) (chan<- struct{}, <-chan struct{}, error) {
+	return request.Subscribe[[]WsFundingRate](ctx, s.c, false,
+		request.WsArg{InstType: string(s.instType), Topic: "funding-rate", Symbol: s.symbol}, cb)
+}
+
+type WsFundingRate struct {
+	Symbol              string          `json:"symbol"`
+	FundingRate         decimal.Decimal `json:"fundingRate"`
+	FundingRateInterval string          `json:"fundingRateInterval"` // settlement period in hours
+	NextUpdate          time.Time       `json:"nextUpdate,format:unixmilli"`
+	MinFundingRate      decimal.Decimal `json:"minFundingRate"`
+	MaxFundingRate      decimal.Decimal `json:"maxFundingRate"`
+	LastFundingRate     decimal.Decimal `json:"lastFundingRate"`
+	NextFundingRate     decimal.Decimal `json:"nextFundingRate"`
+	// Unlike the REST current-fund-rate response, the push spells this key
+	// correctly.
+	BaseInterestRate     decimal.Decimal `json:"baseInterestRate"`
+	ImpactMarginNotional decimal.Decimal `json:"impactMarginNotional"` // quote coin
+	// CashDividend is the per-share USDT dividend paid by RWA stock contracts;
+	// it and CashDividendNextUpdate are zero outside a cash dividend event.
+	CashDividend           decimal.Decimal `json:"cashDividend"`
+	CashDividendNextUpdate time.Time       `json:"cashDividendNextUpdate,format:unixmilli"`
+}
+
+// SubscribeMarginLoanService -- public "margin-loan" channel: pushes a full
+// snapshot of a coin's margin loan parameters on subscribe, again when its
+// loan limits, interest-free quota or interest discount change or margin
+// borrowing of the coin is enabled/disabled, and as a heartbeat every 60s.
+type SubscribeMarginLoanService struct {
+	c    *UTAWebSocketClient
+	coin string
+}
+
+func (c *UTAWebSocketClient) NewSubscribeMarginLoanService(coin string) *SubscribeMarginLoanService {
+	return &SubscribeMarginLoanService{c: c, coin: coin}
+}
+
+func (s *SubscribeMarginLoanService) Do(ctx context.Context, cb WsHandler[WsMarginLoan]) (chan<- struct{}, <-chan struct{}, error) {
+	return request.Subscribe[[]WsMarginLoan](ctx, s.c, false,
+		request.WsArg{InstType: wsInstTypeUTAPublic, Topic: "margin-loan", Coin: s.coin}, cb)
+}
+
+// WsMarginLoan rates are fractions (0.01 means 1%); limits and quotas are in
+// the loan coin.
+type WsMarginLoan struct {
+	Coin              string          `json:"coin"`
+	DailyInterest     decimal.Decimal `json:"dailyInterest"`
+	AnnualInterest    decimal.Decimal `json:"annualInterest"`
+	Limit             decimal.Decimal `json:"limit"`             // per-account borrow limit
+	MasterSubLimit    decimal.Decimal `json:"masterSubLimit"`    // master/sub account borrow limit
+	InterestFreeLimit decimal.Decimal `json:"interestFreeLimit"` // zero when the coin has none
+	// The live wire key is platformRemainingQuota; the docs misspell it
+	// platformRemaingQuota (as the REST margin-loans response does).
+	PlatformRemainingQuota decimal.Decimal `json:"platformRemainingQuota"`
+	Status                 string          `json:"status"` // enabled, disabled
+}
+
+// SubscribeMarginCoinsService -- public "margin-coins" channel: pushes a full
+// snapshot of a coin's collateral (margin coin) settings on subscribe, then
+// again when it is enabled/disabled or its discount rate tiers change. Live
+// data items are flat margin-coin records; the docs wrap them in a
+// {coin, list} object.
+type SubscribeMarginCoinsService struct {
+	c    *UTAWebSocketClient
+	coin string
+}
+
+func (c *UTAWebSocketClient) NewSubscribeMarginCoinsService(coin string) *SubscribeMarginCoinsService {
+	return &SubscribeMarginCoinsService{c: c, coin: coin}
+}
+
+func (s *SubscribeMarginCoinsService) Do(ctx context.Context, cb WsHandler[WsMarginCoin]) (chan<- struct{}, <-chan struct{}, error) {
+	return request.Subscribe[[]WsMarginCoin](ctx, s.c, false,
+		request.WsArg{InstType: wsInstTypeUTAPublic, Topic: "margin-coins", Coin: s.coin}, cb)
+}
+
+type WsMarginCoin struct {
+	MarginCoin       string             `json:"marginCoin"`
+	DiscountRateList []DiscountRateTier `json:"discountRateList"`
+	Status           string             `json:"status"` // enabled, disabled
 }
