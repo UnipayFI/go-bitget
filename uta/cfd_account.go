@@ -82,6 +82,9 @@ type CFDInstrument struct {
 	// MarginCurrency to USD.
 	ExchangeRate  decimal.Decimal `json:"exchangeRate"`
 	MarginUSDRate decimal.Decimal `json:"marginUsdRate"`
+	// CurrentTimezone is the instrument's trading timezone as a UTC offset in
+	// hours, e.g. "+2" for UTC+2.
+	CurrentTimezone string `json:"currentTimezone"`
 }
 
 // GetCFDFundDetailService -- GET /api/v3/cfd/account/fund-detail (UTA account read)
