@@ -64,6 +64,9 @@ type MixWsTicker struct {
 // "4H","6H","12H","1D","3D","1W","1M" (and their "...utc" variants); the channel
 // sent is "candle"+interval.
 //
+// From 2026-11-17 (demo from 2026-11-04) the channel no longer pushes a
+// snapshot after subscribing, only real-time updates; fetch history over REST.
+//
 // docs: https://www.bitget.com/api-doc/contract/websocket/public/Candlesticks-Channel
 type SubscribeMixCandleService struct {
 	c        *WebSocketClient
@@ -179,6 +182,9 @@ type MixWsOrderBook struct {
 }
 
 // SubscribeMixTradeService -- public "trade" channel (tick-by-tick fills).
+//
+// From 2026-11-17 (demo from 2026-11-04) the channel no longer pushes a
+// snapshot after subscribing, only real-time updates; fetch history over REST.
 //
 // docs: https://www.bitget.com/api-doc/contract/websocket/public/New-Trades-Channel
 type SubscribeMixTradeService struct {

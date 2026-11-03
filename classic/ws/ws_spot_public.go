@@ -50,6 +50,9 @@ type SpotWsTicker struct {
 //
 // Valid intervals: 1m, 5m, 15m, 30m, 1H, 4H, 6H, 12H, 1D, 3D, 1W, 1M (and their
 // "...utc" variants, e.g. "1Dutc"). The channel sent is "candle" + interval.
+//
+// From 2026-11-17 (demo from 2026-11-04) the channel no longer pushes a
+// snapshot after subscribing, only real-time updates; fetch history over REST.
 type SubscribeSpotCandleService struct {
 	c        *WebSocketClient
 	symbol   string
@@ -121,6 +124,9 @@ func (k SpotWsCandle) MarshalJSON() ([]byte, error) {
 
 // SubscribeSpotTradeService -- public "trade" channel (spot). instType SPOT,
 // instId required.
+//
+// From 2026-11-17 (demo from 2026-11-04) the channel no longer pushes a
+// snapshot after subscribing, only real-time updates; fetch history over REST.
 type SubscribeSpotTradeService struct {
 	c      *WebSocketClient
 	symbol string
