@@ -282,7 +282,9 @@ func (s *objectOrArray[T]) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 // SubscribeLiquidationService -- public "liquidation" channel (futures only).
 //
 // Pushes once per second, carrying only the highest-quantity liquidation record
-// for the long and short side of each trading pair in that second.
+// for the long and short side of each trading pair in that second. symbol is
+// optional: pass "" for every pair of instType, or a symbol to receive only
+// that pair's liquidations.
 type SubscribeLiquidationService struct {
 	c        *UTAWebSocketClient
 	instType WsInstType

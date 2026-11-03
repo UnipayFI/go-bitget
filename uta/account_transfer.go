@@ -89,7 +89,7 @@ type TransferResult struct {
 //
 // Transfers a coin between a main account and a sub-account. Requires the main
 // account API key. Account types: spot, p2p, usdt_futures, coin_futures,
-// usdc_futures, crossed_margin, uta.
+// usdc_futures, crossed_margin, uta. clientOid is at most 50 characters.
 type SubTransferService struct {
 	c    *UTAClient
 	body map[string]any
