@@ -74,6 +74,12 @@ type WsNewOrder struct {
 	// accept rtoken pairs.
 	Venue             Venue             `json:"venue,omitempty"`
 	RTokenTimeInForce RTokenTimeInForce `json:"rTokenTimeInForce,omitempty"`
+	// BBOLevel prices a limit order off the best bid/offer (ignored for market
+	// orders). SlippageTolerance caps a market order's slippage as a fraction in
+	// [0.01, 0.05] with up to 2 decimals (default 0.02, i.e. 2%). Both are
+	// documented for place-order only, not batch-place-order.
+	BBOLevel          BBOLevel         `json:"bboLevel,omitempty"`
+	SlippageTolerance *decimal.Decimal `json:"slippageTolerance,omitempty"`
 	// ReceiveWindow is the order's validity window in ms ([10, 60000]); the
 	// order is cancelled (cancelReason "cancel_receiveWindow") if the window
 	// elapses before the gateway processes it. Only takes effect together with
