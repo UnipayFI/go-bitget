@@ -53,7 +53,8 @@ type Order struct {
 	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
 	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 	// Venue and RTokenTimeInForce are only meaningful for Reality (rtoken)
-	// pairs and are only carried by order-info.
+	// pairs and are only carried by order-info. Venue is VenueDefault when the
+	// order was placed without one.
 	Venue             Venue             `json:"venue"`
 	RTokenTimeInForce RTokenTimeInForce `json:"rTokenTimeInForce"`
 }

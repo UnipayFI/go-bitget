@@ -68,10 +68,10 @@ type WsNewOrder struct {
 	PxAmendType string `json:"pxAmendType,omitempty"`
 	// AutoBorrow enables auto-borrowing of the spent coin (spot orders only).
 	AutoBorrow AutoBorrow `json:"autoBorrow,omitempty"`
-	// Venue (default VenueLitMarket) and RTokenTimeInForce (default
-	// RTokenTimeInForceGTD) set a Reality (rtoken) order's routing and
-	// validity; they have no effect on other pairs. batch-place-order does not
-	// accept rtoken pairs.
+	// Venue (VenueInternalMarket or VenueLitMarket; omit it for the default
+	// strategy) and RTokenTimeInForce (default RTokenTimeInForceGTD) set a
+	// Reality (rtoken) order's routing and validity. They have no effect on
+	// other pairs. batch-place-order does not accept rtoken pairs.
 	Venue             Venue             `json:"venue,omitempty"`
 	RTokenTimeInForce RTokenTimeInForce `json:"rTokenTimeInForce,omitempty"`
 	// BBOLevel prices a limit order off the best bid/offer (ignored for market
@@ -115,10 +115,12 @@ type WsCancelOrder struct {
 }
 
 // PlaceOrder places a single order over the stream. Reality stock pairs (rtoken,
-// e.g. rAAPLUSDT) are supported and rate-limited on their own budget:
-// 5 req/sec/UID, or 30 req/sec/UID once whitelisted. Their preset TP/SL is
-// market-only: tpOrderType and slOrderType accept only market. rtoken orders
-// cannot be modified: cancel and re-place instead.
+// e.g. rAAPLUSDT) are supported, and venue sets their rate limit.
+// VenueInternalMarket orders share the crypto budget of 10 req/sec/UID.
+// Default-strategy (venue omitted) and VenueLitMarket orders use the rtoken
+// budget of 5 req/sec/UID, or 30 req/sec/UID once whitelisted. Their preset
+// TP/SL is market-only: tpOrderType and slOrderType accept only market. rtoken
+// orders cannot be modified: cancel and re-place instead.
 func (t *UTATradeConn) PlaceOrder(ctx context.Context, category Category, order WsNewOrder) (*WsOrderAck, error) {
 	return t.single(ctx, category, "place-order", order)
 }

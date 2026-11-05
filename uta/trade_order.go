@@ -15,8 +15,10 @@ import (
 // required; price is required for limit orders. The reply data carries the new
 // order's identifiers.
 //
-// Reality stock pairs (rtoken, e.g. rAAPLUSDT) are supported and rate-limited
-// on their own budget: 5 req/sec/UID, or 30 req/sec/UID once whitelisted. Their
+// Reality stock pairs (rtoken, e.g. rAAPLUSDT) are supported, and venue sets
+// their rate limit. VenueInternalMarket orders share the crypto budget of 10
+// req/sec/UID. Default-strategy (venue omitted) and VenueLitMarket orders use
+// the rtoken budget of 5 req/sec/UID, or 30 req/sec/UID once whitelisted. Their
 // preset TP/SL is market-only: tpOrderType and slOrderType accept only market.
 // A UID whose terminal orders on one rtoken pair exceed 2,000 in a daily cycle
 // with a fill rate below 10% has limit orders on that pair rejected with code
@@ -147,7 +149,8 @@ func (s *PlaceOrderService) SetSlLimitPrice(slLimitPrice decimal.Decimal) *Place
 	return s
 }
 
-// SetVenue sets the order routing strategy (defaults to VenueLitMarket). Only
+// SetVenue sets the order routing strategy: VenueInternalMarket or
+// VenueLitMarket. If it is not set, the default strategy applies. Only
 // effective for Reality (rtoken) pairs.
 func (s *PlaceOrderService) SetVenue(venue Venue) *PlaceOrderService {
 	s.body["venue"] = string(venue)

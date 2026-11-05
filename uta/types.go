@@ -83,15 +83,27 @@ const (
 )
 
 // Venue is the order routing strategy for Reality (rtoken) pairs; it has no
-// effect on other pairs. Orders default to VenueLitMarket.
+// effect on other pairs. Orders accept VenueInternalMarket or VenueLitMarket;
+// omitting venue applies the default strategy, which order details report as
+// VenueDefault.
+//
+// The enum changed on 2026-11-05: "internalization" was renamed to
+// "internal_market" with the same meaning. "lit_market" used to name the
+// default strategy, and orders placed with it before then are now reported as
+// "default". "lit_market" now means broker-only routing.
 type Venue string
 
 const (
-	// VenueInternalization matches only inside Bitget's internal (onshore)
-	// pool and is never forwarded to the external broker.
-	VenueInternalization Venue = "internalization"
-	// VenueLitMarket matches internally first, routes any remainder to the
-	// external pool, then rests what is still unmatched as a limit order.
+	// VenueDefault is the default strategy, used when venue is omitted. The
+	// order is matched inside the exchange at the best price first, and any
+	// unfilled remainder is submitted to the US stock broker. It is only
+	// returned in order details and is not accepted when placing an order.
+	VenueDefault Venue = "default"
+	// VenueInternalMarket matches only inside the exchange (Super Match). The
+	// order is never submitted to the US stock broker.
+	VenueInternalMarket Venue = "internal_market"
+	// VenueLitMarket submits the order directly to the US stock broker
+	// without matching it inside the exchange.
 	VenueLitMarket Venue = "lit_market"
 )
 
