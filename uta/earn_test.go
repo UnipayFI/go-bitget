@@ -157,3 +157,58 @@ func TestSavings(t *testing.T) {
 		assertCovers(t, "earn/savings/subscribe-info", raw, info)
 	}
 }
+
+func TestSharkFin(t *testing.T) {
+	c := testClient(t)
+	if err := c.SyncServerTime(ctx(t)); err != nil {
+		t.Fatalf("sync time: %v", err)
+	}
+	cx := ctx(t)
+
+	products, err := c.NewGetSharkFinProductService("USDT").Do(cx)
+	if err != nil {
+		t.Fatalf("sharkfin product: %v", err)
+	}
+	t.Logf("sharkfin products: %d endId=%s", len(products.ResultList), products.EndID)
+	raw := fetchRawGet(t, c, cx, "/api/v3/earn/sharkfin/product", map[string]string{"coin": "USDT"}, true)
+	assertCovers(t, "earn/sharkfin/product", raw, products)
+
+	account, err := c.NewGetSharkFinAccountService().Do(cx)
+	if err != nil {
+		t.Fatalf("sharkfin account: %v", err)
+	}
+	t.Logf("sharkfin account: usdtSubscribeAmount=%s", account.USDTSubscribeAmount)
+	raw = fetchRawGet(t, c, cx, "/api/v3/earn/sharkfin/account", nil, true)
+	assertCovers(t, "earn/sharkfin/account", raw, account)
+
+	// Assets and records may be empty for an account that never used SharkFin.
+	assets, err := c.NewGetSharkFinAssetsService(SharkFinAssetStatusSubscribed).Do(cx)
+	if err != nil {
+		t.Fatalf("sharkfin assets: %v", err)
+	}
+	t.Logf("sharkfin assets: %d endId=%s", len(assets.ResultList), assets.EndID)
+	raw = fetchRawGet(t, c, cx, "/api/v3/earn/sharkfin/assets",
+		map[string]string{"status": string(SharkFinAssetStatusSubscribed)}, true)
+	assertCovers(t, "earn/sharkfin/assets", raw, assets)
+
+	records, err := c.NewGetSharkFinRecordsService(SharkFinRecordTypeSubscription).Do(cx)
+	if err != nil {
+		t.Fatalf("sharkfin records: %v", err)
+	}
+	t.Logf("sharkfin records: %d endId=%s", len(records.ResultList), records.EndID)
+	raw = fetchRawGet(t, c, cx, "/api/v3/earn/sharkfin/records",
+		map[string]string{"type": string(SharkFinRecordTypeSubscription)}, true)
+	assertCovers(t, "earn/sharkfin/records", raw, records)
+
+	if len(products.ResultList) > 0 {
+		productID := products.ResultList[0].ProductID
+		info, err := c.NewGetSharkFinSubscribeInfoService(productID).Do(cx)
+		if err != nil {
+			t.Fatalf("sharkfin subscribe info: %v", err)
+		}
+		t.Logf("sharkfin subscribe info: %s/%s period=%s", info.SubscribeCoin, info.ProductCoin, info.Period)
+		raw = fetchRawGet(t, c, cx, "/api/v3/earn/sharkfin/subscribe-info",
+			map[string]string{"productId": productID}, true)
+		assertCovers(t, "earn/sharkfin/subscribe-info", raw, info)
+	}
+}
