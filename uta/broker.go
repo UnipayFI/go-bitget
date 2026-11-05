@@ -456,3 +456,288 @@ func (s *GetBrokerSubAPIKeyService) Do(ctx context.Context) (*BrokerSubAPIKey, e
 	req := request.Get(ctx, s.c, "/api/v3/broker/query-sub-apikey", s.params).WithSign()
 	return request.Do[BrokerSubAPIKey](req)
 }
+
+// ModifyBrokerSubEmailService -- POST /api/v3/broker/modify-subaccount-email (broker)
+//
+// Binds or changes the email of a broker sub-account. The response data is the
+// literal "success".
+type ModifyBrokerSubEmailService struct {
+	c    *UTAClient
+	body map[string]any
+}
+
+func (c *UTAClient) NewModifyBrokerSubEmailService(subUid, subaccountEmail string) *ModifyBrokerSubEmailService {
+	return &ModifyBrokerSubEmailService{c: c, body: map[string]any{
+		"subUid":          subUid,
+		"subaccountEmail": subaccountEmail,
+	}}
+}
+
+func (s *ModifyBrokerSubEmailService) Do(ctx context.Context) (string, error) {
+	req := request.Post(ctx, s.c, "/api/v3/broker/modify-subaccount-email", s.body).WithSign()
+	resp, err := request.Do[string](req)
+	if err != nil {
+		return "", err
+	}
+	return *resp, nil
+}
+
+// GetBrokerSubEmailService -- GET /api/v3/broker/subaccount-email (broker)
+//
+// Returns the email bound to a broker sub-account.
+type GetBrokerSubEmailService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetBrokerSubEmailService(subUid string) *GetBrokerSubEmailService {
+	return &GetBrokerSubEmailService{c: c, params: map[string]string{"subUid": subUid}}
+}
+
+func (s *GetBrokerSubEmailService) Do(ctx context.Context) (*BrokerSubEmail, error) {
+	req := request.Get(ctx, s.c, "/api/v3/broker/subaccount-email", s.params).WithSign()
+	return request.Do[BrokerSubEmail](req)
+}
+
+// BrokerSubEmail is a sub-account's email binding. SubaccountName is the
+// generated email-format username (subaccountName as the prefix).
+type BrokerSubEmail struct {
+	SubUID          string    `json:"subUid"`
+	SubaccountName  string    `json:"subaccountName"`
+	SubaccountEmail string    `json:"subaccountEmail"`
+	CTime           time.Time `json:"cTime,format:unixmilli"`
+	UTime           time.Time `json:"uTime,format:unixmilli"`
+}
+
+// GetBrokerTradeVolumeService -- GET /api/v3/broker/trade-volume (broker)
+//
+// Returns the trading volume of broker sub-accounts. Access must be requested
+// from your BD or RM. With no time range it returns yesterday (00:00-23:59
+// UTC+0).
+type GetBrokerTradeVolumeService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetBrokerTradeVolumeService() *GetBrokerTradeVolumeService {
+	return &GetBrokerTradeVolumeService{c: c, params: map[string]string{}}
+}
+
+// SetStartTime filters records at or after t. startTime and endTime must be set
+// together and span at most 30 days.
+func (s *GetBrokerTradeVolumeService) SetStartTime(t time.Time) *GetBrokerTradeVolumeService {
+	s.params["startTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetEndTime filters records at or before t (see SetStartTime).
+func (s *GetBrokerTradeVolumeService) SetEndTime(t time.Time) *GetBrokerTradeVolumeService {
+	s.params["endTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetPageSize sets the page size (default 100, max 1000).
+func (s *GetBrokerTradeVolumeService) SetPageSize(pageSize string) *GetBrokerTradeVolumeService {
+	s.params["pageSize"] = pageSize
+	return s
+}
+
+// SetPageNo sets the page number (default 1).
+func (s *GetBrokerTradeVolumeService) SetPageNo(pageNo string) *GetBrokerTradeVolumeService {
+	s.params["pageNo"] = pageNo
+	return s
+}
+
+func (s *GetBrokerTradeVolumeService) Do(ctx context.Context) ([]BrokerTradeVolume, error) {
+	req := request.Get(ctx, s.c, "/api/v3/broker/trade-volume", s.params).WithSign()
+	resp, err := request.Do[[]BrokerTradeVolume](req)
+	if err != nil {
+		return nil, err
+	}
+	return *resp, nil
+}
+
+// BrokerTradeVolume is one sub-account's trading volume (spot, futures and
+// their total).
+type BrokerTradeVolume struct {
+	UID          string          `json:"uid"`
+	Volume       decimal.Decimal `json:"volume"`
+	SpotVolume   decimal.Decimal `json:"spotVolume"`
+	FutureVolume decimal.Decimal `json:"futureVolume"`
+}
+
+// GetBrokerTotalCommissionService -- GET /api/v3/broker/total-commission (broker)
+//
+// Returns the broker's daily commission, trading volume and active-trader
+// totals, split into spot and futures. Data is daily (UTC+8), updated T+1, kept
+// for 365 days and available from 2025-06-01. With no time range it returns
+// yesterday (00:00-23:59 UTC+8).
+type GetBrokerTotalCommissionService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetBrokerTotalCommissionService() *GetBrokerTotalCommissionService {
+	return &GetBrokerTotalCommissionService{c: c, params: map[string]string{}}
+}
+
+// SetStartTime sets the window start. startTime and endTime must be set
+// together and span at most 180 days.
+func (s *GetBrokerTotalCommissionService) SetStartTime(t time.Time) *GetBrokerTotalCommissionService {
+	s.params["startTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetEndTime sets the window end (see SetStartTime).
+func (s *GetBrokerTotalCommissionService) SetEndTime(t time.Time) *GetBrokerTotalCommissionService {
+	s.params["endTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+func (s *GetBrokerTotalCommissionService) Do(ctx context.Context) ([]BrokerTotalCommission, error) {
+	req := request.Get(ctx, s.c, "/api/v3/broker/total-commission", s.params).WithSign()
+	resp, err := request.Do[[]BrokerTotalCommission](req)
+	if err != nil {
+		return nil, err
+	}
+	return *resp, nil
+}
+
+// BrokerTotalCommission is one day's broker totals; amounts are in USDT. Date
+// stays a string because the doc gives no unit and its example
+// ("17609760000000", 14 digits) is not a valid millisecond timestamp.
+type BrokerTotalCommission struct {
+	Date               string                       `json:"date"`
+	TotalTradingVolume decimal.Decimal              `json:"totalTradingVolume"`
+	TotalActiveTraders string                       `json:"totalActiveTraders"`
+	TotalCommission    decimal.Decimal              `json:"totalCommission"`
+	Spot               BrokerTotalCommissionSpot    `json:"spot"`
+	Futures            BrokerTotalCommissionFutures `json:"futures"`
+}
+
+// BrokerTotalCommissionSpot is the spot part of a daily total. The pure
+// trading fee is the fee after negative-maker and similar deductions, and is
+// the commission base.
+type BrokerTotalCommissionSpot struct {
+	SpotTradingVolume  decimal.Decimal `json:"spotTradingVolume"`
+	SpotTradingFee     decimal.Decimal `json:"spotTradingFee"`
+	SpotPureTradingFee decimal.Decimal `json:"spotPureTradingFee"`
+	SpotCommission     decimal.Decimal `json:"spotCommission"`
+}
+
+// BrokerTotalCommissionFutures is the futures part of a daily total (see
+// BrokerTotalCommissionSpot).
+type BrokerTotalCommissionFutures struct {
+	FuturesTradingVolume  decimal.Decimal `json:"futuresTradingVolume"`
+	FuturesTradingFee     decimal.Decimal `json:"futuresTradingFee"`
+	FuturesPureTradingFee decimal.Decimal `json:"futuresPureTradingFee"`
+	FuturesCommission     decimal.Decimal `json:"futuresCommission"`
+}
+
+// GetBrokerOrderCommissionService -- GET /api/v3/broker/order-commission (broker)
+//
+// Returns per-fill broker commission (rebate) records, paginated by idLessThan
+// (endId). Only fills tagged with the broker channel ID appear. Data is daily
+// (UTC+8), updated T+1, kept for 30 days and available from 2025-09-01. With no
+// time range it returns yesterday (00:00-23:59 UTC+8).
+type GetBrokerOrderCommissionService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetBrokerOrderCommissionService() *GetBrokerOrderCommissionService {
+	return &GetBrokerOrderCommissionService{c: c, params: map[string]string{}}
+}
+
+// SetStartTime sets the window start. startTime and endTime must be set
+// together; the endpoint notes say the span is at most 30 days, the parameter
+// table says 180.
+func (s *GetBrokerOrderCommissionService) SetStartTime(t time.Time) *GetBrokerOrderCommissionService {
+	s.params["startTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetEndTime sets the window end (see SetStartTime).
+func (s *GetBrokerOrderCommissionService) SetEndTime(t time.Time) *GetBrokerOrderCommissionService {
+	s.params["endTime"] = strconv.FormatInt(t.UnixMilli(), 10)
+	return s
+}
+
+// SetLimit sets the page size (default 500, max 500).
+func (s *GetBrokerOrderCommissionService) SetLimit(limit string) *GetBrokerOrderCommissionService {
+	s.params["limit"] = limit
+	return s
+}
+
+func (s *GetBrokerOrderCommissionService) SetUID(uid string) *GetBrokerOrderCommissionService {
+	s.params["uid"] = uid
+	return s
+}
+
+// SetOrderID filters to one order (sent as the all-lowercase "orderid").
+func (s *GetBrokerOrderCommissionService) SetOrderID(orderID string) *GetBrokerOrderCommissionService {
+	s.params["orderid"] = orderID
+	return s
+}
+
+// SetIDLessThan sets the pagination cursor (endId from the previous response;
+// omit on the first call).
+func (s *GetBrokerOrderCommissionService) SetIDLessThan(idLessThan string) *GetBrokerOrderCommissionService {
+	s.params["idLessThan"] = idLessThan
+	return s
+}
+
+func (s *GetBrokerOrderCommissionService) Do(ctx context.Context) (*BrokerOrderCommissions, error) {
+	req := request.Get(ctx, s.c, "/api/v3/broker/order-commission", s.params).WithSign()
+	return request.Do[BrokerOrderCommissions](req)
+}
+
+// BrokerOrderCommissions is a page of per-fill commission records; the list key
+// is the all-lowercase "commissionlist" on the wire.
+type BrokerOrderCommissions struct {
+	CommissionList []BrokerOrderCommission `json:"commissionlist"`
+	EndID          string                  `json:"endId"`
+}
+
+// BrokerOrderCommission is one fill's broker commission; Volume, Fee, PureFee
+// and RebateAmount are in USDT at full precision.
+type BrokerOrderCommission struct {
+	FillID        string          `json:"fillId"`
+	OrderID       string          `json:"orderId"`
+	Ts            time.Time       `json:"ts,format:unixmilli"`
+	ClientOrderID string          `json:"clientOid"`
+	BizType       string          `json:"bizType"`    // spot, futures
+	SubBizType    string          `json:"subBizType"` // spot_trade, spot_margin, usdt_futures, coin_futures, usdc_futures
+	Symbol        string          `json:"symbol"`
+	Volume        decimal.Decimal `json:"volume"`
+	Fee           decimal.Decimal `json:"fee"`
+	PureFee       decimal.Decimal `json:"pureFee"`
+	RebateAmount  decimal.Decimal `json:"rebateAmount"`
+}
+
+// GetBrokerRebateInfoService -- GET /api/v3/broker/rebate-info (broker)
+//
+// Returns a user's broker rebate relationship, VIP level and the spot/futures
+// rebate ratios available to them. Real-time data.
+type GetBrokerRebateInfoService struct {
+	c      *UTAClient
+	params map[string]string
+}
+
+func (c *UTAClient) NewGetBrokerRebateInfoService(uid string) *GetBrokerRebateInfoService {
+	return &GetBrokerRebateInfoService{c: c, params: map[string]string{"uid": uid}}
+}
+
+func (s *GetBrokerRebateInfoService) Do(ctx context.Context) (*BrokerRebateInfo, error) {
+	req := request.Get(ctx, s.c, "/api/v3/broker/rebate-info", s.params).WithSign()
+	return request.Do[BrokerRebateInfo](req)
+}
+
+// BrokerRebateInfo is a user's broker rebate configuration. AffiliationType is
+// "affiliate" (client channel) or "official" (website channel).
+type BrokerRebateInfo struct {
+	AffiliationType          string          `json:"affiliationType"`
+	UserLevel                string          `json:"userLevel"` // VIP0..VIP7, PRO1..PRO6
+	ClientSpotRebateRatio    decimal.Decimal `json:"clientSpotRebateRatio"`
+	ClientFuturesRebateRatio decimal.Decimal `json:"clientFuturesRebateRatio"`
+}
