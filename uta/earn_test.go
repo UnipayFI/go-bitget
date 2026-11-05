@@ -102,3 +102,58 @@ func TestCashPlus(t *testing.T) {
 	raw = fetchRawGet(t, c, cx, "/api/v3/earn/cashplus/history-orders", nil, true)
 	assertCovers(t, "earn/cashplus/history-orders", raw, history)
 }
+
+func TestSavings(t *testing.T) {
+	c := testClient(t)
+	if err := c.SyncServerTime(ctx(t)); err != nil {
+		t.Fatalf("sync time: %v", err)
+	}
+	cx := ctx(t)
+
+	products, err := c.NewGetSavingsProductService().Do(cx)
+	if err != nil {
+		t.Fatalf("savings product: %v", err)
+	}
+	t.Logf("savings products: %d", len(products))
+	raw := fetchRawGet(t, c, cx, "/api/v3/earn/savings/product", nil, true)
+	assertCovers(t, "earn/savings/product", raw, products)
+
+	account, err := c.NewGetSavingsAccountService().Do(cx)
+	if err != nil {
+		t.Fatalf("savings account: %v", err)
+	}
+	t.Logf("savings account: usdtAmount=%s", account.USDTAmount)
+	raw = fetchRawGet(t, c, cx, "/api/v3/earn/savings/account", nil, true)
+	assertCovers(t, "earn/savings/account", raw, account)
+
+	// Assets and records may be empty for an account that never used savings.
+	flexible := map[string]string{"periodType": string(SavingsPeriodTypeFlexible)}
+	assets, err := c.NewGetSavingsAssetsService(SavingsPeriodTypeFlexible).Do(cx)
+	if err != nil {
+		t.Fatalf("savings assets: %v", err)
+	}
+	t.Logf("savings assets: %d endId=%s", len(assets.ResultList), assets.EndID)
+	raw = fetchRawGet(t, c, cx, "/api/v3/earn/savings/assets", flexible, true)
+	assertCovers(t, "earn/savings/assets", raw, assets)
+
+	records, err := c.NewGetSavingsRecordsService(SavingsPeriodTypeFlexible).Do(cx)
+	if err != nil {
+		t.Fatalf("savings records: %v", err)
+	}
+	t.Logf("savings records: %d endId=%s", len(records.ResultList), records.EndID)
+	raw = fetchRawGet(t, c, cx, "/api/v3/earn/savings/records", flexible, true)
+	assertCovers(t, "earn/savings/records", raw, records)
+
+	// Subscribe info needs a product ID; take the first from the catalogue.
+	if len(products) > 0 {
+		p := products[0]
+		info, err := c.NewGetSavingsSubscribeInfoService(p.ProductID, p.PeriodType).Do(cx)
+		if err != nil {
+			t.Fatalf("savings subscribe info: %v", err)
+		}
+		t.Logf("savings subscribe info: min=%s max=%s", info.SingleMinAmount, info.SingleMaxAmount)
+		raw = fetchRawGet(t, c, cx, "/api/v3/earn/savings/subscribe-info",
+			map[string]string{"productId": p.ProductID, "periodType": string(p.PeriodType)}, true)
+		assertCovers(t, "earn/savings/subscribe-info", raw, info)
+	}
+}
