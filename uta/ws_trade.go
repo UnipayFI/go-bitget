@@ -149,8 +149,7 @@ func (t *UTATradeConn) BatchModifyOrders(ctx context.Context, category Category,
 }
 
 // CancelOrder cancels a single order. Reality stock pairs (rtoken, e.g.
-// rAAPLUSDT) are supported and rate-limited on their own budget:
-// 5 req/sec/UID, or 30 req/sec/UID once whitelisted.
+// rAAPLUSDT) are supported and share the crypto rate limit.
 func (t *UTATradeConn) CancelOrder(ctx context.Context, category Category, cancel WsCancelOrder) (*WsOrderAck, error) {
 	return t.single(ctx, category, "cancel-order", cancel)
 }

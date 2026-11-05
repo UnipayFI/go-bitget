@@ -338,8 +338,8 @@ func (s *ModifyOrderService) Do(ctx context.Context) (*OrderRef, error) {
 // Cancels a single open order. Identify the order by orderId or clientOid
 // (orderId wins if both are set).
 //
-// Reality stock pairs (rtoken, e.g. rAAPLUSDT) are supported and rate-limited
-// on their own budget: 5 req/sec/UID, or 30 req/sec/UID once whitelisted.
+// Reality stock pairs (rtoken, e.g. rAAPLUSDT) are supported and share the
+// crypto rate limit of 10 req/sec/UID.
 type CancelOrderService struct {
 	c    *UTAClient
 	body map[string]any
