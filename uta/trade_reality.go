@@ -16,6 +16,11 @@ import (
 // are required; price is required for limit orders. For market buys qty is in
 // the quote coin, otherwise in the base coin. category selects spot vs. margin
 // trading (defaults to SPOT). The reply carries the new order's identifiers.
+// Routing and validity are set with SetVenue and SetRTokenTimeInForce. venue
+// also sets the rate limit. VenueInternalMarket orders share the crypto budget
+// of 10 req/sec/UID. Default-strategy (venue omitted) and VenueLitMarket orders
+// use the rtoken budget of 5 req/sec/UID, or 30 req/sec/UID once whitelisted.
+// rtoken orders cannot be modified: cancel and re-place instead.
 //
 // A UID whose terminal orders on one rtoken pair exceed 2,000 in a daily cycle
 // with a fill rate below 10% has limit orders on that pair rejected with code
@@ -50,6 +55,20 @@ func (s *PlaceRealityOrderService) SetPrice(price decimal.Decimal) *PlaceReality
 // SetClientOrderID sets the client-generated order identifier.
 func (s *PlaceRealityOrderService) SetClientOrderID(clientOid string) *PlaceRealityOrderService {
 	s.body["clientOid"] = clientOid
+	return s
+}
+
+// SetVenue sets the order routing strategy: VenueInternalMarket or
+// VenueLitMarket. If it is not set, the default strategy applies.
+func (s *PlaceRealityOrderService) SetVenue(venue Venue) *PlaceRealityOrderService {
+	s.body["venue"] = string(venue)
+	return s
+}
+
+// SetRTokenTimeInForce sets the order validity (defaults to
+// RTokenTimeInForceGTD).
+func (s *PlaceRealityOrderService) SetRTokenTimeInForce(rTokenTimeInForce RTokenTimeInForce) *PlaceRealityOrderService {
+	s.body["rTokenTimeInForce"] = string(rTokenTimeInForce)
 	return s
 }
 
