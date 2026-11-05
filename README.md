@@ -172,7 +172,7 @@ JSON handler logs `!ERROR:...` in place of such a value.
 | Position / Strategy | `position.go` `strategy.go` `grid.go` — positions, ADL rank, TPSL/trigger/OCO/trailing-stop/iceberg/TWAP plans, grid bots |
 | CFD | `cfd_*.go` — contracts for difference (gold, oil, forex indices): instruments, tickers, candles, orders, positions, account & transfers |
 | Copy / Earn / Loans / Tax | `copy*.go` (lead & follower) `earn.go` `crypto_loan.go` `ins_loan.go` `tax.go` |
-| Broker / P2P / Sub-account | `broker.go` `p2p.go` `sub_account.go` |
+| Broker / Affiliate / P2P / Sub-account | `broker.go` `affiliate.go` `p2p.go` `sub_account.go` |
 | WebSocket | `ws_public.go` `ws_private.go` `ws_trade.go` |
 
 **Classic** (`classic/`)
