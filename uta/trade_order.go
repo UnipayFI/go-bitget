@@ -172,7 +172,7 @@ func (s *PlaceOrderService) SetBBOLevel(bboLevel BBOLevel) *PlaceOrderService {
 }
 
 // SetSlippageTolerance caps a market order's slippage as a fraction in
-// [0.01, 0.05] with up to 2 decimals (defaults to 0.02, i.e. 2%). Market
+// [0.001, 0.05] with up to 3 decimals (defaults to 0.02, i.e. 2%). Market
 // orders only.
 func (s *PlaceOrderService) SetSlippageTolerance(slippageTolerance decimal.Decimal) *PlaceOrderService {
 	s.body["slippageTolerance"] = slippageTolerance.String()
