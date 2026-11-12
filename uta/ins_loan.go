@@ -76,8 +76,9 @@ type InsLoanContractPair struct {
 
 // GetInsLoanRiskUnitService -- GET /api/v3/ins-loan/risk-unit (UTA mgt. read)
 //
-// Returns the risk unit IDs associated with the institutional loan account.
-// Only the parent account API key can call this endpoint.
+// Returns the risk unit IDs associated with the institutional loan account,
+// and each unit's client type in RiskUnitList. Only the parent account API key
+// can call this endpoint.
 type GetInsLoanRiskUnitService struct {
 	c *UTAClient
 }
@@ -92,7 +93,13 @@ func (s *GetInsLoanRiskUnitService) Do(ctx context.Context) (*InsLoanRiskUnit, e
 }
 
 type InsLoanRiskUnit struct {
-	RiskUnitID []string `json:"riskUnitId"`
+	RiskUnitID   []string              `json:"riskUnitId"`
+	RiskUnitList []InsLoanRiskUnitInfo `json:"riskUnitList"`
+}
+
+type InsLoanRiskUnitInfo struct {
+	UnitID     string `json:"unitId"`
+	ClientType string `json:"clientType"` // Hedge, HFT
 }
 
 // GetInsLoanRepaidHistoryService -- GET /api/v3/ins-loan/repaid-history (UTA mgt. read)
@@ -147,7 +154,8 @@ type InsLoanRepaidOrder struct {
 //
 // Returns the configuration of an institutional loan product: its leverage,
 // supported contract types, and the risk-control lines for transfers, buys,
-// position opening and liquidation.
+// position opening and liquidation. Hedge clients also get the delta and
+// position-leverage thresholds.
 type GetInsLoanProductInfosService struct {
 	c      *UTAClient
 	params map[string]string
@@ -155,6 +163,12 @@ type GetInsLoanProductInfosService struct {
 
 func (c *UTAClient) NewGetInsLoanProductInfosService(productId string) *GetInsLoanProductInfosService {
 	return &GetInsLoanProductInfosService{c: c, params: map[string]string{"productId": productId}}
+}
+
+// SetClientType sets the client type: Hedge or HFT.
+func (s *GetInsLoanProductInfosService) SetClientType(clientType string) *GetInsLoanProductInfosService {
+	s.params["clientType"] = clientType
+	return s
 }
 
 func (s *GetInsLoanProductInfosService) Do(ctx context.Context) (*InsLoanProductInfo, error) {
@@ -175,6 +189,8 @@ type InsLoanProductInfo struct {
 	USDCContractOpenLine decimal.Decimal `json:"usdcContractOpenLine"`
 	LiquidationLine      decimal.Decimal `json:"liquidationLine"`
 	StopLiquidationLine  decimal.Decimal `json:"stopLiquidationLine"`
+	DeltaThreshold       decimal.Decimal `json:"deltaThreshold"`    // Hedge only
+	LeverageThreshold    decimal.Decimal `json:"leverageThreshold"` // Hedge only
 }
 
 // GetInsLoanOrderService -- GET /api/v3/ins-loan/loan-order (UTA mgt. read)
@@ -232,7 +248,8 @@ type InsLoanOrder struct {
 // GetInsLoanLTVConvertService -- GET /api/v3/ins-loan/ltv-convert (UTA mgt. read)
 //
 // Returns the loan-to-value risk rate of a risk unit, with the breakdown of
-// outstanding debt and asset holdings converted to USDT.
+// outstanding debt and asset holdings converted to USDT. Delta and
+// LeverageRatio are set for Hedge risk units only (empty for HFT).
 type GetInsLoanLTVConvertService struct {
 	c      *UTAClient
 	params map[string]string
@@ -260,6 +277,8 @@ type InsLoanLTVConvert struct {
 	UnpaidUSDTAmount decimal.Decimal      `json:"unpaidUsdtAmount"`
 	UnpaidInfo       []InsLoanUnpaidInfo  `json:"unpaidInfo"`
 	BalanceInfo      []InsLoanBalanceInfo `json:"balanceInfo"`
+	Delta            decimal.Decimal      `json:"delta"`         // Hedge only
+	LeverageRatio    decimal.Decimal      `json:"leverageRatio"` // Hedge only
 }
 
 type InsLoanUnpaidInfo struct {
