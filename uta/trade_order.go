@@ -22,7 +22,7 @@ import (
 // preset TP/SL is market-only: tpOrderType and slOrderType accept only market.
 // A UID whose terminal orders on one rtoken pair exceed 2,000 in a daily cycle
 // with a fill rate below 10% has limit orders on that pair rejected with code
-// 41121; the restriction lifts after a clean cycle (re-evaluated 04:00 UTC+8).
+// 41121; the restriction lifts after a clean cycle (re-evaluated 05:00 UTC+8).
 // rtoken orders cannot be modified: cancel and re-place instead. Their routing
 // and validity are set with SetVenue and SetRTokenTimeInForce.
 type PlaceOrderService struct {
