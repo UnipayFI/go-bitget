@@ -143,7 +143,8 @@ type RPIOrderBook struct {
 
 // GetRecentFillsService -- GET /api/v3/market/fills
 //
-// Returns the most recent public trades (fills) for a symbol.
+// Returns the most recent public trades (fills) for a symbol. Reality (rtoken)
+// pairs are not returned here; use GetRealityFillsService instead.
 type GetRecentFillsService struct {
 	c      *UTAClient
 	params map[string]string

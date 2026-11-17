@@ -227,6 +227,47 @@ func TestWsRealityOrderBookSegmented(t *testing.T) {
 	}
 }
 
+// TestWsRealityFills exercises the authenticated reality-fills channel. It
+// needs API keys (skipped otherwise) and whitelist access; pushes are
+// event-driven (no snapshot on subscribe), so silence simply confirms the
+// subscription was accepted.
+func TestWsRealityFills(t *testing.T) {
+	ws := testWsClient(t)
+	msgC := make(chan *request.WsPush[[]WsRealityFill], 4)
+	errC := make(chan error, 4)
+	done, _, err := ws.NewSubscribeRealityFillsService("RAAPLUSDT").
+		Do(context.Background(), func(p *request.WsPush[[]WsRealityFill], err error) {
+			if err != nil {
+				select {
+				case errC <- err:
+				default:
+				}
+				return
+			}
+			select {
+			case msgC <- p:
+			default:
+			}
+		})
+	if err != nil {
+		t.Fatalf("subscribe reality-fills: %v", err)
+	}
+	defer close(done)
+
+	select {
+	case e := <-errC:
+		t.Skipf("reality-fills not available (whitelist required): %v", e)
+	case p := <-msgC:
+		if len(p.Data) == 0 {
+			t.Fatal("reality-fills push had empty data")
+		}
+		t.Logf("reality-fills action=%s symbol=%s execId=%s venue=%s",
+			p.Action, p.Data[0].Symbol, p.Data[0].ExecID, p.Data[0].ExecVenue)
+	case <-time.After(5 * time.Second):
+		t.Log("no reality-fills event in 5s (event-driven); subscription accepted OK")
+	}
+}
+
 func TestWsPublicLiquidation(t *testing.T) {
 	ws := testPublicWsClient()
 	errC := make(chan error, 4)
@@ -446,6 +487,28 @@ func TestWsInstrumentDecode(t *testing.T) {
 		t.Errorf("times = %v / %v / %v", got.OpenTime, got.OffTime, got.LimitOpenTime)
 	}
 	assertCovers(t, "ws instruments sample", []byte(payload[len(`{"data":`):strings.Index(payload, `,"arg"`)]), []WsInstrument(push.Data))
+}
+
+// TestWsRealityFillDecode decodes the docs' reality-fills push sample, since
+// the channel requires whitelist access and pushes only when a trade occurs.
+func TestWsRealityFillDecode(t *testing.T) {
+	const payload = `{"arg":{"instType":"UTA","topic":"reality-fills","symbol":"RAAPLUSDT"},"action":"update","ts":"1762052401056","data":[{"symbol":"RAAPLUSDT","execId":"1234567893","price":"227.48","size":"10","side":"sell","execVenue":"lit_market","ts":"1762052401050"}]}`
+	var push request.WsPush[objectOrArray[WsRealityFill]]
+	if err := common.JSONUnmarshal([]byte(payload), &push); err != nil {
+		t.Fatal(err)
+	}
+	if len(push.Data) != 1 {
+		t.Fatalf("data len = %d, want 1", len(push.Data))
+	}
+	got := push.Data[0]
+	if got.Side != SideSell || got.ExecVenue != ExecVenueLitMarket {
+		t.Errorf("side/execVenue = %s/%s", got.Side, got.ExecVenue)
+	}
+	if got.Ts.UnixMilli() != 1762052401050 || push.Ts.UnixMilli() != 1762052401056 {
+		t.Errorf("ts = %v / push.Ts = %v", got.Ts, push.Ts)
+	}
+	dataStart := strings.Index(payload, `"data":`) + len(`"data":`)
+	assertCovers(t, "ws reality-fills sample", []byte(payload[dataStart:len(payload)-1]), []WsRealityFill(push.Data))
 }
 
 // TestWsPrivateChannels confirms each private data channel logs in and accepts

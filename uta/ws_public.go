@@ -126,6 +126,8 @@ type WsOrderBook struct {
 }
 
 // SubscribeTradeService -- public "publicTrade" channel (tick-by-tick fills).
+// Reality (rtoken) pairs are not pushed here; use SubscribeRealityFillsService
+// instead.
 type SubscribeTradeService struct {
 	c        *UTAWebSocketClient
 	instType WsInstType
@@ -248,6 +250,40 @@ func (s *SubscribeRealityOrderBookSegmentedService) Do(ctx context.Context, cb W
 type WsRealityOrderBookSegmented struct {
 	Asks [][]decimal.Decimal `json:"a"`
 	Bids [][]decimal.Decimal `json:"b"`
+}
+
+// SubscribeRealityFillsService -- "reality-fills" channel: real-time platform
+// fills (taker perspective, internal + lit market) for a Reality (rtoken)
+// trading pair, e.g. RAAPLUSDT, sorted by Ts descending. No snapshot is pushed
+// on subscribe; each new fill arrives as an update. For the account's own
+// fills, use SubscribeFastFillService.
+//
+// This channel requires API Key authentication and whitelist access (apply via
+// your BD contact), so the subscription is sent over the authenticated
+// connection.
+type SubscribeRealityFillsService struct {
+	c      *UTAWebSocketClient
+	symbol string
+}
+
+func (c *UTAWebSocketClient) NewSubscribeRealityFillsService(symbol string) *SubscribeRealityFillsService {
+	return &SubscribeRealityFillsService{c: c, symbol: symbol}
+}
+
+func (s *SubscribeRealityFillsService) Do(ctx context.Context, cb WsHandler[WsRealityFill]) (chan<- struct{}, <-chan struct{}, error) {
+	return subscribeObjectOrArray(ctx, s.c, true,
+		request.WsArg{InstType: wsInstTypeUTA, Topic: "reality-fills", Symbol: s.symbol}, cb)
+}
+
+// WsRealityFill is a single platform fill pushed on the "reality-fills" channel.
+type WsRealityFill struct {
+	Symbol    string          `json:"symbol"`
+	ExecID    string          `json:"execId"`
+	Price     decimal.Decimal `json:"price"`
+	Size      decimal.Decimal `json:"size"`
+	Side      Side            `json:"side"`
+	ExecVenue ExecVenue       `json:"execVenue"`
+	Ts        time.Time       `json:"ts,format:unixmilli"`
 }
 
 // subscribeObjectOrArray is request.Subscribe for channels whose data arrives
