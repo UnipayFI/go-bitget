@@ -211,9 +211,10 @@ func (s *GetRealityFillsService) Do(ctx context.Context) ([]RealityFill, error) 
 
 // RealityFill is a single recent platform fill for a Reality trading pair.
 type RealityFill struct {
-	ExecID string          `json:"execId"`
-	Price  decimal.Decimal `json:"price"`
-	Size   decimal.Decimal `json:"size"`
-	Side   Side            `json:"side"`
-	Ts     time.Time       `json:"ts,format:unixmilli"`
+	ExecID    string          `json:"execId"`
+	Price     decimal.Decimal `json:"price"`
+	Size      decimal.Decimal `json:"size"`
+	Side      Side            `json:"side"`
+	ExecVenue ExecVenue       `json:"execVenue"`
+	Ts        time.Time       `json:"ts,format:unixmilli"`
 }

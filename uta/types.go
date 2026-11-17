@@ -107,6 +107,21 @@ const (
 	VenueLitMarket Venue = "lit_market"
 )
 
+// ExecVenue identifies where a Reality (rtoken) fill actually executed, as
+// distinct from the order's Venue routing strategy (a VenueDefault order may
+// fill on either). Empty for non-rtoken fills and untraceable historical
+// records.
+type ExecVenue string
+
+const (
+	// ExecVenueInternalMarket is an internal fill matched in Bitget's internal
+	// order book (Super Match).
+	ExecVenueInternalMarket ExecVenue = "internal_market"
+	// ExecVenueLitMarket is a lit-market fill routed to an external broker and
+	// executed on the public market.
+	ExecVenueLitMarket ExecVenue = "lit_market"
+)
+
 // RTokenTimeInForce is the validity of a Reality (rtoken) order; it has no
 // effect on other pairs. Orders default to RTokenTimeInForceGTD.
 type RTokenTimeInForce string

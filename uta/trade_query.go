@@ -212,6 +212,14 @@ func (s *GetFillHistoryService) SetOrderID(orderID string) *GetFillHistoryServic
 	return s
 }
 
+// SetExecVenue filters Reality (rtoken) fills by execution venue
+// (ExecVenueInternalMarket or ExecVenueLitMarket); records with an empty
+// execVenue are excluded when set.
+func (s *GetFillHistoryService) SetExecVenue(execVenue ExecVenue) *GetFillHistoryService {
+	s.params["execVenue"] = string(execVenue)
+	return s
+}
+
 // SetStartTime filters fills at or after t (90-day access window).
 func (s *GetFillHistoryService) SetStartTime(t time.Time) *GetFillHistoryService {
 	s.params["startTime"] = strconv.FormatInt(t.UnixMilli(), 10)
@@ -292,6 +300,7 @@ type Fill struct {
 	ExecValue     decimal.Decimal `json:"execValue"`
 	TradeScope    TradeScope      `json:"tradeScope"`
 	TradeSide     string          `json:"tradeSide"`
+	ExecVenue     ExecVenue       `json:"execVenue"`
 	FeeDetail     []FeeDetail     `json:"feeDetail"`
 	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
 	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`

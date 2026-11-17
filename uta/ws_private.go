@@ -174,7 +174,8 @@ type WsFill struct {
 	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 }
 
-// SubscribeFastFillService -- private "fast-fill" channel (low-latency fills).
+// SubscribeFastFillService -- private "fast-fill" channel (low-latency fills,
+// including both internal and lit-market fills for Reality rtoken orders).
 type SubscribeFastFillService struct {
 	c *UTAWebSocketClient
 }
@@ -197,6 +198,7 @@ type WsFastFill struct {
 	Side          Side            `json:"side"`
 	HoldSide      PosSide         `json:"holdSide"`
 	TradeScope    TradeScope      `json:"tradeScope"`
+	ExecVenue     ExecVenue       `json:"execVenue"`
 	ExecPrice     decimal.Decimal `json:"execPrice"`
 	ExecQty       decimal.Decimal `json:"execQty"`
 	ExecTime      time.Time       `json:"execTime,format:unixmilli"`
