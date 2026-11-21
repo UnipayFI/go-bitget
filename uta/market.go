@@ -244,22 +244,23 @@ type Instrument struct {
 	LaunchTime           time.Time        `json:"launchTime,format:unixmilli"`
 
 	// Futures-only fields.
-	Type               SymbolType      `json:"type"` // perpetual, delivery
-	FeeRateUpRatio     decimal.Decimal `json:"feeRateUpRatio"`
-	MakerFeeRate       decimal.Decimal `json:"makerFeeRate"`
-	TakerFeeRate       decimal.Decimal `json:"takerFeeRate"`
-	OpenCostUpRatio    decimal.Decimal `json:"openCostUpRatio"`
-	PriceMultiplier    decimal.Decimal `json:"priceMultiplier"`
-	QuantityMultiplier decimal.Decimal `json:"quantityMultiplier"`
-	MaxMarketOrderQty  decimal.Decimal `json:"maxMarketOrderQty"`
-	FundInterval       string          `json:"fundInterval"`
-	MinLeverage        decimal.Decimal `json:"minLeverage"`
-	MaxLeverage        decimal.Decimal `json:"maxLeverage"`
-	OffTime            time.Time       `json:"offTime,format:unixmilli"`
-	LimitOpenTime      time.Time       `json:"limitOpenTime,format:unixmilli"`
-	DeliveryTime       time.Time       `json:"deliveryTime,format:unixmilli"`
-	DeliveryStartTime  time.Time       `json:"deliveryStartTime,format:unixmilli"`
-	DeliveryPeriod     string          `json:"deliveryPeriod"`
+	Type                  SymbolType      `json:"type"` // perpetual, delivery
+	FeeRateUpRatio        decimal.Decimal `json:"feeRateUpRatio"`
+	MakerFeeRate          decimal.Decimal `json:"makerFeeRate"`
+	TakerFeeRate          decimal.Decimal `json:"takerFeeRate"`
+	OpenCostUpRatio       decimal.Decimal `json:"openCostUpRatio"`
+	PriceMultiplier       decimal.Decimal `json:"priceMultiplier"`
+	QuantityMultiplier    decimal.Decimal `json:"quantityMultiplier"`
+	MaxMarketOrderQty     decimal.Decimal `json:"maxMarketOrderQty"`
+	FundInterval          string          `json:"fundInterval"`
+	MinLeverage           decimal.Decimal `json:"minLeverage"`
+	MaxLeverage           decimal.Decimal `json:"maxLeverage"`
+	OffTime               time.Time       `json:"offTime,format:unixmilli"`
+	LimitOpenTime         time.Time       `json:"limitOpenTime,format:unixmilli"`
+	DeliveryTime          time.Time       `json:"deliveryTime,format:unixmilli"`
+	DeliveryStartTime     time.Time       `json:"deliveryStartTime,format:unixmilli"`
+	DeliveryPeriod        string          `json:"deliveryPeriod"`
+	UnrealizedProfitLimit string          `json:"unrealizedProfitLimit"` // YES/NO (docs: yes/no): restricts increasing positions and withdrawals while unrealized profit exists
 
 	// Margin-only fields.
 	IsIsolatedBaseBorrowable   string          `json:"isIsolatedBaseBorrowable"`   // YES/NO
