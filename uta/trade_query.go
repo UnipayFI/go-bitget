@@ -50,6 +50,7 @@ type Order struct {
 	FeeDetail     []FeeDetail     `json:"feeDetail"`
 	CancelReason  string          `json:"cancelReason"` // incl. cancel_receiveWindow (receiveWindow expired)
 	ExecType      ExecType        `json:"execType"`
+	ChannelCode   string          `json:"channelCode"` // broker channel code for commission rebate reconciliation
 	CreatedTime   time.Time       `json:"createdTime,format:unixmilli"`
 	UpdatedTime   time.Time       `json:"updatedTime,format:unixmilli"`
 	// Venue and RTokenTimeInForce are only meaningful for Reality (rtoken)
