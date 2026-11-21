@@ -90,4 +90,5 @@ type MaxWithdrawal struct {
 	SpotMaxWithdrawal  decimal.Decimal `json:"spotMaxWithdrawal"`
 	UtaMaxWithdrawal   decimal.Decimal `json:"utaMaxWithdrawal"`
 	TotalMaxWithdrawal decimal.Decimal `json:"totalMaxWithdrawal"`
+	FrozenValue        decimal.Decimal `json:"frozenValue"` // frozen asset value in USDT, already deducted from max withdrawable
 }
