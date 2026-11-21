@@ -15,15 +15,23 @@ import (
 // conversion, each quoted with the target coin (BGB), the estimated proceeds
 // and the conversion fee.
 type GetSmallAssetsService struct {
-	c *UTAClient
+	c      *UTAClient
+	params map[string]string
 }
 
 func (c *UTAClient) NewGetSmallAssetsService() *GetSmallAssetsService {
-	return &GetSmallAssetsService{c: c}
+	return &GetSmallAssetsService{c: c, params: map[string]string{}}
+}
+
+// SetAccountType selects which account to query: "uta" (unified account,
+// default) or "funding" (funding account).
+func (s *GetSmallAssetsService) SetAccountType(accountType string) *GetSmallAssetsService {
+	s.params["accountType"] = accountType
+	return s
 }
 
 func (s *GetSmallAssetsService) Do(ctx context.Context) ([]SmallAsset, error) {
-	req := request.Get(ctx, s.c, "/api/v3/convert/small-assets").WithSign()
+	req := request.Get(ctx, s.c, "/api/v3/convert/small-assets", s.params).WithSign()
 	resp, err := request.Do[[]SmallAsset](req)
 	if err != nil {
 		return nil, err
@@ -64,15 +72,23 @@ func (s *SmallAssetsTradeService) SetFromCoinList(fromCoinList []string) *SmallA
 	return s
 }
 
+// SetAccountType selects which account's dust to convert: "uta" (unified
+// account, default) or "funding" (funding account).
+func (s *SmallAssetsTradeService) SetAccountType(accountType string) *SmallAssetsTradeService {
+	s.body["accountType"] = accountType
+	return s
+}
+
 func (s *SmallAssetsTradeService) Do(ctx context.Context) (*SmallAssetsTradeResult, error) {
 	req := request.Post(ctx, s.c, "/api/v3/convert/small-assets-trade", s.body).WithSign()
 	return request.Do[SmallAssetsTradeResult](req)
 }
 
 type SmallAssetsTradeResult struct {
-	FromCoin []string `json:"fromCoin"`
-	ToCoin   string   `json:"toCoin"`
-	OrderID  string   `json:"orderId"`
+	FromCoin    []string `json:"fromCoin"`
+	ToCoin      string   `json:"toCoin"`
+	OrderID     string   `json:"orderId"`
+	AccountType string   `json:"accountType"` // uta, funding
 }
 
 // GetSmallAssetsHistoryService -- GET /api/v3/convert/small-assets-history (UTA mgt. read)
@@ -86,6 +102,13 @@ type GetSmallAssetsHistoryService struct {
 
 func (c *UTAClient) NewGetSmallAssetsHistoryService() *GetSmallAssetsHistoryService {
 	return &GetSmallAssetsHistoryService{c: c, params: map[string]string{}}
+}
+
+// SetAccountType filters history by account type: "uta" or "funding". When
+// omitted, records from all account types are returned.
+func (s *GetSmallAssetsHistoryService) SetAccountType(accountType string) *GetSmallAssetsHistoryService {
+	s.params["accountType"] = accountType
+	return s
 }
 
 // SetOrderID filters history by the conversion order ID.
@@ -130,6 +153,7 @@ type SmallAssetsHistory struct {
 
 type SmallAssetConversion struct {
 	OrderID       string          `json:"orderId"`
+	AccountType   string          `json:"accountType"` // uta, funding
 	FromCoin      string          `json:"fromCoin"`
 	FromAmount    decimal.Decimal `json:"fromAmount"`
 	FromCoinPrice decimal.Decimal `json:"fromCoinPrice"`
