@@ -168,8 +168,9 @@ type StrategyTWAPParams struct {
 // ("iceberg") or TWAP ("twap"). The last four are configured through their own
 // param set — SetOCOParams, SetTrailingStopParams, SetIcebergParams,
 // SetTWAPParams — which is required once SetType selects them. Supported
-// business lines: spot, margin, and futures. The reply data carries the
-// assigned order identifiers.
+// business lines: spot, margin, and futures. clientOid and the API broker
+// rebate header (X-CHANNEL-API-CODE) take effect for every strategy type. The
+// reply data carries the assigned order identifiers.
 type PlaceStrategyOrderService struct {
 	c    *UTAClient
 	body map[string]any
@@ -182,8 +183,8 @@ func (c *UTAClient) NewPlaceStrategyOrderService(category Category, symbol strin
 	}}
 }
 
-// SetClientOid sets the client order ID (6-hour idempotent validity). Bitget
-// honours it only when the strategy type is tpsl.
+// SetClientOrderID sets the client order ID (6-hour idempotent validity),
+// effective for every strategy type.
 func (s *PlaceStrategyOrderService) SetClientOrderID(clientOid string) *PlaceStrategyOrderService {
 	s.body["clientOid"] = clientOid
 	return s
@@ -529,6 +530,7 @@ type StrategyOrder struct {
 	TriggerOrderType  OrderType       `json:"triggerOrderType"`
 	TriggerOrderPrice decimal.Decimal `json:"triggerOrderPrice"`
 	MarginMode        MarginMode      `json:"marginMode"` // futures only
+	TPSLMode          string          `json:"tpslMode"`   // full, partial; history tpsl orders only
 	// Exactly one of the four param sets below is populated, matching the
 	// strategy type the order was placed with.
 	OCOParams          []StrategyOCOParams          `json:"ocoParams"`
