@@ -195,7 +195,8 @@ type SubAccountInfo struct {
 
 // CreateSubAccountAPIKeyService -- POST /api/v3/user/create-sub-api (UTA mgt. read & write)
 //
-// Creates an API key for a virtual or Copper custody sub-account. type is
+// Creates an API key for a virtual, Copper custody, or regular sub-account
+// (a regular sub-account must already be in unified account mode). type is
 // "read_write" or "read_only"; permissions are "uta_mgt"/"uta_trade"; ips is the
 // IPv4 whitelist (max 30). Main account only.
 type CreateSubAccountAPIKeyService struct {
