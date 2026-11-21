@@ -42,15 +42,16 @@ type AccountAssets struct {
 }
 
 type CoinAsset struct {
-	Coin            string          `json:"coin"`
-	Equity          decimal.Decimal `json:"equity"`
-	USDValue        decimal.Decimal `json:"usdValue"`
-	Balance         decimal.Decimal `json:"balance"`
-	BalanceOriginal decimal.Decimal `json:"balanceOriginal"` // balance without deducting borrowing-related amounts
-	Available       decimal.Decimal `json:"available"`
-	Debt            decimal.Decimal `json:"debt"`
-	Locked          decimal.Decimal `json:"locked"`
-	InterestBase    decimal.Decimal `json:"interestBase"` // debt + abs(min(0, balance + unrealised PnL))
+	Coin                  string                `json:"coin"`
+	Equity                decimal.Decimal       `json:"equity"`
+	USDValue              decimal.Decimal       `json:"usdValue"`
+	Balance               decimal.Decimal       `json:"balance"`
+	BalanceOriginal       decimal.Decimal       `json:"balanceOriginal"` // balance without deducting borrowing-related amounts
+	Available             decimal.Decimal       `json:"available"`
+	Debt                  decimal.Decimal       `json:"debt"`
+	Locked                decimal.Decimal       `json:"locked"`
+	InterestBase          decimal.Decimal       `json:"interestBase"` // debt + abs(min(0, balance + unrealised PnL))
+	CollateralLimitStatus CollateralLimitStatus `json:"collateralLimitStatus"`
 }
 
 // GetAllFeeRateService -- GET /api/v3/account/all-fee-rate (UTA mgt. read)

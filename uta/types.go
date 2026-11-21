@@ -257,3 +257,17 @@ const (
 	AccountModeIsolated AccountMode = "ISOLATED" // isolated margin
 	AccountModeClassic  AccountMode = "CLASSIC"  // classic (reserved for non-UTA)
 )
+
+// CollateralLimitStatus is a coin's platform collateral limit status, reported
+// on each entry of GET /api/v3/account/assets and the private "account"
+// WebSocket channel. Coins not under collateral limit management report
+// CollateralLimitStatusNormal.
+type CollateralLimitStatus string
+
+const (
+	CollateralLimitStatusNormal          CollateralLimitStatus = "normal"
+	CollateralLimitStatusUserWarning     CollateralLimitStatus = "user_warning"
+	CollateralLimitStatusPlatformWarning CollateralLimitStatus = "platform_warning"
+	CollateralLimitStatusUserLimited     CollateralLimitStatus = "user_limited"
+	CollateralLimitStatusPlatformLimited CollateralLimitStatus = "platform_limited"
+)
